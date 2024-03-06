@@ -41,6 +41,11 @@ public class TrpcDemoProviderApplication {
         return providersBootstrap.invokeRequest(request);
     }
 
+
+    /**
+     * 启动 模拟调用一次请求测试下 （接口测试：demo.http）
+     * @return ApplicationRunner
+     */
     @Bean
     public ApplicationRunner provideRun(){
         return x -> {
