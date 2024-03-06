@@ -1,0 +1,9 @@
+### 获取用户
+POST http://localhost:8080/
+Content-Type: application/json
+
+{
+  "service": "cn.tannn.trpc.demo.api.UserService",
+  "method": "findById",
+  "args": [100]
+}
