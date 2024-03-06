@@ -8,7 +8,7 @@ Content-Type: application/json
   "args": [101]
 }
 
-### mock
+### mock -- 没有做方法过滤，此出测试对象自带的 hashCode toString 方法的调用
 POST http://localhost:8080/
 Content-Type: application/json
 
