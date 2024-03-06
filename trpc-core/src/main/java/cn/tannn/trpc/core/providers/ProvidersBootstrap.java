@@ -3,15 +3,10 @@ package cn.tannn.trpc.core.providers;
 import cn.tannn.trpc.core.annotation.TProvider;
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
-import jakarta.annotation.PostConstruct;
 import lombok.Data;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -19,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 提供者
+ * 提供者 引导类
  * @author tnnn
  * @version V1.0
  * @date 2024-03-06 21:33
