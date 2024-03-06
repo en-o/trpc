@@ -32,7 +32,7 @@ public class ProvidersBootstrap implements ApplicationContextAware {
     private Map<String, Object> skeleton = new HashMap<>();
 
     /**
-     *  拿到 所有标记了TProvider注解的类（所有的提供者）
+     *  拿到 所有标记了TProvider注解的类（所有的提供者），并存储
      */
     @Override
     public void setApplicationContext(ApplicationContext context) throws BeansException {
@@ -44,9 +44,9 @@ public class ProvidersBootstrap implements ApplicationContextAware {
 
 
     /**
-     * 获取接口
+     * 存储接口信息
      *
-     * @param x x
+     * @param x 接口
      */
     public void genInterface(Object x) {
         // 默认只拿一个接口
@@ -61,7 +61,7 @@ public class ProvidersBootstrap implements ApplicationContextAware {
      * @param request 接口元数据
      * @return 调用结果
      */
-    private RpcResponse invokeRequest(RpcRequest request) {
+    public RpcResponse invokeRequest(RpcRequest request) {
         Object bean = skeleton.get(request.getService());
         try {
             Method method = findMethod(bean.getClass(), request.getMethod());
@@ -75,6 +75,12 @@ public class ProvidersBootstrap implements ApplicationContextAware {
     }
 
 
+    /**
+     * 查询方法
+     * @param aClass 对象
+     * @param methodName 方法名
+     * @return 查找到的方法
+     */
     private Method findMethod(Class<?> aClass, String methodName){
         for (Method method : aClass.getMethods()) {
             if(method.getName().equals(methodName)){

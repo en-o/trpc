@@ -5,5 +5,5 @@ Content-Type: application/json
 {
   "service": "cn.tannn.trpc.demo.api.UserService",
   "method": "findById",
-  "args": [100]
+  "args": [101]
 }

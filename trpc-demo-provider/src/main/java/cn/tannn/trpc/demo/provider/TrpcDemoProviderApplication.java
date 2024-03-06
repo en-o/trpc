@@ -3,6 +3,7 @@ package cn.tannn.trpc.demo.provider;
 import cn.tannn.trpc.core.annotation.TProvider;
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
+import cn.tannn.trpc.core.providers.ProvidersBootstrap;
 import cn.tannn.trpc.core.providers.ProvidersConfig;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ import java.util.Map;
 @Import(ProvidersConfig.class)
 public class TrpcDemoProviderApplication {
 
+    @Autowired
+    private ProvidersBootstrap providersBootstrap;
+
     public static void main(String[] args) {
         SpringApplication.run(TrpcDemoProviderApplication.class, args);
     }
@@ -42,7 +46,7 @@ public class TrpcDemoProviderApplication {
      */
     @RequestMapping("/")
     public RpcResponse invoke(@RequestBody RpcRequest request) {
-        return invokeRequest(request);
+        return providersBootstrap.invokeRequest(request);
     }
 
     @Bean
@@ -52,8 +56,7 @@ public class TrpcDemoProviderApplication {
             rpcRequest.setService("cn.tannn.trpc.demo.api.UserService");
             rpcRequest.setMethod("findById");
             rpcRequest.setArgs(new Object[]{100});
-
-            RpcResponse rpcResponse = invokeRequest(rpcRequest);
+            RpcResponse rpcResponse = providersBootstrap.invokeRequest(rpcRequest);
             System.out.println("return: " + rpcResponse.getData());
         };
     }

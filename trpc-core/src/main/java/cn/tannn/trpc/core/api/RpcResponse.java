@@ -20,6 +20,9 @@ public class RpcResponse<T>  {
      */
     boolean status;
 
+    /**
+     * 接口执行得到数据
+     */
     T data;
 
 }
