@@ -7,7 +7,6 @@
         <artifactId>trpc</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <groupId>cn.tannn</groupId>
     <artifactId>trpc-demo-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>trpc-demo-api</name>
@@ -22,14 +21,5 @@
             <optional>true</optional>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

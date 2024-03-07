@@ -78,6 +78,7 @@ public class ProvidersBootstrap implements ApplicationContextAware {
      */
     private Method findMethod(Class<?> aClass, String methodName){
         for (Method method : aClass.getMethods()) {
+            // todo 重名方法无法处理
             if(method.getName().equals(methodName)){
                 return method;
             }
