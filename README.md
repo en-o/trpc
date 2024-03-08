@@ -26,8 +26,8 @@
 > 客户端(服务调用方)
 
 ### 1. 服务端（服务的真正提供者）准备服务
-1. 实现方法 `UserServiceImpl implements UserService` 
-2. 对实现的方法进行标注`@TProvider`表示其为服务提供者
+1. 实现方法 `UserServiceImpl implements UserService` 形成当前服务具有的能力
+2. 对准备的能力进行标注`@TProvider`表示其为服务提供者可以对外提供服务
 3. 利用`ProvidersBootstrap` 启动时扫描全局将所有提供者的信息`全限定名,对象实例` 存起来备用`Map#skeleton()`
 4. 构建序列化和反序列化的结构对象 `RpcRequest` `RpcResponse`
 5. 暴露调用方式，一个HTTP接口 `TrpcDemoProviderApplication#invoke()` 
