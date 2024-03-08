@@ -22,7 +22,7 @@ import java.util.Map;
 @Data
 public class ProvidersBootstrap implements ApplicationContextAware {
     /**
-     * 存储所有的提供者
+     * 存储所有的提供者 , 其中包含了[全限定名，对象实例]
      */
     private Map<String, Object> skeleton = new HashMap<>();
 
@@ -46,7 +46,7 @@ public class ProvidersBootstrap implements ApplicationContextAware {
     public void genInterface(Object x) {
         // 默认只拿一个接口
         Class<?> anInterface = x.getClass().getInterfaces()[0];
-        // 存储（全限定名，bean的实现类）
+        // 存储（全限定名，对象示例）
         skeleton.put(anInterface.getCanonicalName(), x);
     }
 
