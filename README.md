@@ -23,7 +23,6 @@
 
 
 ## 实现过程
-> 客户端(服务调用方)
 
 ### 1. 服务端（服务的真正提供者）准备服务
 1. 实现方法 `UserServiceImpl implements UserService` 形成当前服务具有的能力
