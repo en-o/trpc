@@ -50,7 +50,7 @@ public class TInvocationHandler implements InvocationHandler {
                 return jsonResult.toJavaObject(method.getReturnType());
             }else {
                 // 返回原本的T类型
-                return result;
+                return JSON.to(method.getReturnType(),result);
             }
 
         }else {

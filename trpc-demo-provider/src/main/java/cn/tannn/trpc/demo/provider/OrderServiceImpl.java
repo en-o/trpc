@@ -23,4 +23,14 @@ public class OrderServiceImpl implements OrderService {
         }
         return new Order(id.longValue(), 15.6f);
     }
+
+    @Override
+    public Order findById2(Long id) {
+        return new Order(id, 15.6f);
+    }
+
+    @Override
+    public Long findId() {
+        return 3L;
+    }
 }

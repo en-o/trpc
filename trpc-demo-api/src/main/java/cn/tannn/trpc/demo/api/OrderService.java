@@ -15,6 +15,21 @@ public interface OrderService {
      */
     Order findById(Integer id);
 
+    /**
+     * 测试入参 Long
+     * @param id id
+     * @return Order
+     */
+    Order findById2(Long id);
+
+
+    /**
+     * 测试出参Long
+     * @return Long
+     */
+    Long findId();
+
+
 
 
 }

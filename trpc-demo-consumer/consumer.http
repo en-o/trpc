@@ -16,4 +16,10 @@ GET http://localhost:8088/order/13
 ### Order 测试返回对象为数字
 GET http://localhost:8088/order/404
 
+### Order findId
+GET http://localhost:8088/order/id
+
+### Order 测试返回对象为数字
+GET http://localhost:8088/order/l/22
+
 

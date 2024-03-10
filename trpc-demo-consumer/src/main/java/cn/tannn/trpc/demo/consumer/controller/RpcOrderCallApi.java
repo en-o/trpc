@@ -39,6 +39,29 @@ public class RpcOrderCallApi {
        return orderService.findById(id);
     }
 
+    /**
+     * 测试返回对象为Bean
+     * @param id id
+     * @return Order
+     */
+    @GetMapping("/l/{id}")
+    public Order findOrder2(@PathVariable(value = "id",required = false) Long id){
+        if(id == null){
+            id = 10L;
+        }
+        return orderService.findById2(id);
+    }
+
+
+    /**
+     * 测试返回对象为数字
+     * @return Integer
+     */
+    @GetMapping("/id")
+    public Long findId(){
+        return orderService.findId();
+    }
+
 
     /**
      * 测试返回异常
