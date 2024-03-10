@@ -60,7 +60,6 @@ public class TInvocationHandler implements InvocationHandler {
         }
     }
 
-
     OkHttpClient httpClient = new OkHttpClient().newBuilder()
             // 连接池
             .connectionPool(new ConnectionPool(16,60,TimeUnit.SECONDS))

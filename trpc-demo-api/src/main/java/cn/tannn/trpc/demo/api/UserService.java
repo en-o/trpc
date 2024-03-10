@@ -15,4 +15,19 @@ public interface UserService {
      * @return User
      */
     User findById(Integer id);
+
+
+
+    /**
+     * 测试返回 Integer
+     * @return Integer
+     */
+    Integer findId();
+
+    /**
+     * 测试返回 String
+     * @return String
+     */
+    String findName();
+
 }

@@ -39,12 +39,22 @@ public class TrpcDemoConsumerApplication {
             User user = userService.findById(1);
             System.out.println("RPC result userService.findBy(1) = " + user);
 
+            Integer id = userService.findId();
+            System.out.println("RPC result userService.findId() = " + id);
+
+            String name = userService.findName();
+            System.out.println("RPC result userService.findName() = " + name);
+
+
 //            Order order = orderService.findById(2);
 //            System.out.println("RPC result orderService.findBy(2) = " + order);
 
             // 模拟异常
 //            Order order_404 = orderService.findById(404);
 //            System.out.println("RPC result orderService.findBy(404) = " + order_404);
+
+
+
         };
     }
 
