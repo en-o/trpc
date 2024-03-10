@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 提供者 引导类
+ * 提供者 处理类
  * @author tnnn
  * @version V1.0
  * @date 2024-03-06 21:33
@@ -57,16 +57,32 @@ public class ProvidersBootstrap implements ApplicationContextAware {
      * @return 调用结果
      */
     public RpcResponse invokeRequest(RpcRequest request) {
+        // todo 屏蔽 toString / equals 等 Object 的一些基本方法
+        String requestMethodName = request.getMethod();
+        if(requestMethodName.equals("toString")
+                || requestMethodName.equals("hashCode")){
+            return null;
+        }
+        RpcResponse rpcResponse = new RpcResponse();
+
         Object bean = skeleton.get(request.getService());
         try {
             Method method = findMethod(bean.getClass(), request.getMethod());
             Object result = method.invoke(bean, request.getArgs());
-            return new RpcResponse(true, result);
+            rpcResponse.setStatus(true);
+            rpcResponse.setData(result);
         }  catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            // 把异常传递回去
+//            rpcResponse.setEx(e);
+            // 多余的栈信息不要
+            rpcResponse.setEx(new RuntimeException(e.getTargetException().getMessage()));
+        }  catch (IllegalAccessException e) {
+            // 把异常传递回去
+//            rpcResponse.setEx(e);
+            // 多余的栈信息不要
+            rpcResponse.setEx(new RuntimeException(e.getMessage()));
         }
+        return rpcResponse;
     }
 
 

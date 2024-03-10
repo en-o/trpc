@@ -25,4 +25,9 @@ public class RpcResponse<T>  {
      */
     T data;
 
+    /**
+     * 处理错误
+     */
+    Exception ex;
+
 }

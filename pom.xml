@@ -30,6 +30,7 @@
         <!-- demo -->
         <module>trpc-demo-api</module>
         <module>trpc-demo-provider</module>
+        <module>trpc-demo-consumer</module>
     </modules>
 
     <build>
