@@ -31,6 +31,9 @@ public class TrpcDemoConsumerApplication {
     }
 
 
+    /**
+     * 启动测试用的
+     */
     @Bean
     public ApplicationRunner consumer_runner1() {
         return x -> {
