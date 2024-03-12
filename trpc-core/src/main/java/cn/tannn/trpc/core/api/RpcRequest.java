@@ -21,9 +21,9 @@ public class RpcRequest {
     private String service;
 
     /**
-     * 方法 : findById()
+     * 方法签名
      */
-    private String method;
+    private String signMethod;
 
     /**
      * 参数 : 100

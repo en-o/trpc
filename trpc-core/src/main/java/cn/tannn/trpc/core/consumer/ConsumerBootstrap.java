@@ -43,7 +43,6 @@ public class ConsumerBootstrap implements ApplicationContextAware {
             // 获取标注了TConsumer注解的属性字段
             List<Field> fields =  findAnnotatedField(bean.getClass());
             fields.forEach(field -> {
-                System.out.println("===>" + field.getName());
                 try {
                     // 为获取到的属性对象生成代理
                     Class<?> service = field.getType();
