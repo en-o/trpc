@@ -37,17 +37,48 @@ public class TrpcDemoConsumerApplication {
     @Bean
     public ApplicationRunner consumer_runner1() {
         return x -> {
-//            userService.toString();
+            userService.toString();
+
+            System.out.println("============================================================\n");
 
             User user = userService.findById(1);
             System.out.println("RPC result userService.findBy(1) = " + user);
 
+            System.out.println("============================================================\n");
+
             Integer id = userService.findId();
             System.out.println("RPC result userService.findId() = " + id);
+
+            System.out.println("============================================================\n");
+
+
+//            long idl = userService.findId(1000L);
+            long idl = userService.findId(Long.valueOf(1000L));
+            System.out.println("RPC result userService.findId() = " + idl);
+
+            System.out.println("============================================================\n");
+
+            long idi = userService.findId(2L);
+            System.out.println("RPC result userService.findId() = " + idi);
+
+            System.out.println("============================================================\n");
+
+            int userId = userService.findId(new User(1,"tan"));
+            System.out.println("RPC result userService.findId() = " + userId);
+
+            System.out.println("============================================================\n");
+
+
+            User user2 = userService.findUser(new User(12,"tan2"));
+            System.out.println("RPC result userService.findUser() = " + user2);
+
+            System.out.println("============================================================\n");
+
 
             String name = userService.findName();
             System.out.println("RPC result userService.findName() = " + name);
 
+            System.out.println("============================================================\n");
 
 //            Order order = orderService.findById(2);
 //            System.out.println("RPC result orderService.findBy(2) = " + order);

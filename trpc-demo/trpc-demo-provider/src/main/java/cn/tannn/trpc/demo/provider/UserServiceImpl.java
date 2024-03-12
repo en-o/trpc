@@ -26,6 +26,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public long findId(Long id) {
+        return id;
+    }
+
+    @Override
+    public Long findId(long id) {
+        return id;
+    }
+
+    @Override
+    public int findId(User user) {
+        return user.getId();
+    }
+
+    @Override
+    public User findUser(User user) {
+        return user;
+    }
+
+    @Override
     public String findName() {
         return "tn";
     }

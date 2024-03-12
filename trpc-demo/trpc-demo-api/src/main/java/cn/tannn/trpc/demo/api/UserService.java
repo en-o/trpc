@@ -23,6 +23,12 @@ public interface UserService {
      * @return Integer
      */
     Integer findId();
+    long findId(Long id);
+    Long findId(long id);
+    int findId(User user);
+
+    User findUser(User user);
+
 
     /**
      * 测试返回 String
