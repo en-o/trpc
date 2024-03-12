@@ -28,9 +28,7 @@
         <!-- 框架 -->
         <module>trpc-core</module>
         <!-- demo -->
-        <module>trpc-demo-api</module>
-        <module>trpc-demo-provider</module>
-        <module>trpc-demo-consumer</module>
+        <module>trpc-demo</module>
     </modules>
 
     <build>
