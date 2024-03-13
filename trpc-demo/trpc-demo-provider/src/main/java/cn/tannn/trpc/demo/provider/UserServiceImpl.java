@@ -26,6 +26,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public float findId(float id) {
+        return id;
+    }
+
+    @Override
+    public Float findId(Float id) {
+        return id;
+    }
+
+    @Override
+    public double findId(double id) {
+        return id;
+    }
+
+    @Override
+    public Double findId(Double id) {
+        return id;
+    }
+
+    @Override
     public Long findId(Long id) {
         return id;
     }

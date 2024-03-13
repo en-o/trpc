@@ -3,10 +3,13 @@ package cn.tannn.trpc.core.consumer;
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
 import cn.tannn.trpc.core.util.MethodUtils;
+import cn.tannn.trpc.core.util.TypeUtils;
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import okhttp3.*;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
@@ -44,8 +47,11 @@ public class TInvocationHandler implements InvocationHandler {
         // 发送请
         RpcResponse rpcResponse = post(rpcRequest);
         if (rpcResponse.isStatus()) {
-            // 处理基本类型
+            // 处理结果类型
             return JSON.to(method.getReturnType(),  rpcResponse.getData());
+            // TypeUtils.cast 是模拟上面那个写的
+//            return TypeUtils.cast( rpcResponse.getData(), method.getReturnType());
+
         } else {
             // 处理回传的调用期间发生的异常
             Exception ex = rpcResponse.getEx();

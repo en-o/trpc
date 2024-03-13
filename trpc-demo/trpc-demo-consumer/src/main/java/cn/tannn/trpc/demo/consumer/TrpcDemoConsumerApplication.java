@@ -45,7 +45,10 @@ public class TrpcDemoConsumerApplication {
             System.out.println(userService.findById(1));
 
             System.out.println(userService.findId());
-
+            System.out.println(userService.findId(1.1));
+            System.out.println(userService.findId(Float.valueOf(1.2f)));
+            System.out.println(userService.findId(1.33333));
+            System.out.println(userService.findId(Double.valueOf(1.44444D)));
             System.out.println( userService.findId(Long.valueOf(1000L)));
 
             System.out.println(userService.findId(2));

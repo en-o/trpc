@@ -129,7 +129,7 @@ public class ProvidersBootstrap implements ApplicationContextAware {
         for (int i = 0; i < parameterTypes.length; i++) {
             actuals[i] = JSON.to(parameterTypes[i],  args[i]);
             // TypeUtils.cast 是模拟上面那个写的
-            // actuals[i] = TypeUtils.cast(args[i],parameterTypes[i]);
+//             actuals[i] = TypeUtils.cast(args[i],parameterTypes[i]);
         }
         return actuals;
     }
