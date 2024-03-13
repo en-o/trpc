@@ -12,6 +12,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
+import java.util.Arrays;
+
 /**
  * @author tnnn
  */
@@ -40,44 +42,21 @@ public class TrpcDemoConsumerApplication {
 
             System.out.println("============================================================\n");
 
-            User user = userService.findById(1);
-            System.out.println("RPC result userService.findBy(1) = " + user);
+            System.out.println(userService.findById(1));
 
-            System.out.println("============================================================\n");
+            System.out.println(userService.findId());
 
-            Integer id = userService.findId();
-            System.out.println("RPC result userService.findId() = " + id);
+            System.out.println( userService.findId(Long.valueOf(1000L)));
 
-            System.out.println("============================================================\n");
+            System.out.println(userService.findId(2));
 
+            System.out.println(userService.findId(new User(1,"tan")));
 
-//            long idl = userService.findId(1000L);
-            long idl = userService.findId(Long.valueOf(1000L));
-            System.out.println("RPC result userService.findId() = " + idl);
+            System.out.println(userService.findUser(new User(12,"tan2")));
 
-            System.out.println("============================================================\n");
+            System.out.println(userService.findName());
+            System.out.println(Arrays.toString(userService.findIds()));
 
-            long idi = userService.findId(2);
-            System.out.println("RPC result userService.findId() = " + idi);
-
-            System.out.println("============================================================\n");
-
-            int userId = userService.findId(new User(1,"tan"));
-            System.out.println("RPC result userService.findId() = " + userId);
-
-            System.out.println("============================================================\n");
-
-
-            User user2 = userService.findUser(new User(12,"tan2"));
-            System.out.println("RPC result userService.findUser() = " + user2);
-
-            System.out.println("============================================================\n");
-
-
-            String name = userService.findName();
-            System.out.println("RPC result userService.findName() = " + name);
-
-            System.out.println("============================================================\n");
 
 //            Order order = orderService.findById(2);
 //            System.out.println("RPC result orderService.findBy(2) = " + order);

@@ -45,15 +45,7 @@ public class TInvocationHandler implements InvocationHandler {
         RpcResponse rpcResponse = post(rpcRequest);
         if (rpcResponse.isStatus()) {
             // 处理基本类型
-            Object result = rpcResponse.getData();
-            if (result instanceof JSONObject jsonResult) {
-                // 返回原本的T类型
-                return jsonResult.toJavaObject(method.getReturnType());
-            } else {
-                // 返回原本的T类型
-                return JSON.to(method.getReturnType(), result);
-            }
-
+            return JSON.to(method.getReturnType(),  rpcResponse.getData());
         } else {
             // 处理回传的调用期间发生的异常
             Exception ex = rpcResponse.getEx();
