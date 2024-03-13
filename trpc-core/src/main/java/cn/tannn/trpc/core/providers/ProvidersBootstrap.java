@@ -55,7 +55,7 @@ public class ProvidersBootstrap implements ApplicationContextAware {
         Class<?> anInterface = x.getClass().getInterfaces()[0];
         for (Method method : anInterface.getMethods()) {
             //  这里可以过滤 Object的一些方法
-            if(MethodUtils.checkLocalMethod(method.getName())){
+            if(MethodUtils.checkLocalMethod(method)){
                 continue;
             }
             createProvider(anInterface, x, method);
@@ -111,39 +111,15 @@ public class ProvidersBootstrap implements ApplicationContextAware {
         return rpcResponse;
     }
 
+    /**
+     * 根据签名获取当前方法的元数据
+     * @param providerMetas 提供者元数据集合
+     * @param methodSign 方法签名
+     * @return ProviderMeta
+     */
     private ProviderMeta findProviderMeta(List<ProviderMeta> providerMetas, String methodSign) {
         Optional<ProviderMeta> first = providerMetas.stream().filter(providerMeta -> providerMeta.getMethodSign().equals(methodSign)).findFirst();
         return first.orElse(null);
-    }
-
-
-    /**
-     * 查询方法
-     *
-     * @param aClass     对象
-     * @param signatureMethod 方法签名
-     * @return 查找到的方法
-     */
-    private Method findMethod(Class<?> aClass, String signatureMethod) {
-
-        try {
-            // 参数类型
-            Class<?>[] parameterTypes = MethodUtils.analysisMethodSignatureParameterTypes(signatureMethod);
-            String methodName = MethodUtils.analysisMethodSignatureName(signatureMethod);
-            Method targetMethod;
-            if(parameterTypes == null){
-                targetMethod = aClass.getDeclaredMethod(methodName);
-            }else {
-                targetMethod = aClass.getDeclaredMethod(methodName, parameterTypes);
-            }
-            // 如果方法是私有的，需要设置可访问性
-            targetMethod.setAccessible(true);
-            return targetMethod;
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }

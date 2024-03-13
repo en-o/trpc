@@ -83,6 +83,12 @@ public class MethodUtils {
         return classes;
     }
 
+
+    /**
+     * 本地方法不代理
+     * @param methodName Object 的一些方法名
+     * @return boolean
+     */
     public static boolean checkLocalMethod(final String methodName) {
         //本地方法不代理
         return "toString".equals(methodName) ||
@@ -92,6 +98,16 @@ public class MethodUtils {
                 "wait".equals(methodName) ||
                 "getClass".equals(methodName) ||
                 "notify".equals(methodName);
+    }
+
+
+    /**
+     * 本地方法不代理
+     * @param method Object 的一些方法名
+     * @return boolean
+     */
+    public static boolean checkLocalMethod(final Method method) {
+        return method.getDeclaringClass().equals(Object.class);
     }
 
 }

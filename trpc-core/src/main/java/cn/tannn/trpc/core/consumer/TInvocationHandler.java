@@ -33,11 +33,11 @@ public class TInvocationHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        // todo 屏蔽 toString / equals 等 Object 的一些基本方法
-        String requestMethodName = method.getName();
-        if (MethodUtils.checkLocalMethod(requestMethodName)) {
+        // 屏蔽 toString / equals 等 Object 的一些基本方法
+        if (MethodUtils.checkLocalMethod(method.getName())) {
             return null;
         }
+
         //组装调用参数 ： 类全限定名称，方法，参数
         RpcRequest rpcRequest = new RpcRequest(service.getCanonicalName(), MethodUtils.methodSign(method), args);
 
@@ -57,7 +57,7 @@ public class TInvocationHandler implements InvocationHandler {
         } else {
             // 处理回传的调用期间发生的异常
             Exception ex = rpcResponse.getEx();
-            throw ex;
+            throw new RuntimeException(ex);
         }
     }
 
