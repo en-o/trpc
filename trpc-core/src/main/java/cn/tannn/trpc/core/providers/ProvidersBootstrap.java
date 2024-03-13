@@ -36,7 +36,6 @@ public class ProvidersBootstrap implements ApplicationContextAware {
     public void setApplicationContext(ApplicationContext context) throws BeansException {
         // 所有标记了 @TProvider 注解的类
         Map<String, Object> providers = context.getBeansWithAnnotation(TProvider.class);
-        providers.forEach((x, y) -> System.out.println("name: " + x));
         providers.values().forEach(x -> genInterface(x));
     }
 
