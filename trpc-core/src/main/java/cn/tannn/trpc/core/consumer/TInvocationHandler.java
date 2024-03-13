@@ -43,7 +43,7 @@ public class TInvocationHandler implements InvocationHandler {
         // 发送请
         RpcResponse rpcResponse = post(rpcRequest);
         if(rpcResponse.isStatus()){
-            // todo 处理基本类型
+            // 处理基本类型
             Object result = rpcResponse.getData();
             if(result instanceof JSONObject jsonResult){
                 // 返回原本的T类型
