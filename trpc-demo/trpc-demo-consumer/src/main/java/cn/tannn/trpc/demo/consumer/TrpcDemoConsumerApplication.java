@@ -57,7 +57,7 @@ public class TrpcDemoConsumerApplication {
 
             System.out.println("============================================================\n");
 
-            long idi = userService.findId(2L);
+            long idi = userService.findId(2);
             System.out.println("RPC result userService.findId() = " + idi);
 
             System.out.println("============================================================\n");

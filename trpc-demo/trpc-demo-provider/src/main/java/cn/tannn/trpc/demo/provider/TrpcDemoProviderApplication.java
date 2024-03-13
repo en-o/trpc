@@ -53,7 +53,7 @@ public class TrpcDemoProviderApplication {
         return x -> {
             RpcRequest rpcRequest = new RpcRequest();
             rpcRequest.setService("cn.tannn.trpc.demo.api.UserService");
-            rpcRequest.setMethodSign(MethodUtils.methodSignOld(UserService.class.getMethod("findById",Integer.class)));
+            rpcRequest.setMethodSign(MethodUtils.methodSign(UserService.class.getMethod("findById",Integer.class)));
             rpcRequest.setArgs(new Object[]{100});
             RpcResponse rpcResponse = providersBootstrap.invokeRequest(rpcRequest);
             System.out.println("return: " + rpcResponse.getData());

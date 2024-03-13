@@ -11,25 +11,7 @@ import java.util.HashMap;
  */
 public class TypeUtils {
 
-    /**
-     * 将 方法参数 赋予真实类型
-     * @param origin 方法参数
-     * @param signMethod 方法签名，签名中有参数的真实类型
-     * @return Object
-     */
-    public static Object[] cast(Object[] origin, String signMethod) throws ClassNotFoundException {
-        if (origin == null) {
-            return null;
-        }
-        Object[] objects = new Object[origin.length];
-        Class<?>[] types = MethodUtils.analysisMethodSignatureParameterTypes(signMethod);
-        for (int i = 0; i < origin.length; i++) {
-            objects[i] = cast(origin[i], types[i]);
-        }
 
-        return objects;
-
-    }
 
     /**
      * 将 方法参数 赋予真实类型
@@ -64,7 +46,7 @@ public class TypeUtils {
         } else if (type.equals(Short.class) || type.equals(Short.TYPE)) {
             return Short.valueOf(origin.toString());
         } else if (type.equals(Character.class) || type.equals(Character.TYPE)) {
-            return origin;
+            return Character.valueOf(origin.toString().charAt(0));
         } else if (type.equals(Boolean.class) || type.equals(Boolean.TYPE)) {
             return Boolean.valueOf(origin.toString());
         }

@@ -55,7 +55,7 @@ public class ProvidersBootstrap implements ApplicationContextAware {
         Class<?> anInterface = x.getClass().getInterfaces()[0];
         for (Method method : anInterface.getMethods()) {
             //  这里可以过滤 Object的一些方法
-            if(MethodUtils.checkLocalMethod(method)){
+            if (MethodUtils.checkLocalMethod(method)) {
                 continue;
             }
             createProvider(anInterface, x, method);
@@ -64,7 +64,7 @@ public class ProvidersBootstrap implements ApplicationContextAware {
     }
 
     /**
-     *  存储 能力提供者信息
+     * 存储 能力提供者信息
      */
     private void createProvider(Class<?> anInterface, Object aclass, Method method) {
         ProviderMeta providerMeta = new ProviderMeta();
@@ -72,7 +72,7 @@ public class ProvidersBootstrap implements ApplicationContextAware {
         providerMeta.setServiceImpl(aclass);
         providerMeta.setMethodSign(MethodUtils.methodSign(method));
         System.out.println(" create a provider: " + providerMeta);
-        skeleton.add(anInterface.getCanonicalName(),providerMeta);
+        skeleton.add(anInterface.getCanonicalName(), providerMeta);
     }
 
 
@@ -84,17 +84,11 @@ public class ProvidersBootstrap implements ApplicationContextAware {
      */
     public RpcResponse invokeRequest(RpcRequest request) {
         // todo 屏蔽 toString / equals 等 Object 的一些基本方法
-        String requestMethodName = request.getMethodSign();
-        if (MethodUtils.checkLocalMethod(MethodUtils.analysisMethodSignatureName(requestMethodName))) {
-            return null;
-        }
         RpcResponse rpcResponse = new RpcResponse();
-
         List<ProviderMeta> providerMetas = skeleton.get(request.getService());
         try {
             ProviderMeta meta = findProviderMeta(providerMetas, request.getMethodSign());
-            Method method = meta.getMethod();
-            Object result = method.invoke(meta.getServiceImpl(),request.getArgs());
+            Object result = meta.getMethod().invoke(meta.getServiceImpl(), request.getArgs());
             rpcResponse.setStatus(true);
             rpcResponse.setData(result);
         } catch (InvocationTargetException e) {
@@ -114,8 +108,9 @@ public class ProvidersBootstrap implements ApplicationContextAware {
 
     /**
      * 根据签名获取当前方法的元数据
+     *
      * @param providerMetas 提供者元数据集合
-     * @param methodSign 方法签名
+     * @param methodSign    方法签名
      * @return ProviderMeta
      */
     private ProviderMeta findProviderMeta(List<ProviderMeta> providerMetas, String methodSign) {
