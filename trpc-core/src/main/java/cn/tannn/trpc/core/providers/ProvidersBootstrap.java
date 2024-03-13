@@ -124,8 +124,8 @@ public class ProvidersBootstrap implements ApplicationContextAware {
         Object[] actuals = new Object[args.length];
         for (int i = 0; i < parameterTypes.length; i++) {
             actuals[i] = JSON.to(parameterTypes[i],  args[i]);
-            // 下面这个是模拟上面那个写的
-//            actuals[i] = TypeUtils.cast(args[i],parameterTypes[i]);
+            // TypeUtils.cast 是模拟上面那个写的
+            // actuals[i] = TypeUtils.cast(args[i],parameterTypes[i]);
         }
         return actuals;
     }

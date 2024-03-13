@@ -3,7 +3,9 @@ package cn.tannn.trpc.core.util;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author tnnn
@@ -26,14 +28,32 @@ public class TypeUtils {
         if (type.isAssignableFrom(aClass)) {
             return origin;
         }
-        if (origin instanceof HashMap map) {
+
+        // 处理数组
+        if(type.isArray()){
+            if(origin instanceof List<?> list){
+                origin = list.toArray();
+            }
+            int length = Array.getLength(origin);
+            Class<?> componentType = type.getComponentType();
+            Object resultArray = Array.newInstance(componentType, length);
+            for (int i = 0; i < length; i++) {
+                Array.set(resultArray, i, Array.get(origin, i));
+            }
+            return resultArray;
+        }
+        // 处理map
+        if (origin instanceof HashMap<?,?> map) {
             JSONObject jsonObject = new JSONObject(map);
             return jsonObject.toJavaObject(type);
         }
+
+        // 处理 String
         if (type.equals(String.class)) {
             return origin.toString();
         }
 
+        // 处理 基本类型
         if (type.equals(Integer.class) || type.equals(Integer.TYPE)) {
             return Integer.valueOf(origin.toString());
         } else if (type.equals(Long.class) || type.equals(Long.TYPE)) {
