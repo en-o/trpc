@@ -39,7 +39,7 @@ public class TypeUtils {
      */
     public static Object cast(Object origin, Class<?> type) {
         Class<?> aClass = origin.getClass();
-        if (origin == null || type.isAssignableFrom(aClass)) {
+        if (type.isAssignableFrom(aClass)) {
             return origin;
         }
         if (origin instanceof HashMap map) {

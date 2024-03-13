@@ -48,7 +48,7 @@ public class MethodUtil {
      */
     public static Class<?>[] analysisMethodSignatureParameterTypes(String signMethod) throws ClassNotFoundException {
         String substring = signMethod.substring(signMethod.indexOf("(") + 1, signMethod.length() - 1);
-        if (substring.length() == 0) {
+        if (substring.isEmpty()) {
             return null;
         }
         String[] split = substring.split(",");
