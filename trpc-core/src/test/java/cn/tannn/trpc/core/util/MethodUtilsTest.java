@@ -15,7 +15,7 @@ class MethodUtilsTest {
             //lo(java.lang.String)
             //lo(java.lang.String, java.lang.Integer)
             //hi()
-            System.out.println(MethodUtils.methodSign(method));
+            System.out.println(MethodUtils.methodSignOld(method));
         }
 
     }
@@ -28,7 +28,7 @@ class MethodUtilsTest {
             // lo(java.lang.String)
             // lo(java.lang.String, java.lang.Integer)
             // hi()
-            String methodSignature = MethodUtils.methodSign(method);
+            String methodSignature = MethodUtils.methodSignOld(method);
             // lo
             // lo
             // hi
@@ -43,7 +43,7 @@ class MethodUtilsTest {
             // lo(java.lang.String)
             // lo(java.lang.String, java.lang.Integer)
             // hi()
-            String methodSignature = MethodUtils.methodSign(method);
+            String methodSignature = MethodUtils.methodSignOld(method);
             // [class java.lang.String]
             // [class java.lang.String, class java.lang.Integer]
             // null
@@ -53,5 +53,13 @@ class MethodUtilsTest {
     @Test
     void cccc(){
         System.out.println(Long.class.isPrimitive());
+    }
+
+    @Test
+    void methodSign2() {
+        Method[] methods = User.class.getMethods();
+        for (Method method : methods) {
+            System.out.println(MethodUtils.methodSign(method));
+        }
     }
 }

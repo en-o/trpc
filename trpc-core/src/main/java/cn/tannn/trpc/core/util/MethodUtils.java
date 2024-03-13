@@ -1,6 +1,7 @@
 package cn.tannn.trpc.core.util;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 /**
  * @author tnnn
@@ -16,6 +17,24 @@ public class MethodUtils {
      * @return 方法签名 方法名(参数类型1, 参数类型2)
      */
     public static String methodSign(Method method) {
+        // 方法名
+        StringBuilder signature = new StringBuilder(method.getName());
+        // 参数个数
+        signature.append("@").append(method.getParameterCount());
+
+        Arrays.stream(method.getParameterTypes()).forEach(parameter -> {
+            signature.append("_").append(parameter.getCanonicalName());
+        });
+        return signature.toString();
+    }
+
+    /**
+     * 获取 方法签名
+     *
+     * @param method Method
+     * @return 方法签名 方法名(参数类型1, 参数类型2)
+     */
+    public static String methodSignOld(Method method) {
         StringBuilder signature = new StringBuilder();
         signature.append(method.getName()).append("(");
         Class<?>[] parameterTypes = method.getParameterTypes();

@@ -3,17 +3,22 @@ package cn.tannn.trpc.core.providers;
 import cn.tannn.trpc.core.annotation.TProvider;
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
+import cn.tannn.trpc.core.meta.ProviderMeta;
 import cn.tannn.trpc.core.util.MethodUtils;
 import cn.tannn.trpc.core.util.TypeUtils;
 import lombok.Data;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * 提供者 处理类
@@ -27,7 +32,7 @@ public class ProvidersBootstrap implements ApplicationContextAware {
     /**
      * 存储所有的提供者 , 其中包含了[全限定名，对象实例]
      */
-    private Map<String, Object> skeleton = new HashMap<>();
+    private MultiValueMap<String, ProviderMeta> skeleton = new LinkedMultiValueMap<>();
 
     /**
      * 拿到 所有标记了TProvider注解的类（所有的提供者），并存储
@@ -48,8 +53,25 @@ public class ProvidersBootstrap implements ApplicationContextAware {
     public void genInterface(Object x) {
         // 默认只拿一个接口
         Class<?> anInterface = x.getClass().getInterfaces()[0];
-        // 存储（全限定名，对象示例）
-        skeleton.put(anInterface.getCanonicalName(), x);
+        for (Method method : anInterface.getMethods()) {
+            //  这里可以过滤 Object的一些方法
+            if(MethodUtils.checkLocalMethod(method.getName())){
+                continue;
+            }
+            createProvider(anInterface, x, method);
+        }
+
+    }
+
+    /**
+     *  存储 能力提供者信息
+     */
+    private void createProvider(Class<?> anInterface, Object aclass, Method method) {
+        ProviderMeta providerMeta = new ProviderMeta();
+        providerMeta.setMethod(method);
+        providerMeta.setServiceImpl(aclass);
+        providerMeta.setMethodSign(MethodUtils.methodSign(method));
+        skeleton.add(anInterface.getCanonicalName(),providerMeta);
     }
 
 
@@ -67,10 +89,11 @@ public class ProvidersBootstrap implements ApplicationContextAware {
         }
         RpcResponse rpcResponse = new RpcResponse();
 
-        Object bean = skeleton.get(request.getService());
+        List<ProviderMeta> providerMetas = skeleton.get(request.getService());
         try {
-            Method method = findMethod(bean.getClass(), request.getMethodSign());
-            Object result = method.invoke(bean, TypeUtils.cast(request.getArgs(), request.getMethodSign()));
+            ProviderMeta meta = findProviderMeta(providerMetas, request.getMethodSign());
+            Method method = meta.getMethod();
+            Object result = method.invoke(meta.getServiceImpl(),request.getArgs());
             rpcResponse.setStatus(true);
             rpcResponse.setData(result);
         } catch (InvocationTargetException e) {
@@ -86,6 +109,11 @@ public class ProvidersBootstrap implements ApplicationContextAware {
             rpcResponse.setEx(new RuntimeException(e.getMessage()));
         }
         return rpcResponse;
+    }
+
+    private ProviderMeta findProviderMeta(List<ProviderMeta> providerMetas, String methodSign) {
+        Optional<ProviderMeta> first = providerMetas.stream().filter(providerMeta -> providerMeta.getMethodSign().equals(methodSign)).findFirst();
+        return first.orElse(null);
     }
 
 
