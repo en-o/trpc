@@ -91,9 +91,13 @@ public class ProvidersBootstrap implements ApplicationContextAware {
     public RpcResponse invokeRequest(RpcRequest request) {
         // todo 屏蔽 toString / equals 等 Object 的一些基本方法
         RpcResponse rpcResponse = new RpcResponse();
+
         List<ProviderMeta> providerMetas = skeleton.get(request.getService());
         try {
             ProviderMeta meta = findProviderMeta(providerMetas, request.getMethodSign());
+            if(meta == null){
+                throw new NullPointerException("非法RPC方法调用，当前方法不是RPC接口");
+            }
             Method method = meta.getMethod();
             Object[] args = processArgs(request.getArgs(), method.getParameterTypes());
             Object result = method.invoke(meta.getServiceImpl(), args);

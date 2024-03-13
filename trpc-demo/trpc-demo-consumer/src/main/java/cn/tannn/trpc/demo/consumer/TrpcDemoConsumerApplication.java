@@ -38,7 +38,7 @@ public class TrpcDemoConsumerApplication {
     @Bean
     public ApplicationRunner consumer_runner1() {
         return x -> {
-            userService.toString();
+            System.out.println(userService.toString());
 
             System.out.println("============================================================\n");
 

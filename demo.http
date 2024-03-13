@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
   "service": "cn.tannn.trpc.demo.api.UserService",
-  "methodSign": "findById",
+  "methodSign": "findById@1_java.lang.Integer",
   "args": [101]
 }
 
