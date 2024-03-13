@@ -30,6 +30,8 @@ public interface UserService {
     int findId(User user);
 
     int[] findIds();
+    int[] findIds(int[] ids);
+    long[] findLongIds();
 
     User findUser(User user);
 

@@ -6,6 +6,7 @@ import cn.tannn.trpc.core.api.RpcResponse;
 import cn.tannn.trpc.core.meta.ProviderMeta;
 import cn.tannn.trpc.core.util.MethodUtils;
 import cn.tannn.trpc.core.util.TypeUtils;
+import com.alibaba.fastjson2.JSON;
 import lombok.Data;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -122,7 +123,9 @@ public class ProvidersBootstrap implements ApplicationContextAware {
         }
         Object[] actuals = new Object[args.length];
         for (int i = 0; i < parameterTypes.length; i++) {
-            actuals[i] = TypeUtils.cast(args[i],parameterTypes[i]);
+            actuals[i] = JSON.to(parameterTypes[i],  args[i]);
+            // 下面这个是模拟上面那个写的
+//            actuals[i] = TypeUtils.cast(args[i],parameterTypes[i]);
         }
         return actuals;
     }

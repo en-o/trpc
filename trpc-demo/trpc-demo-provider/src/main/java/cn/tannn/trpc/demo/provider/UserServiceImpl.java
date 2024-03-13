@@ -46,6 +46,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public int[] findIds(int[] ids) {
+        return ids;
+    }
+
+    @Override
+    public long[] findLongIds() {
+        return new long[]{2,3,4};
+    }
+
+    @Override
     public User findUser(User user) {
         return user;
     }

@@ -55,7 +55,10 @@ public class TrpcDemoConsumerApplication {
             System.out.println(userService.findUser(new User(12,"tan2")));
 
             System.out.println(userService.findName());
+
             System.out.println(Arrays.toString(userService.findIds()));
+            System.out.println(Arrays.toString(userService.findLongIds()));
+            System.out.println(Arrays.toString(userService.findIds(new int[]{3,4,6})));
 
 
 //            Order order = orderService.findById(2);
