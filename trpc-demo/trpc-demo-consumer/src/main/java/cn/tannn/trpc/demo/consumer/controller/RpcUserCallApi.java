@@ -1,9 +1,7 @@
 package cn.tannn.trpc.demo.consumer.controller;
 
 import cn.tannn.trpc.core.annotation.TConsumer;
-import cn.tannn.trpc.core.api.RpcResponse;
-import cn.tannn.trpc.demo.api.OrderService;
-import cn.tannn.trpc.demo.api.User;
+import cn.tannn.trpc.demo.api.entity.User;
 import cn.tannn.trpc.demo.api.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

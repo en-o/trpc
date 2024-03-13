@@ -1,7 +1,7 @@
 package cn.tannn.trpc.demo.provider;
 
 import cn.tannn.trpc.core.annotation.TProvider;
-import cn.tannn.trpc.demo.api.User;
+import cn.tannn.trpc.demo.api.entity.User;
 import cn.tannn.trpc.demo.api.UserService;
 import org.springframework.stereotype.Component;
 

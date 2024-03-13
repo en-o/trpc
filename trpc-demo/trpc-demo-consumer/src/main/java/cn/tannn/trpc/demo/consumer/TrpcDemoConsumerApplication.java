@@ -3,9 +3,8 @@ package cn.tannn.trpc.demo.consumer;
 
 import cn.tannn.trpc.core.annotation.TConsumer;
 import cn.tannn.trpc.core.consumer.ConsumerConfig;
-import cn.tannn.trpc.demo.api.Order;
 import cn.tannn.trpc.demo.api.OrderService;
-import cn.tannn.trpc.demo.api.User;
+import cn.tannn.trpc.demo.api.entity.User;
 import cn.tannn.trpc.demo.api.UserService;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;

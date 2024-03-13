@@ -1,5 +1,7 @@
 package cn.tannn.trpc.demo.api;
 
+import cn.tannn.trpc.demo.api.entity.Order;
+
 /**
  * 订单
  * @author tnnn

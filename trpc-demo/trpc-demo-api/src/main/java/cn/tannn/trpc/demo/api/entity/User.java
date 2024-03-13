@@ -1,11 +1,11 @@
-package cn.tannn.trpc.demo.api;
+package cn.tannn.trpc.demo.api.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 订单
+ * 用户
  *
  * @author tnnn
  * @version V1.0
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Order {
-    Long id;
-    Float amount;
+public class User {
+    Integer id;
+    String name;
 }
