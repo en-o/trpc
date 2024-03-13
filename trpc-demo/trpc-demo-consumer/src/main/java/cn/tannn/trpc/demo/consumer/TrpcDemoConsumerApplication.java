@@ -61,12 +61,10 @@ public class TrpcDemoConsumerApplication {
             System.out.println(Arrays.toString(userService.findIds(new int[]{3,4,6})));
 
 
-//            Order order = orderService.findById(2);
-//            System.out.println("RPC result orderService.findBy(2) = " + order);
+            System.out.println(orderService.findById(2));
 
             // 模拟异常
-//            Order order_404 = orderService.findById(404);
-//            System.out.println("RPC result orderService.findBy(404) = " + order_404);
+//            System.out.println(orderService.findById(404));
 
 
 

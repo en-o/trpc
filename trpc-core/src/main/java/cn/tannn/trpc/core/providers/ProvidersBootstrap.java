@@ -17,10 +17,7 @@ import org.springframework.util.MultiValueMap;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.TypeVariable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * 提供者 处理类
@@ -54,14 +51,21 @@ public class ProvidersBootstrap implements ApplicationContextAware {
      */
     public void genInterface(Object x) {
         // 默认只拿一个接口
-        Class<?> anInterface = x.getClass().getInterfaces()[0];
-        for (Method method : anInterface.getMethods()) {
-            //  这里可以过滤 Object的一些方法
-            if (MethodUtils.checkLocalMethod(method)) {
-                continue;
+//        Class<?> anInterface = x.getClass().getInterfaces()[0];]
+        // 处理多个接口
+        Arrays.stream(x.getClass().getInterfaces()).forEach( itfer -> {
+            // todo 这里可以拦截某些接口不做处理 ps: spring不支持多个实现类的bean,非要弄的话需要做特殊处理
+            for (Method method : itfer.getMethods()) {
+                // todo 这里可以对方法进行白名单处理
+
+                //  这里可以过滤 Object的一些方法
+                if (MethodUtils.checkLocalMethod(method)) {
+                    continue;
+                }
+                createProvider(itfer, x, method);
             }
-            createProvider(anInterface, x, method);
-        }
+        });
+
 
     }
 
