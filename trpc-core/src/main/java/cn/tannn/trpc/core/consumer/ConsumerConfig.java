@@ -1,6 +1,5 @@
 package cn.tannn.trpc.core.consumer;
 
-import cn.tannn.trpc.core.providers.ProvidersBootstrap;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
