@@ -22,7 +22,7 @@ public class TypeUtils {
             return null;
         }
         Object[] objects = new Object[origin.length];
-        Class<?>[] types = MethodUtil.analysisMethodSignatureParameterTypes(signMethod);
+        Class<?>[] types = MethodUtils.analysisMethodSignatureParameterTypes(signMethod);
         for (int i = 0; i < origin.length; i++) {
             objects[i] = cast(origin[i], types[i]);
         }

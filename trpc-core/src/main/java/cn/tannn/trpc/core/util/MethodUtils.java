@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
  * @version V1.0
  * @date 2024-03-12 18:43
  */
-public class MethodUtil {
+public class MethodUtils {
 
     /**
      * 获取 方法签名

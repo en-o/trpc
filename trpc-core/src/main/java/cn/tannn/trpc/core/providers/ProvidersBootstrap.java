@@ -3,7 +3,7 @@ package cn.tannn.trpc.core.providers;
 import cn.tannn.trpc.core.annotation.TProvider;
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
-import cn.tannn.trpc.core.util.MethodUtil;
+import cn.tannn.trpc.core.util.MethodUtils;
 import cn.tannn.trpc.core.util.TypeUtils;
 import lombok.Data;
 import org.springframework.beans.BeansException;
@@ -62,7 +62,7 @@ public class ProvidersBootstrap implements ApplicationContextAware {
     public RpcResponse invokeRequest(RpcRequest request) {
         // todo 屏蔽 toString / equals 等 Object 的一些基本方法
         String requestMethodName = request.getMethodSign();
-        if (MethodUtil.checkLocalMethod(MethodUtil.analysisMethodSignatureName(requestMethodName))) {
+        if (MethodUtils.checkLocalMethod(MethodUtils.analysisMethodSignatureName(requestMethodName))) {
             return null;
         }
         RpcResponse rpcResponse = new RpcResponse();
@@ -100,8 +100,8 @@ public class ProvidersBootstrap implements ApplicationContextAware {
 
         try {
             // 参数类型
-            Class<?>[] parameterTypes = MethodUtil.analysisMethodSignatureParameterTypes(signatureMethod);
-            String methodName = MethodUtil.analysisMethodSignatureName(signatureMethod);
+            Class<?>[] parameterTypes = MethodUtils.analysisMethodSignatureParameterTypes(signatureMethod);
+            String methodName = MethodUtils.analysisMethodSignatureName(signatureMethod);
             Method targetMethod;
             if(parameterTypes == null){
                 targetMethod = aClass.getDeclaredMethod(methodName);

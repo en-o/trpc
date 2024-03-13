@@ -2,7 +2,7 @@ package cn.tannn.trpc.core.consumer;
 
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
-import cn.tannn.trpc.core.util.MethodUtil;
+import cn.tannn.trpc.core.util.MethodUtils;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import okhttp3.*;
@@ -35,11 +35,11 @@ public class TInvocationHandler implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         // todo 屏蔽 toString / equals 等 Object 的一些基本方法
         String requestMethodName = method.getName();
-        if (MethodUtil.checkLocalMethod(requestMethodName)) {
+        if (MethodUtils.checkLocalMethod(requestMethodName)) {
             return null;
         }
         //类全限定名称，方法，参数
-        RpcRequest rpcRequest = new RpcRequest(service.getCanonicalName(), MethodUtil.getMethodSignature(method), args);
+        RpcRequest rpcRequest = new RpcRequest(service.getCanonicalName(), MethodUtils.getMethodSignature(method), args);
         // 发送请
         RpcResponse rpcResponse = post(rpcRequest);
         if(rpcResponse.isStatus()){

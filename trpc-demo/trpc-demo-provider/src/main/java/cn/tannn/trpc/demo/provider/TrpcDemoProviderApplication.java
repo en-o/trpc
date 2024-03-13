@@ -4,7 +4,7 @@ import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
 import cn.tannn.trpc.core.providers.ProvidersBootstrap;
 import cn.tannn.trpc.core.providers.ProvidersConfig;
-import cn.tannn.trpc.core.util.MethodUtil;
+import cn.tannn.trpc.core.util.MethodUtils;
 import cn.tannn.trpc.demo.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
@@ -53,7 +53,7 @@ public class TrpcDemoProviderApplication {
         return x -> {
             RpcRequest rpcRequest = new RpcRequest();
             rpcRequest.setService("cn.tannn.trpc.demo.api.UserService");
-            rpcRequest.setMethodSign(MethodUtil.getMethodSignature(UserService.class.getMethod("findById",Integer.class)));
+            rpcRequest.setMethodSign(MethodUtils.getMethodSignature(UserService.class.getMethod("findById",Integer.class)));
             rpcRequest.setArgs(new Object[]{100});
             RpcResponse rpcResponse = providersBootstrap.invokeRequest(rpcRequest);
             System.out.println("return: " + rpcResponse.getData());

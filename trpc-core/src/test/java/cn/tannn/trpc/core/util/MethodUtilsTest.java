@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 
-class MethodUtilTest {
+class MethodUtilsTest {
 
     @Test
     void getMethodSignature() {
@@ -15,7 +15,7 @@ class MethodUtilTest {
             //lo(java.lang.String)
             //lo(java.lang.String, java.lang.Integer)
             //hi()
-            System.out.println(MethodUtil.getMethodSignature(method));
+            System.out.println(MethodUtils.getMethodSignature(method));
         }
 
     }
@@ -28,11 +28,11 @@ class MethodUtilTest {
             // lo(java.lang.String)
             // lo(java.lang.String, java.lang.Integer)
             // hi()
-            String methodSignature = MethodUtil.getMethodSignature(method);
+            String methodSignature = MethodUtils.getMethodSignature(method);
             // lo
             // lo
             // hi
-            System.out.println(MethodUtil.analysisMethodSignatureName(methodSignature));
+            System.out.println(MethodUtils.analysisMethodSignatureName(methodSignature));
         }
     }
 
@@ -43,11 +43,11 @@ class MethodUtilTest {
             // lo(java.lang.String)
             // lo(java.lang.String, java.lang.Integer)
             // hi()
-            String methodSignature = MethodUtil.getMethodSignature(method);
+            String methodSignature = MethodUtils.getMethodSignature(method);
             // [class java.lang.String]
             // [class java.lang.String, class java.lang.Integer]
             // null
-            System.out.println(Arrays.toString(MethodUtil.analysisMethodSignatureParameterTypes(methodSignature)));
+            System.out.println(Arrays.toString(MethodUtils.analysisMethodSignatureParameterTypes(methodSignature)));
         }
     }
     @Test
