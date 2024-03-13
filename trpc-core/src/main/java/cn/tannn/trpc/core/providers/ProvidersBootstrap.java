@@ -61,7 +61,7 @@ public class ProvidersBootstrap implements ApplicationContextAware {
      */
     public RpcResponse invokeRequest(RpcRequest request) {
         // todo 屏蔽 toString / equals 等 Object 的一些基本方法
-        String requestMethodName = request.getSignMethod();
+        String requestMethodName = request.getMethodSign();
         if (MethodUtil.checkLocalMethod(MethodUtil.analysisMethodSignatureName(requestMethodName))) {
             return null;
         }
@@ -69,8 +69,8 @@ public class ProvidersBootstrap implements ApplicationContextAware {
 
         Object bean = skeleton.get(request.getService());
         try {
-            Method method = findMethod(bean.getClass(), request.getSignMethod());
-            Object result = method.invoke(bean, TypeUtils.cast(request.getArgs(), request.getSignMethod()));
+            Method method = findMethod(bean.getClass(), request.getMethodSign());
+            Object result = method.invoke(bean, TypeUtils.cast(request.getArgs(), request.getMethodSign()));
             rpcResponse.setStatus(true);
             rpcResponse.setData(result);
         } catch (InvocationTargetException e) {

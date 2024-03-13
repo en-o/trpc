@@ -23,7 +23,7 @@ public class RpcRequest {
     /**
      * 方法签名
      */
-    private String signMethod;
+    private String methodSign;
 
     /**
      * 参数 : 100
