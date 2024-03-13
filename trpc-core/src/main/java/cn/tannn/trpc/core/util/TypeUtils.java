@@ -32,7 +32,6 @@ public class TypeUtils {
             return origin.toString();
         }
 
-//        if(type.isPrimitive()){
         if (type.equals(Integer.class) || type.equals(Integer.TYPE)) {
             return Integer.valueOf(origin.toString());
         } else if (type.equals(Long.class) || type.equals(Long.TYPE)) {
@@ -50,7 +49,6 @@ public class TypeUtils {
         } else if (type.equals(Boolean.class) || type.equals(Boolean.TYPE)) {
             return Boolean.valueOf(origin.toString());
         }
-//        }
         return null;
     }
 

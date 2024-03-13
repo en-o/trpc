@@ -15,6 +15,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.TypeVariable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,7 +89,9 @@ public class ProvidersBootstrap implements ApplicationContextAware {
         List<ProviderMeta> providerMetas = skeleton.get(request.getService());
         try {
             ProviderMeta meta = findProviderMeta(providerMetas, request.getMethodSign());
-            Object result = meta.getMethod().invoke(meta.getServiceImpl(), request.getArgs());
+            Method method = meta.getMethod();
+            Object[] args = processArgs(request.getArgs(), method.getParameterTypes());
+            Object result = method.invoke(meta.getServiceImpl(), args);
             rpcResponse.setStatus(true);
             rpcResponse.setData(result);
         } catch (InvocationTargetException e) {
@@ -104,6 +107,24 @@ public class ProvidersBootstrap implements ApplicationContextAware {
             rpcResponse.setEx(new RuntimeException(e.getMessage()));
         }
         return rpcResponse;
+    }
+
+
+    /**
+     * 处理参数的实际类型
+     * @param args 参数
+     * @param parameterTypes 参数类型
+     * @return
+     */
+    private Object[] processArgs(Object[] args, Class<?>[] parameterTypes) {
+        if(args == null || args.length == 0){
+            return args;
+        }
+        Object[] actuals = new Object[args.length];
+        for (int i = 0; i < parameterTypes.length; i++) {
+            actuals[i] = TypeUtils.cast(args[i],parameterTypes[i]);
+        }
+        return actuals;
     }
 
     /**
