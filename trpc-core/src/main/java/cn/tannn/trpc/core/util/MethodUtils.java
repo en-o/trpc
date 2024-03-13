@@ -15,7 +15,7 @@ public class MethodUtils {
      * @param method Method
      * @return 方法签名 方法名(参数类型1, 参数类型2)
      */
-    public static String getMethodSignature(Method method) {
+    public static String methodSign(Method method) {
         StringBuilder signature = new StringBuilder();
         signature.append(method.getName()).append("(");
         Class<?>[] parameterTypes = method.getParameterTypes();

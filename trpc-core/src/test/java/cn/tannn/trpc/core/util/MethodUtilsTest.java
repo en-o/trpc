@@ -15,7 +15,7 @@ class MethodUtilsTest {
             //lo(java.lang.String)
             //lo(java.lang.String, java.lang.Integer)
             //hi()
-            System.out.println(MethodUtils.getMethodSignature(method));
+            System.out.println(MethodUtils.methodSign(method));
         }
 
     }
@@ -28,7 +28,7 @@ class MethodUtilsTest {
             // lo(java.lang.String)
             // lo(java.lang.String, java.lang.Integer)
             // hi()
-            String methodSignature = MethodUtils.getMethodSignature(method);
+            String methodSignature = MethodUtils.methodSign(method);
             // lo
             // lo
             // hi
@@ -43,7 +43,7 @@ class MethodUtilsTest {
             // lo(java.lang.String)
             // lo(java.lang.String, java.lang.Integer)
             // hi()
-            String methodSignature = MethodUtils.getMethodSignature(method);
+            String methodSignature = MethodUtils.methodSign(method);
             // [class java.lang.String]
             // [class java.lang.String, class java.lang.Integer]
             // null

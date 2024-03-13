@@ -39,7 +39,7 @@ public class TInvocationHandler implements InvocationHandler {
             return null;
         }
         //类全限定名称，方法，参数
-        RpcRequest rpcRequest = new RpcRequest(service.getCanonicalName(), MethodUtils.getMethodSignature(method), args);
+        RpcRequest rpcRequest = new RpcRequest(service.getCanonicalName(), MethodUtils.methodSign(method), args);
         // 发送请
         RpcResponse rpcResponse = post(rpcRequest);
         if(rpcResponse.isStatus()){
