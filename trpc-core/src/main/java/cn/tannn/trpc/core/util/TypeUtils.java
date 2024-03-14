@@ -23,7 +23,9 @@ public class TypeUtils {
      * @return Object
      */
     public static Object cast(Object origin, Class<?> type) {
-
+        if(origin == null){
+            return null;
+        }
         Class<?> aClass = origin.getClass();
         if (type.isAssignableFrom(aClass)) {
             return origin;
