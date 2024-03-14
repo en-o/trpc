@@ -66,11 +66,17 @@ public class TrpcDemoConsumerApplication {
             System.out.println(Arrays.toString(userService.findIds(new int[]{3,4,6})));
             System.out.println(userService.getList(null));
             System.out.println(userService.getMap(null));
-            List<User> tans = userService.getList(List.of(new User(10, "tans")));
+            List<User> tans = userService.getList(List.of(
+                    new User(10, "tans"),
+                    new User(102, "tans2")
+            ));
             for (User t : tans){
                 System.out.println("==>"+t);
             }
-            Map<String, User> map = userService.getMap(Map.of("tanmap", new User(11, "tanmaps")));
+            Map<String, User> map = userService.getMap(Map.of(
+                    "tanmap", new User(11, "tanmaps"),
+                    "tanmap2", new User(112, "tanmaps2")
+            ));
             map.forEach((k,v) -> System.out.println("key==>"+k+"v==>"+v));
 
 
