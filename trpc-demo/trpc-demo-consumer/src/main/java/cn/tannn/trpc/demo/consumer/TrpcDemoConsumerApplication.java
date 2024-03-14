@@ -13,6 +13,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author tnnn
@@ -62,6 +64,8 @@ public class TrpcDemoConsumerApplication {
             System.out.println(Arrays.toString(userService.findIds()));
             System.out.println(Arrays.toString(userService.findLongIds()));
             System.out.println(Arrays.toString(userService.findIds(new int[]{3,4,6})));
+            System.out.println(userService.getList(List.of(new User(10, "tans"))));
+            System.out.println(userService.getMap(Map.of("tanmap",new User(11,"tanmaps"))));
 
 
             System.out.println(orderService.findById(2));

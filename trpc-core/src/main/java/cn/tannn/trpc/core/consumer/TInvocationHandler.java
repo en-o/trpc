@@ -48,9 +48,9 @@ public class TInvocationHandler implements InvocationHandler {
         RpcResponse rpcResponse = post(rpcRequest);
         if (rpcResponse.isStatus()) {
             // 处理结果类型
-            return JSON.to(method.getReturnType(),  rpcResponse.getData());
+//            return JSON.to(method.getReturnType(),  rpcResponse.getData());
             // TypeUtils.cast 是模拟上面那个写的
-//            return TypeUtils.cast( rpcResponse.getData(), method.getReturnType());
+            return TypeUtils.cast( rpcResponse.getData(), method.getReturnType());
 
         } else {
             // 处理回传的调用期间发生的异常
@@ -63,9 +63,9 @@ public class TInvocationHandler implements InvocationHandler {
             // 连接池
             .connectionPool(new ConnectionPool(16, 60, TimeUnit.SECONDS))
             // 各项超时时间
-            .readTimeout(1, TimeUnit.SECONDS)
-            .writeTimeout(1, TimeUnit.SECONDS)
-            .connectTimeout(1, TimeUnit.SECONDS)
+            .readTimeout(10000, TimeUnit.SECONDS)
+            .writeTimeout(10000, TimeUnit.SECONDS)
+            .connectTimeout(10000, TimeUnit.SECONDS)
             .build();
 
     /**

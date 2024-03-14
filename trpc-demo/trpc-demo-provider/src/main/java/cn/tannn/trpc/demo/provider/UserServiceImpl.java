@@ -5,6 +5,9 @@ import cn.tannn.trpc.demo.api.UserService;
 import cn.tannn.trpc.demo.api.entity.User;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * 用户接口实现
  *
@@ -78,6 +81,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUser(User user) {
         return user;
+    }
+
+    @Override
+    public List<User> getList(List<User> userList) {
+        return userList;
+    }
+
+    @Override
+    public Map<String, User> getMap(Map<String, User> userMap) {
+        return userMap;
     }
 
     @Override

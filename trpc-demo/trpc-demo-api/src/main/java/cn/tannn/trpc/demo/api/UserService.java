@@ -2,6 +2,9 @@ package cn.tannn.trpc.demo.api;
 
 import cn.tannn.trpc.demo.api.entity.User;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * 用户接口
  *
@@ -37,7 +40,8 @@ public interface UserService {
     long[] findLongIds();
 
     User findUser(User user);
-
+    List<User> getList(List<User> userList);
+    Map<String,User> getMap(Map<String,User> userMap);
 
     /**
      * 测试返回 String
