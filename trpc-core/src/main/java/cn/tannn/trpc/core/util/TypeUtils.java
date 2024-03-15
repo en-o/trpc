@@ -55,6 +55,7 @@ public class TypeUtils {
         }
 
         // 处理 基本类型
+        // todo 处理基本类型的时候 totString 会影响性能
         if (type.equals(Integer.class) || type.equals(Integer.TYPE)) {
             return Integer.valueOf(origin.toString());
         } else if (type.equals(Long.class) || type.equals(Long.TYPE)) {
