@@ -55,6 +55,14 @@ public class TrpcDemoConsumerApplication {
 
             System.out.println(userService.findId(2));
 
+            if(userService.findId(true)){
+                System.out.println("findId@1_boolean");
+            }
+            for (boolean b : userService.findId(new boolean[]{true, false})) {
+                System.out.println("findId@1_boolean[]"+b);
+            }
+
+
             System.out.println(userService.findId(new User(1,"tan")));
 
             System.out.println(userService.findUser(new User(12,"tan2")));
@@ -66,13 +74,16 @@ public class TrpcDemoConsumerApplication {
             System.out.println(Arrays.toString(userService.findIds(new int[]{3,4,6})));
             System.out.println(userService.getList(null));
             System.out.println(userService.getMap(null));
-            List<User> tans = userService.getList(List.of(
+            userService.getList(List.of(
                     new User(10, "tans"),
                     new User(102, "tans2")
-            ));
-            for (User t : tans){
-                System.out.println("==>"+t);
-            }
+            )).forEach(user ->  System.out.println("user ==>"+user));
+
+            userService.getListBoolean(List.of(
+                    true,
+                    false
+            )).forEach(b ->  System.out.println("b ==>"+b));
+
             Map<String, User> map = userService.getMap(Map.of(
                     "tanmap", new User(11, "tanmaps"),
                     "tanmap2", new User(112, "tanmaps2")

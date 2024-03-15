@@ -59,6 +59,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean findId(boolean id) {
+        return id;
+    }
+
+    @Override
+    public boolean[] findId(boolean[] id) {
+        return id;
+    }
+
+    @Override
     public int findId(User user) {
         return user.getId();
     }
@@ -86,6 +96,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> getList(List<User> userList) {
         return userList;
+    }
+
+    @Override
+    public List<Boolean> getListBoolean(List<Boolean> userListBoolean) {
+        return userListBoolean;
     }
 
     @Override
