@@ -48,7 +48,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
                     Class<?> service = field.getType();
                     // 获取全限定名称
                     String serviceName = service.getCanonicalName();
-                    // 查询缓存
+                    // 查询缓存 - 由于service会被多个地方用到，所有这里处理以就行了，后面再用直接取
                     Object existBean = stub.get(serviceName);
                     if(existBean == null){
                         // 为属性字段查询他的实现对象 - getXXImplBean
