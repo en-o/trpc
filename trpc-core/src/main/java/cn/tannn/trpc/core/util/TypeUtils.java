@@ -55,7 +55,8 @@ public class TypeUtils {
         }
 
         // 处理 基本类型
-        // todo 处理基本类型的时候 totString 会影响性能
+        // todo 处理类型的时候 totString 可能会影响性能
+        // ps： 假如传入的参数是Boolean，但是需要的类型是boolean，这段代码会先转string，再valueof
         if (type.equals(Integer.class) || type.equals(Integer.TYPE)) {
             return Integer.valueOf(origin.toString());
         } else if (type.equals(Long.class) || type.equals(Long.TYPE)) {
