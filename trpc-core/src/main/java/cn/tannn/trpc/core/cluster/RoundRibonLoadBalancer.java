@@ -28,7 +28,7 @@ public class RoundRibonLoadBalancer<T> implements LoadBalancer<T> {
         if (providers.size() == 1) {
             return providers.get(0);
         }
-        // 取模   只有 0,1 所以轮询（均匀）  （0x7fffffff保证溢出也是正数）
-        return providers.get(index.getAndIncrement() & 0x7fffffff % providers.size());
+        // 取模   只有 0,1 所以轮询（均匀）  （ & 0x7fffffff保证溢出也是正数）
+        return providers.get(index.getAndIncrement()  % providers.size());
     }
 }
