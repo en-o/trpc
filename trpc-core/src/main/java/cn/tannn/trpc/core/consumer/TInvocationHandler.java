@@ -1,7 +1,6 @@
 package cn.tannn.trpc.core.consumer;
 
-import cn.tannn.trpc.core.api.RpcRequest;
-import cn.tannn.trpc.core.api.RpcResponse;
+import cn.tannn.trpc.core.api.*;
 import cn.tannn.trpc.core.util.MethodUtils;
 import cn.tannn.trpc.core.util.TypeUtils;
 import com.alibaba.fastjson2.JSON;
@@ -22,15 +21,18 @@ import java.util.concurrent.TimeUnit;
  */
 public class TInvocationHandler implements InvocationHandler {
     Class<?> service;
-
+    RpcContext<String> rpcContext;
+    List<String> providers;
     /**
      * HTTP JSON_TYPE
      */
     final static MediaType JSON_TYPE = MediaType.get("application/json; charset=UTF-8");
 
 
-    public TInvocationHandler(Class<?> service) {
+    public TInvocationHandler(Class<?> service, RpcContext rpcContext, List<String> providers) {
         this.service = service;
+        this.rpcContext = rpcContext;
+        this.providers = providers;
     }
 
     @Override
@@ -43,8 +45,13 @@ public class TInvocationHandler implements InvocationHandler {
         //组装调用参数 ： 类全限定名称，方法，参数
         RpcRequest rpcRequest = new RpcRequest(service.getCanonicalName(), MethodUtils.methodSign(method), args);
 
-        // 发送请
-        RpcResponse rpcResponse = post(rpcRequest);
+        // 路由
+        List<String> urls = rpcContext.getRouter().route(this.providers);
+        // 选择路由
+        String url = rpcContext.getLoadBalancer().choose(urls);
+
+        // 发送请求
+        RpcResponse rpcResponse = post(rpcRequest, url);
         if (rpcResponse.isStatus()) {
             Object data = rpcResponse.getData();
             Class<?> returnType = method.getReturnType();
@@ -103,13 +110,17 @@ public class TInvocationHandler implements InvocationHandler {
      * 发送 http 请求
      *
      * @param rpcRequest RpcRequest
+     * @param url 请求地址
      * @return
      */
-    private RpcResponse post(RpcRequest rpcRequest) {
+    private RpcResponse post(RpcRequest rpcRequest, String url) {
+        if(url == null){
+            return new RpcResponse(false,null,new RuntimeException("router is empty"));
+        }
         String reqJson = JSON.toJSONString(rpcRequest);
         System.out.println("reqJson =====> " + reqJson);
         Request request = new Request.Builder()
-                .url("http://localhost:8080/")
+                .url(url)
                 .post(RequestBody.create(reqJson, JSON_TYPE))
                 .build();
         try {

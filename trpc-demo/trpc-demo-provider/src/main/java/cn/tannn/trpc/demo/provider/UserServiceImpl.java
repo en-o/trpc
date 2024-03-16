@@ -3,6 +3,8 @@ package cn.tannn.trpc.demo.provider;
 import cn.tannn.trpc.core.annotation.TProvider;
 import cn.tannn.trpc.demo.api.UserService;
 import cn.tannn.trpc.demo.api.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -18,9 +20,13 @@ import java.util.Map;
 @Component
 @TProvider
 public class UserServiceImpl implements UserService {
+
+    @Autowired
+    Environment environment;
+
     @Override
     public User findById(Integer id) {
-        return new User(id, "t-" + System.currentTimeMillis());
+        return new User(id, "t-" + environment.getProperty("server.port") + "_" + System.currentTimeMillis());
     }
 
     @Override
@@ -85,7 +91,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public long[] findLongIds() {
-        return new long[]{2,3,4};
+        return new long[]{2, 3, 4};
     }
 
     @Override

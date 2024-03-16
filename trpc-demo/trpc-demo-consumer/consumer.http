@@ -23,3 +23,6 @@ GET http://localhost:8088/order/id
 GET http://localhost:8088/order/l/22
 
 
+
+### 负载均衡测试
+GET http://localhost:8088/loadBalancer/12

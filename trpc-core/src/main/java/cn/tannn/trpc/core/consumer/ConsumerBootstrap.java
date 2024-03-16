@@ -1,12 +1,17 @@
 package cn.tannn.trpc.core.consumer;
 
 import cn.tannn.trpc.core.annotation.TConsumer;
+import cn.tannn.trpc.core.api.LoadBalancer;
+import cn.tannn.trpc.core.api.Router;
+import cn.tannn.trpc.core.api.RpcContext;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.env.Environment;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -17,6 +22,7 @@ import java.util.*;
 
 /**
  * 提供者 处理类
+ *
  * @author tnnn
  * @version V1.0
  * @date 2024-03-10 19:47
@@ -43,6 +49,22 @@ public class ConsumerBootstrap implements ApplicationListener<ContextRefreshedEv
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         ApplicationContext applicationContext = event.getApplicationContext();
+        Environment environment = applicationContext.getEnvironment();
+
+        String urls = environment.getProperty("trpc.providers");
+        if (Strings.isEmpty(urls)) {
+            System.err.println("trpc.providers is empty");
+        }
+        String[] providers = urls.split(",");
+
+        LoadBalancer loadBalancer = applicationContext.getBean(LoadBalancer.class);
+        Router router = applicationContext.getBean(Router.class);
+
+        RpcContext rpcContext = new RpcContext();
+        rpcContext.setLoadBalancer(loadBalancer);
+        rpcContext.setRouter(router);
+
+
         // 扫描指定路径 , true 扫描spring 注解 @Component, @Repository, @Service, and @Controller
         ClassPathScanningCandidateComponentProvider provider =
                 new ClassPathScanningCandidateComponentProvider(false);
@@ -52,23 +74,26 @@ public class ConsumerBootstrap implements ApplicationListener<ContextRefreshedEv
         provider.addIncludeFilter(new AnnotationTypeFilter(Bean.class));
         for (String scanPackage : scanPackages) {
             Set<BeanDefinition> candidateComponents = provider.findCandidateComponents(scanPackage);
-            scanConsumerAndProxy(candidateComponents,applicationContext);
+            scanConsumerAndProxy(candidateComponents, applicationContext,  rpcContext, List.of(providers));
         }
     }
 
     /**
      * 扫描拥有注解的类并设置动态代理
+     *
      * @param candidateComponents BeanDefinition
-     * @param applicationContext ApplicationContext
+     * @param applicationContext  ApplicationContext
      */
-    private void scanConsumerAndProxy(Set<BeanDefinition> candidateComponents, ApplicationContext applicationContext){
-        for (BeanDefinition beanDefinition : candidateComponents){
+    private void scanConsumerAndProxy(Set<BeanDefinition> candidateComponents
+            , ApplicationContext applicationContext
+            , RpcContext rpcContext, List<String> providers) {
+        for (BeanDefinition beanDefinition : candidateComponents) {
             try {
                 Object bean = getBean(applicationContext, beanDefinition);
                 System.out.println("bean ===> " + bean);
-                if(bean != null){
+                if (bean != null) {
                     // 获取标注了TConsumer注解的属性字段
-                    List<Field> fields =  findAnnotatedField(bean.getClass());
+                    List<Field> fields = findAnnotatedField(bean.getClass());
                     fields.forEach(field -> {
                         try {
                             // 为获取到的属性对象生成代理
@@ -77,9 +102,9 @@ public class ConsumerBootstrap implements ApplicationListener<ContextRefreshedEv
                             String serviceName = service.getCanonicalName();
                             // 查询缓存 - 由于 rpc service会被多个地方用到，所有这里处理以就行了，后面再用直接取
                             Object existBean = stub.get(serviceName);
-                            if(existBean == null){
+                            if (existBean == null) {
                                 // 为属性字段查询他的实现对象 - getXXImplBean
-                                existBean = createConsumer(service);
+                                existBean = createConsumer(service, rpcContext, providers);
                                 stub.put(serviceName, existBean);
                             }
                             // 将实现对象加载到当前属性字段里去 （filed = new XXImpl()）
@@ -97,12 +122,11 @@ public class ConsumerBootstrap implements ApplicationListener<ContextRefreshedEv
     }
 
 
-
-
     /**
      * 查询 spring bean
+     *
      * @param applicationContext ApplicationContext
-     * @param beanDefinition beanDefinition
+     * @param beanDefinition     beanDefinition
      * @return 扫描出来的spring bean
      */
     private static Object getBean(ApplicationContext applicationContext, BeanDefinition beanDefinition) {
@@ -117,14 +141,15 @@ public class ConsumerBootstrap implements ApplicationListener<ContextRefreshedEv
                     .getBeanNamesForType(getBeanClassFromDefinition(beanDefinition));
             if (beanNames.length > 0) {
                 // 如果存在该类型的 Bean,则使用第一个名称获取实例
-                bean =  applicationContext.getBean(beanNames[0]);
+                bean = applicationContext.getBean(beanNames[0]);
             }
         }
-       return bean;
+        return bean;
     }
 
     /**
      * 没有Class 自己for一个
+     *
      * @param beanDefinition BeanDefinition
      * @return Class
      */
@@ -139,27 +164,30 @@ public class ConsumerBootstrap implements ApplicationListener<ContextRefreshedEv
 
     /**
      * 为服务创建代理
+     *
      * @param service service
      * @return
      */
-    private Object createConsumer(Class<?> service) {
+    private Object createConsumer(Class<?> service
+            , RpcContext rpcContext, List<String> providers) {
         // 对 service进行操作时才会被触发
         return Proxy.newProxyInstance(service.getClassLoader(),
-                new Class[]{service}, new TInvocationHandler(service) );
+                new Class[]{service}, new TInvocationHandler(service, rpcContext, providers));
     }
 
 
     /**
      * 获取自定注解的属性字段
+     *
      * @param aClass Class
      * @return Field
      */
     private List<Field> findAnnotatedField(Class<?> aClass) {
         ArrayList<Field> result = new ArrayList<>();
-        while (aClass != null){
+        while (aClass != null) {
             Field[] fields = aClass.getDeclaredFields();
             for (Field field : fields) {
-                if(field.isAnnotationPresent(TConsumer.class)){
+                if (field.isAnnotationPresent(TConsumer.class)) {
                     result.add(field);
                 }
             }
