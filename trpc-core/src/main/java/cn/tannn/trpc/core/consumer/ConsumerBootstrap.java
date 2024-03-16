@@ -2,6 +2,7 @@ package cn.tannn.trpc.core.consumer;
 
 import cn.tannn.trpc.core.annotation.TConsumer;
 import cn.tannn.trpc.core.api.LoadBalancer;
+import cn.tannn.trpc.core.api.RegistryCenter;
 import cn.tannn.trpc.core.api.Router;
 import cn.tannn.trpc.core.api.RpcContext;
 import org.apache.logging.log4j.util.Strings;
@@ -51,19 +52,14 @@ public class ConsumerBootstrap implements ApplicationListener<ContextRefreshedEv
         ApplicationContext applicationContext = event.getApplicationContext();
         Environment environment = applicationContext.getEnvironment();
 
-        String urls = environment.getProperty("trpc.providers");
-        if (Strings.isEmpty(urls)) {
-            System.err.println("trpc.providers is empty");
-        }
-        String[] providers = urls.split(",");
 
         LoadBalancer loadBalancer = applicationContext.getBean(LoadBalancer.class);
         Router router = applicationContext.getBean(Router.class);
+        RegistryCenter registryCenter = applicationContext.getBean(RegistryCenter.class);
 
-        RpcContext rpcContext = new RpcContext();
+        RpcContext<String> rpcContext = new RpcContext<>();
         rpcContext.setLoadBalancer(loadBalancer);
         rpcContext.setRouter(router);
-
 
         // 扫描指定路径 , true 扫描spring 注解 @Component, @Repository, @Service, and @Controller
         ClassPathScanningCandidateComponentProvider provider =
@@ -74,7 +70,7 @@ public class ConsumerBootstrap implements ApplicationListener<ContextRefreshedEv
         provider.addIncludeFilter(new AnnotationTypeFilter(Bean.class));
         for (String scanPackage : scanPackages) {
             Set<BeanDefinition> candidateComponents = provider.findCandidateComponents(scanPackage);
-            scanConsumerAndProxy(candidateComponents, applicationContext,  rpcContext, List.of(providers));
+            scanConsumerAndProxy(candidateComponents, applicationContext,  rpcContext, registryCenter);
         }
     }
 
@@ -86,7 +82,7 @@ public class ConsumerBootstrap implements ApplicationListener<ContextRefreshedEv
      */
     private void scanConsumerAndProxy(Set<BeanDefinition> candidateComponents
             , ApplicationContext applicationContext
-            , RpcContext rpcContext, List<String> providers) {
+            , RpcContext rpcContext, RegistryCenter registryCenter) {
         for (BeanDefinition beanDefinition : candidateComponents) {
             try {
                 Object bean = getBean(applicationContext, beanDefinition);
@@ -104,7 +100,7 @@ public class ConsumerBootstrap implements ApplicationListener<ContextRefreshedEv
                             Object existBean = stub.get(serviceName);
                             if (existBean == null) {
                                 // 为属性字段查询他的实现对象 - getXXImplBean
-                                existBean = createConsumer(service, rpcContext, providers);
+                                existBean = createFromRegistry(service, rpcContext, registryCenter);
                                 stub.put(serviceName, existBean);
                             }
                             // 将实现对象加载到当前属性字段里去 （filed = new XXImpl()）
@@ -119,6 +115,32 @@ public class ConsumerBootstrap implements ApplicationListener<ContextRefreshedEv
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    /**
+     * 为服务创建代理
+     *
+     * @param service service
+     * @return
+     */
+    private Object createFromRegistry(Class<?> service, RpcContext rpcContext,RegistryCenter registryCenter) {
+        String serviceName = service.getCanonicalName();
+        List<String> providers = registryCenter.fetchAll(serviceName);
+        return createConsumer(service, rpcContext, providers);
+    }
+
+
+    /**
+     * 为服务创建代理
+     *
+     * @param service service
+     * @return
+     */
+    private Object createConsumer(Class<?> service
+            , RpcContext rpcContext, List<String> providers) {
+        // 对 service进行操作时才会被触发
+        return Proxy.newProxyInstance(service.getClassLoader(),
+                new Class[]{service}, new TInvocationHandler(service, rpcContext, providers));
     }
 
 
@@ -161,19 +183,6 @@ public class ConsumerBootstrap implements ApplicationListener<ContextRefreshedEv
         }
     }
 
-
-    /**
-     * 为服务创建代理
-     *
-     * @param service service
-     * @return
-     */
-    private Object createConsumer(Class<?> service
-            , RpcContext rpcContext, List<String> providers) {
-        // 对 service进行操作时才会被触发
-        return Proxy.newProxyInstance(service.getClassLoader(),
-                new Class[]{service}, new TInvocationHandler(service, rpcContext, providers));
-    }
 
 
     /**
