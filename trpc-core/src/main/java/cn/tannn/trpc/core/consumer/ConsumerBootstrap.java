@@ -121,7 +121,7 @@ public class ConsumerBootstrap implements ApplicationListener<ContextRefreshedEv
      * 为服务创建代理
      *
      * @param service service
-     * @return
+     * @return 代理类
      */
     private Object createFromRegistry(Class<?> service, RpcContext rpcContext,RegistryCenter registryCenter) {
         String serviceName = service.getCanonicalName();
@@ -134,7 +134,7 @@ public class ConsumerBootstrap implements ApplicationListener<ContextRefreshedEv
      * 为服务创建代理
      *
      * @param service service
-     * @return
+     * @return 代理类
      */
     private Object createConsumer(Class<?> service
             , RpcContext rpcContext, List<String> providers) {
