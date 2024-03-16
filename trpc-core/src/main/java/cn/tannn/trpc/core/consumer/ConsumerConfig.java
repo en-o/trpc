@@ -17,18 +17,10 @@ public class ConsumerConfig {
 
     @Bean
     private ConsumerBootstrap createConsumerBootstrap(){
-       return new ConsumerBootstrap();
+//       return new ConsumerBootstrap(new String[]{"cn.tannn.trpc.demo.consumer.controller"});
+//       return new ConsumerBootstrap(new String[]{"cn.tannn.trpc.demo.consumer.runner"});
+       return new ConsumerBootstrap(new String[]{"cn.tannn.trpc.demo.consumer.controller",
+               "cn.tannn.trpc.demo.consumer.runner"});
     }
 
-
-    /**
-     * 初始化
-     */
-    @Bean
-    @Order(Integer.MIN_VALUE)
-    private ApplicationRunner consumerBootstrapRunner(ConsumerBootstrap createConsumerBootstrap){
-        return x -> {
-            createConsumerBootstrap.start();
-        };
-    }
 }
