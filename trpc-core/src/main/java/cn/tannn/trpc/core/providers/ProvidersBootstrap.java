@@ -1,20 +1,28 @@
 package cn.tannn.trpc.core.providers;
 
 import cn.tannn.trpc.core.annotation.TProvider;
+import cn.tannn.trpc.core.api.RegistryCenter;
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
 import cn.tannn.trpc.core.meta.ProviderMeta;
 import cn.tannn.trpc.core.util.MethodUtils;
 import cn.tannn.trpc.core.util.TypeUtils;
+import jakarta.annotation.PreDestroy;
 import lombok.Data;
+import lombok.SneakyThrows;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -28,20 +36,62 @@ import java.util.Optional;
  * @date 2024-03-06 21:33
  */
 @Data
-public class ProvidersBootstrap implements ApplicationContextAware {
+public class ProvidersBootstrap implements ApplicationListener<ContextRefreshedEvent> {
     /**
      * 存储所有的提供者 , 其中包含了[全限定名，对象实例]
      */
     private MultiValueMap<String, ProviderMeta> skeleton = new LinkedMultiValueMap<>();
 
+    private ApplicationContext context;
+
+    /**
+     * 注册中心需要的注册的实例
+     */
+    private String instance;
+
+    @Value("${server.port}")
+    private String port;
+
     /**
      * 拿到 所有标记了TProvider注解的类（所有的提供者），并存储
      */
+    @SneakyThrows
     @Override
-    public void setApplicationContext(ApplicationContext context) throws BeansException {
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        this.context = event.getApplicationContext();
         // 所有标记了 @TProvider 注解的类
         Map<String, Object> providers = context.getBeansWithAnnotation(TProvider.class);
-        providers.values().forEach(x -> genInterface(x));
+        providers.values().forEach(this::genInterface);
+
+        String ip = InetAddress.getLocalHost().getHostAddress();
+        instance = ip + "_" + port;
+        skeleton.keySet().forEach(this::registerService);
+    }
+
+    @PreDestroy
+    public void stop(){
+        skeleton.keySet().forEach(this::unregisterService);
+    }
+
+
+    /**
+     *  注销服务  - 注册中心
+     *
+     * @param service service
+     */
+    private void unregisterService(String service) {
+        RegistryCenter rc = context.getBean(RegistryCenter.class);
+        rc.unregister(service, instance);
+    }
+
+    /**
+     * 注册服务 - 注册中心
+     *
+     * @param service service
+     */
+    private void registerService(String service) {
+        RegistryCenter rc = context.getBean(RegistryCenter.class);
+        rc.register(service, instance);
     }
 
 
@@ -54,12 +104,12 @@ public class ProvidersBootstrap implements ApplicationContextAware {
         // 默认只拿一个接口
 //        Class<?> anInterface = x.getClass().getInterfaces()[0];]
         // 处理多个接口
-        Arrays.stream(x.getClass().getInterfaces()).forEach( itfer -> {
+        Arrays.stream(x.getClass().getInterfaces()).forEach(itfer -> {
             // todo 这里可以拦截某些接口不做处理 ps: spring不支持多个实现类的bean,非要弄的话需要做特殊处理
             for (Method method : itfer.getMethods()) {
                 // todo 这里可以对方法进行白名单处理
 
-                //  这里可以过滤 Object的一些方法
+                //  这里过滤 Object的一些方法
                 if (MethodUtils.checkLocalMethod(method)) {
                     continue;
                 }
@@ -96,7 +146,7 @@ public class ProvidersBootstrap implements ApplicationContextAware {
         List<ProviderMeta> providerMetas = skeleton.get(request.getService());
         try {
             ProviderMeta meta = findProviderMeta(providerMetas, request.getMethodSign());
-            if(meta == null){
+            if (meta == null) {
                 throw new NullPointerException("非法RPC方法调用，当前方法不是RPC接口");
             }
             Method method = meta.getMethod();
@@ -122,19 +172,20 @@ public class ProvidersBootstrap implements ApplicationContextAware {
 
     /**
      * 处理参数的实际类型
-     * @param args 参数
+     *
+     * @param args           参数
      * @param parameterTypes 参数类型
      * @return
      */
     private Object[] processArgs(Object[] args, Class<?>[] parameterTypes) {
-        if(args == null || args.length == 0){
+        if (args == null || args.length == 0) {
             return args;
         }
         Object[] actuals = new Object[args.length];
         for (int i = 0; i < parameterTypes.length; i++) {
 //            actuals[i] = JSON.to(parameterTypes[i],  args[i]);
             // TypeUtils.cast 是模拟上面那个写的
-             actuals[i] = TypeUtils.cast(args[i],parameterTypes[i]);
+            actuals[i] = TypeUtils.cast(args[i], parameterTypes[i]);
         }
         return actuals;
     }

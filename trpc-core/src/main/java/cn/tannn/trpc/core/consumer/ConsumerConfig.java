@@ -5,6 +5,7 @@ import cn.tannn.trpc.core.api.RegistryCenter;
 import cn.tannn.trpc.core.api.Router;
 import cn.tannn.trpc.core.cluster.RoundRibonLoadBalancer;
 import cn.tannn.trpc.core.config.ConsumerProperties;
+import cn.tannn.trpc.core.registry.ZkRegistryCenter;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 
@@ -66,7 +67,8 @@ public class ConsumerConfig {
      */
     @Bean(initMethod = "start", destroyMethod = "stop")
     RegistryCenter consumer_rc(ConsumerProperties consumerProperties){
-        return new RegistryCenter.StaticRegistryCenter(List.of(consumerProperties.getProviders()));
+//        return new RegistryCenter.StaticRegistryCenter(List.of(consumerProperties.getProviders()));
+        return new ZkRegistryCenter();
     }
 
 
