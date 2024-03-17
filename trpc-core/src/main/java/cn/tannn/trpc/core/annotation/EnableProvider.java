@@ -1,6 +1,5 @@
 package cn.tannn.trpc.core.annotation;
 
-import cn.tannn.trpc.core.consumer.ConsumerConfig;
 import cn.tannn.trpc.core.providers.ProvidersConfig;
 import org.springframework.context.annotation.Import;
 
