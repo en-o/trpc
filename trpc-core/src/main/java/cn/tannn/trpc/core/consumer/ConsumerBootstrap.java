@@ -127,6 +127,7 @@ public class ConsumerBootstrap implements ApplicationListener<ContextRefreshedEv
      */
     private Object createFromRegistry(Class<?> service, RpcContext rpcContext,RegistryCenter registryCenter) {
         String serviceName = service.getCanonicalName();
+        // 由于此处只会在启动时处理一次，所以需要下面的订阅，订阅服务后，当数据发生了变动会重新执行
         List<String> providers = mapUrl(registryCenter.fetchAll(serviceName));
         System.out.println("===> map to provider: ");
         providers.forEach(System.out::println);
