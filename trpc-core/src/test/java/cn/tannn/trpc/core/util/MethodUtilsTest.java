@@ -3,7 +3,6 @@ package cn.tannn.trpc.core.util;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
 
 class MethodUtilsTest {

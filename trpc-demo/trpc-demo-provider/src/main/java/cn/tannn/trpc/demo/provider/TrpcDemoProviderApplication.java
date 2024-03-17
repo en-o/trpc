@@ -1,9 +1,9 @@
 package cn.tannn.trpc.demo.provider;
 
+import cn.tannn.trpc.core.annotation.EnableProvider;
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
 import cn.tannn.trpc.core.providers.ProvidersBootstrap;
-import cn.tannn.trpc.core.providers.ProvidersConfig;
 import cn.tannn.trpc.core.util.MethodUtils;
 import cn.tannn.trpc.demo.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,6 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @SpringBootApplication
-@Import(ProvidersConfig.class)
+@EnableProvider
 public class TrpcDemoProviderApplication {
 
     @Autowired
