@@ -128,7 +128,6 @@ public class ZkRegistryCenter implements RegistryCenter {
             // 节点变动，这里会感知到
             System.out.println("zk subscribe envent: " + event);
             List<String> nodes = fetchAll(service);
-            // 会通知订阅
             listener.fire(new Event(nodes));
         });
         cache.start();
