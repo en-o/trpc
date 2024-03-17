@@ -4,6 +4,7 @@ import cn.tannn.trpc.core.api.LoadBalancer;
 import cn.tannn.trpc.core.api.RegistryCenter;
 import cn.tannn.trpc.core.api.Router;
 import cn.tannn.trpc.core.cluster.RoundRibonLoadBalancer;
+import cn.tannn.trpc.core.config.ConsumerProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -20,17 +21,24 @@ import java.util.List;
 @AutoConfiguration
 public class ConsumerConfig {
 
-    @Value("${trpc.providers}")
-    String servers;
 
+    /**
+     * 配置信息
+     */
     @Bean
-    ConsumerBootstrap createConsumerBootstrap(){
-       return new ConsumerBootstrap(new String[]{"cn.tannn.trpc.demo.consumer"});
-//       return new ConsumerBootstrap(new String[]{"cn.tannn.trpc.demo.consumer.controller"});
-//       return new ConsumerBootstrap(new String[]{"cn.tannn.trpc.demo.consumer.runner"});
-//       return new ConsumerBootstrap(new String[]{"cn.tannn.trpc.demo.consumer.controller",
-//               "cn.tannn.trpc.demo.consumer.runner"});
+    ConsumerProperties consumerProperties(){
+        return new ConsumerProperties();
     }
+
+    /**
+     * 接口代理
+     * @param consumerProperties 设置扫描路径
+     */
+    @Bean
+    ConsumerBootstrap createConsumerBootstrap(ConsumerProperties consumerProperties){
+       return new ConsumerBootstrap(consumerProperties.getScanPackages());
+    }
+
 
     /**
      * 负载均衡
@@ -58,8 +66,8 @@ public class ConsumerConfig {
      * </pr>
      */
     @Bean(initMethod = "start", destroyMethod = "stop")
-    RegistryCenter.StaticRegistryCenter consumer_rc(){
-        return new RegistryCenter.StaticRegistryCenter(List.of(servers.split(",")));
+    RegistryCenter consumer_rc(ConsumerProperties consumerProperties){
+        return new RegistryCenter.StaticRegistryCenter(List.of(consumerProperties.getProviders()));
     }
 
 

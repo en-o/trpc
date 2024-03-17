@@ -3,4 +3,9 @@ server:
 
 trpc:
   # 逗号隔开
-  providers: http://127.0.0.1:8081,http://127.0.0.1:8082,http://127.0.0.1:8083
+  providers:
+    - http://127.0.0.1:8081
+    - http://127.0.0.1:8082
+    - http://127.0.0.1:8083
+  scan-packages:
+    - cn.tannn.trpc.demo.consumer
