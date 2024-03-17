@@ -118,6 +118,7 @@ public class ZkRegistryCenter implements RegistryCenter {
     @SneakyThrows
     @Override
     public void subscribe(String service, ChangedListener listener) {
+        // 通过 client参数 感知服务的上下线
         final TreeCache cache = TreeCache
                 .newBuilder(client, "/"+service)
                 .setCacheData(true)
