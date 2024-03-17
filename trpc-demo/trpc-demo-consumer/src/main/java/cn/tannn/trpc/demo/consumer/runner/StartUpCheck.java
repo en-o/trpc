@@ -57,6 +57,11 @@ public class StartUpCheck implements ApplicationRunner {
 
         System.out.println(userService.findUser(new User(12,"tan2")));
 
+        User[] userArray = userService.findUser(new User[]{new User(102, "tan02"), new User(12, "tan02")});
+        for (User user : userArray) {
+            System.out.println(user.toString());
+        }
+
         System.out.println(userService.findName());
 
         System.out.println(Arrays.toString(userService.findIds()));

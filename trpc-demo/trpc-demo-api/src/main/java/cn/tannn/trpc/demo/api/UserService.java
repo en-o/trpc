@@ -37,11 +37,13 @@ public interface UserService {
     boolean findId(boolean id);
     boolean[] findId(boolean[] id);
     int findId(User user);
+
     int[] findIds();
     int[] findIds(int[] ids);
     long[] findLongIds();
 
     User findUser(User user);
+    User[] findUser(User[] user);
     List<User> getList(List<User> userList);
     List<Boolean> getListBoolean(List<Boolean> userListBoolean);
     Map<String,User> getMap(Map<String,User> userMap);

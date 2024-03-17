@@ -6,7 +6,7 @@ import java.security.SecureRandom;
 import java.util.List;
 
 /**
- * 负载均衡算法 - 随机
+ * 负载均衡算法 - 随机  流量规模不大的清空下随机已经可以满足大部分场景
  *
  * @author tnnn
  * @version V1.0

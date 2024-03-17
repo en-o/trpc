@@ -80,6 +80,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User[] findUser(User[] user) {
+        return user;
+    }
+
+    @Override
     public int[] findIds() {
         return new int[]{1, 2, 3};
     }
