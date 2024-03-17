@@ -104,12 +104,13 @@ public class ZkRegistryCenter implements RegistryCenter {
         // zk 路径以 / 分割
         String servicePath = "/" + service;
         try {
-            byte[] bytes = client.getData().forPath(servicePath);
-            System.out.println("->->-> " + new String(bytes));
+            // 获取所有子节点
+            List<String> nodes = client.getChildren().forPath(servicePath);
+            System.out.println(" ===> fetchAll from zk: " + servicePath);
+            return nodes;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return null;
     }
 
     @Override

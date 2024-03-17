@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 提供者 处理类
@@ -124,7 +125,10 @@ public class ConsumerBootstrap implements ApplicationListener<ContextRefreshedEv
      */
     private Object createFromRegistry(Class<?> service, RpcContext rpcContext,RegistryCenter registryCenter) {
         String serviceName = service.getCanonicalName();
-        List<String> providers = registryCenter.fetchAll(serviceName);
+        List<String> providers = registryCenter.fetchAll(serviceName).stream()
+                .map(x -> "http://" + x.replace("_",":")).collect(Collectors.toList());
+        System.out.println("===> map to provider: ");
+        providers.forEach(System.out::println);
         return createConsumer(service, rpcContext, providers);
     }
 

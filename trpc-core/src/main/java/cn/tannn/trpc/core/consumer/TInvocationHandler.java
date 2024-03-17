@@ -51,7 +51,7 @@ public class TInvocationHandler implements InvocationHandler {
         List<String> urls = rpcContext.getRouter().route(this.providers);
         // 选择路由
         String url = rpcContext.getLoadBalancer().choose(urls);
-
+        System.out.println("loadBalancer.choose(urls) ==> " + url);
         // 发送请求
         RpcResponse rpcResponse = post(rpcRequest, url);
         if (rpcResponse.isStatus()) {
