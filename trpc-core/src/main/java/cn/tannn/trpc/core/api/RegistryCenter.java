@@ -1,5 +1,7 @@
 package cn.tannn.trpc.core.api;
 
+import cn.tannn.trpc.core.registry.ChangedListener;
+
 import java.util.List;
 
 /**
@@ -40,8 +42,10 @@ public interface RegistryCenter {
 
     /**
      * 订阅服务 instance 的变化，通知消费者刷新列表
+     * @param service 服务
+     * @param changedListener 监听
      */
-    void subscribe();
+    void subscribe(String service, ChangedListener changedListener);
 
 
     /**
@@ -81,9 +85,11 @@ public interface RegistryCenter {
         }
 
         @Override
-        public void subscribe() {
+        public void subscribe(String service, ChangedListener changedListener) {
 
         }
+
+
     }
 
 

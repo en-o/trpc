@@ -1,9 +1,11 @@
 package cn.tannn.trpc.core.registry;
 
 import cn.tannn.trpc.core.api.RegistryCenter;
+import lombok.SneakyThrows;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 
@@ -113,8 +115,22 @@ public class ZkRegistryCenter implements RegistryCenter {
         }
     }
 
+    @SneakyThrows
     @Override
-    public void subscribe() {
-
+    public void subscribe(String service, ChangedListener listener) {
+        final TreeCache cache = TreeCache
+                .newBuilder(client, "/"+service)
+                .setCacheData(true)
+                .setMaxDepth(2)
+                .build();
+        cache.getListenable().addListener((curator, event) ->{
+            // 节点变动，这里会感知到
+            System.out.println("zk subscribe envent: " + event);
+            List<String> nodes = fetchAll(service);
+            listener.fire(new Event(nodes));
+        });
+        cache.start();
     }
+
+
 }

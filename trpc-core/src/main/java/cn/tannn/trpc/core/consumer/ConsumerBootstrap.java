@@ -5,6 +5,8 @@ import cn.tannn.trpc.core.api.LoadBalancer;
 import cn.tannn.trpc.core.api.RegistryCenter;
 import cn.tannn.trpc.core.api.Router;
 import cn.tannn.trpc.core.api.RpcContext;
+import cn.tannn.trpc.core.registry.ChangedListener;
+import cn.tannn.trpc.core.registry.Event;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
@@ -125,11 +127,22 @@ public class ConsumerBootstrap implements ApplicationListener<ContextRefreshedEv
      */
     private Object createFromRegistry(Class<?> service, RpcContext rpcContext,RegistryCenter registryCenter) {
         String serviceName = service.getCanonicalName();
-        List<String> providers = registryCenter.fetchAll(serviceName).stream()
-                .map(x -> "http://" + x.replace("_",":")).collect(Collectors.toList());
+        List<String> providers = mapUrl(registryCenter.fetchAll(serviceName));
         System.out.println("===> map to provider: ");
         providers.forEach(System.out::println);
+
+        // 订阅服务，感知服务变更
+        registryCenter.subscribe(serviceName, event -> {
+            providers.clear();
+            providers.addAll(mapUrl(event.getData()));
+        });
+
         return createConsumer(service, rpcContext, providers);
+    }
+
+
+    private List<String> mapUrl(List<String> nodes){
+        return nodes.stream().map(x -> "http://" + x.replace("_",":")).collect(Collectors.toList());
     }
 
 
