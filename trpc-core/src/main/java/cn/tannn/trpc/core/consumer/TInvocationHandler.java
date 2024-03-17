@@ -148,7 +148,7 @@ public class TInvocationHandler implements InvocationHandler {
             System.out.println("respJson =====> " + responseJson);
             return JSON.parseObject(responseJson, RpcResponse.class);
         } catch (Exception e) {
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 }
