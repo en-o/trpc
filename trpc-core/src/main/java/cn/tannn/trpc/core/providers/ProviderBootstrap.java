@@ -43,6 +43,11 @@ public class ProviderBootstrap implements ApplicationContextAware {
     private ApplicationContext context;
 
     /**
+     * 注册中心缓存起来
+     */
+    RegistryCenter registryCenter;
+
+    /**
      * 当前项目的端口 - 用于注册到rc
      */
     @Value("${server.port}")
@@ -60,6 +65,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.context = applicationContext;
+        registryCenter = context.getBean(RegistryCenter.class);
         // 所有标记了 @TProvider 注解的类
         Map<String, Object> providers = context.getBeansWithAnnotation(TProvider.class);
         providers.values().forEach(this::genInterface);
@@ -91,8 +97,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
      * @param service service
      */
     private void unregisterService(String service) {
-        RegistryCenter rc = context.getBean(RegistryCenter.class);
-        rc.unregister(service, instance);
+        registryCenter.unregister(service, instance);
     }
 
     /**
