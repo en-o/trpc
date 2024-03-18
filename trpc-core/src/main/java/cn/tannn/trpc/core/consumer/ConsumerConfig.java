@@ -82,7 +82,7 @@ public class ConsumerConfig {
      * </pr>
      */
     @Bean(initMethod = "start", destroyMethod = "stop")
-    RegistryCenter consumer_rc(ConsumerProperties consumerProperties){
+    RegistryCenter consumerRc(ConsumerProperties consumerProperties){
 //        return new RegistryCenter.StaticRegistryCenter(List.of(consumerProperties.getProviders()));
         return new ZkRegistryCenter();
     }
