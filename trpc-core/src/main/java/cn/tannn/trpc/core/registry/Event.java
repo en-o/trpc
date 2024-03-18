@@ -2,7 +2,6 @@ package cn.tannn.trpc.core.registry;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 

@@ -8,20 +8,16 @@ import cn.tannn.trpc.core.meta.ProviderMeta;
 import cn.tannn.trpc.core.util.MethodUtils;
 import cn.tannn.trpc.core.util.TypeUtils;
 import jakarta.annotation.PreDestroy;
-import lombok.Data;
 import lombok.SneakyThrows;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.List;
@@ -29,45 +25,60 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * 提供者 处理类
+ * 提供者处理器
  *
  * @author tnnn
  * @version V1.0
  * @date 2024-03-06 21:33
  */
-@Data
-public class ProvidersBootstrap implements ApplicationListener<ContextRefreshedEvent> {
+public class ProviderBootstrap implements ApplicationContextAware {
     /**
-     * 存储所有的提供者 , 其中包含了[全限定名，对象实例]
+     * 存储所有的提供者 , 其中包含了[全限定名，提供者元数据]
      */
     private MultiValueMap<String, ProviderMeta> skeleton = new LinkedMultiValueMap<>();
 
+    /**
+     * spring 上下文
+     */
     private ApplicationContext context;
 
     /**
-     * 注册中心需要的注册的实例
+     * 当前项目的端口 - 用于注册到rc
      */
-    private String instance;
-
     @Value("${server.port}")
     private String port;
 
     /**
-     * 拿到 所有标记了TProvider注解的类（所有的提供者），并存储
+     * ip+port：start()的时候组装。unregisterService/registerService 的时候使用
+     */
+    private String instance;
+
+    /**
+     * init : 拿到 所有标记了TProvider注解的类（所有的提供者），并存储
      */
     @SneakyThrows
     @Override
-    public void onApplicationEvent(ContextRefreshedEvent event) {
-        this.context = event.getApplicationContext();
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.context = applicationContext;
         // 所有标记了 @TProvider 注解的类
         Map<String, Object> providers = context.getBeansWithAnnotation(TProvider.class);
         providers.values().forEach(this::genInterface);
+    }
 
+    /**
+     * 开始注册
+     * <pr>为了包装所有实例都已经加载完成，在 runner后主动调用，跟上面的 skeleton 分开操作做到单一职责，遇到错误好处理</pr>
+     */
+    @SneakyThrows
+    public void start() {
         String ip = InetAddress.getLocalHost().getHostAddress();
         instance = ip + "_" + port;
         skeleton.keySet().forEach(this::registerService);
     }
 
+    /**
+     * spring boot 生命完结时自动销毁
+     */
     @PreDestroy
     public void stop(){
         skeleton.keySet().forEach(this::unregisterService);
@@ -96,7 +107,7 @@ public class ProvidersBootstrap implements ApplicationListener<ContextRefreshedE
 
 
     /**
-     * 存储接口信息
+     * 产出提供者
      *
      * @param x 接口
      */
@@ -121,7 +132,7 @@ public class ProvidersBootstrap implements ApplicationListener<ContextRefreshedE
     }
 
     /**
-     * 存储 能力提供者信息
+     * 存储提供者
      */
     private void createProvider(Class<?> anInterface, Object aclass, Method method) {
         ProviderMeta providerMeta = new ProviderMeta();
@@ -134,15 +145,13 @@ public class ProvidersBootstrap implements ApplicationListener<ContextRefreshedE
 
 
     /**
-     * 调用接口
+     * 方法调用 [反射] 写在这儿使用为要用 skeleton, 如何升级到了其他存储就可以把他单独放出去
      *
      * @param request 接口元数据
      * @return 调用结果
      */
     public RpcResponse invokeRequest(RpcRequest request) {
-        // todo 屏蔽 toString / equals 等 Object 的一些基本方法
         RpcResponse rpcResponse = new RpcResponse();
-
         List<ProviderMeta> providerMetas = skeleton.get(request.getService());
         try {
             ProviderMeta meta = findProviderMeta(providerMetas, request.getMethodSign());
@@ -175,7 +184,7 @@ public class ProvidersBootstrap implements ApplicationListener<ContextRefreshedE
      *
      * @param args           参数
      * @param parameterTypes 参数类型
-     * @return
+     * @return Object
      */
     private Object[] processArgs(Object[] args, Class<?>[] parameterTypes) {
         if (args == null || args.length == 0) {
@@ -198,8 +207,11 @@ public class ProvidersBootstrap implements ApplicationListener<ContextRefreshedE
      * @return ProviderMeta
      */
     private ProviderMeta findProviderMeta(List<ProviderMeta> providerMetas, String methodSign) {
-        Optional<ProviderMeta> first = providerMetas.stream().filter(providerMeta -> providerMeta.getMethodSign().equals(methodSign)).findFirst();
+        Optional<ProviderMeta> first = providerMetas.stream()
+                .filter(m -> m.getMethodSign().equals(methodSign))
+                .findFirst();
         return first.orElse(null);
     }
+
 
 }

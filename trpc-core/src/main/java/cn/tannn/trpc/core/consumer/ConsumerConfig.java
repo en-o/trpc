@@ -6,10 +6,11 @@ import cn.tannn.trpc.core.api.Router;
 import cn.tannn.trpc.core.cluster.RoundRibonLoadBalancer;
 import cn.tannn.trpc.core.config.ConsumerProperties;
 import cn.tannn.trpc.core.registry.ZkRegistryCenter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-
-import java.util.List;
+import org.springframework.core.annotation.Order;
 
 /**
  * 将自己的类加载进 spring 容器
@@ -31,7 +32,7 @@ public class ConsumerConfig {
     }
 
     /**
-     * 接口代理
+     * applicationContext
      * @param consumerProperties 设置扫描路径
      */
     @Bean
@@ -39,9 +40,24 @@ public class ConsumerConfig {
        return new ConsumerBootstrap(consumerProperties.getScanPackages());
     }
 
+    /**
+     * 在 applicationRunner后主动调用，确保实例全部加载完成，防止初始化的过程中被注册使用导致ClassNotFoundException
+     * @param consumerBootstrap ConsumerBootstrap
+     * @return ApplicationRunner
+     */
+    @Bean
+    @Order(Integer.MIN_VALUE)
+    public ApplicationRunner consumerBootstrapRunner(@Autowired ConsumerBootstrap consumerBootstrap) {
+        return x -> {
+            System.out.println("consumerBootstrap starting ...");
+            consumerBootstrap.start();
+            System.out.println("consumerBootstrap started ...");
+        };
+    }
+
 
     /**
-     * 负载均衡
+     * 加载负载均衡器
      */
     @Bean
     LoadBalancer loadBalancer(){
@@ -51,7 +67,7 @@ public class ConsumerConfig {
     }
 
     /**
-     * 路由
+     * 加载路由处理器
      */
     @Bean
     Router router(){
@@ -59,10 +75,10 @@ public class ConsumerConfig {
     }
 
     /**
-     * 静态注册中心
+     * 加载注册中心
      * <pr>
-     *  启动执行 start
-     *  销毁执行 stop
+     *  启动自动执行 RegistryCenter#start
+     *  销毁自动执行 RegistryCenter#stop
      * </pr>
      */
     @Bean(initMethod = "start", destroyMethod = "stop")

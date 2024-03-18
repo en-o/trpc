@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class ConsumerProperties {
 
     /**
-     * 服务端访问地址,多个逗号隔开
+     * 服务端访问地址,多个逗号隔开[静态注册]
      * <pr>
      *     - http://127.0.0.1:8081
      *     - http://127.0.0.1:8082

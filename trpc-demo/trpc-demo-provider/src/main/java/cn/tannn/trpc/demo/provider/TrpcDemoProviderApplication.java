@@ -3,7 +3,7 @@ package cn.tannn.trpc.demo.provider;
 import cn.tannn.trpc.core.annotation.EnableProvider;
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
-import cn.tannn.trpc.core.providers.ProvidersBootstrap;
+import cn.tannn.trpc.core.providers.ProviderBootstrap;
 import cn.tannn.trpc.core.util.MethodUtils;
 import cn.tannn.trpc.demo.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TrpcDemoProviderApplication {
 
     @Autowired
-    private ProvidersBootstrap providersBootstrap;
+    private ProviderBootstrap providerBootstrap;
 
     public static void main(String[] args) {
         SpringApplication.run(TrpcDemoProviderApplication.class, args);
@@ -39,7 +39,7 @@ public class TrpcDemoProviderApplication {
      */
     @RequestMapping("/")
     public RpcResponse invoke(@RequestBody RpcRequest request) {
-        return providersBootstrap.invokeRequest(request);
+        return providerBootstrap.invokeRequest(request);
     }
 
 
@@ -54,7 +54,7 @@ public class TrpcDemoProviderApplication {
             rpcRequest.setService("cn.tannn.trpc.demo.api.UserService");
             rpcRequest.setMethodSign(MethodUtils.methodSign(UserService.class.getMethod("findById",Integer.class)));
             rpcRequest.setArgs(new Object[]{100});
-            RpcResponse rpcResponse = providersBootstrap.invokeRequest(rpcRequest);
+            RpcResponse rpcResponse = providerBootstrap.invokeRequest(rpcRequest);
             System.out.println("return: " + rpcResponse.getData());
         };
     }

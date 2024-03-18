@@ -1,12 +1,11 @@
 package cn.tannn.trpc.core.providers;
 
 import cn.tannn.trpc.core.api.RegistryCenter;
-import cn.tannn.trpc.core.config.ConsumerProperties;
 import cn.tannn.trpc.core.registry.ZkRegistryCenter;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-
-import java.util.List;
+import org.springframework.core.annotation.Order;
 
 /**
  * 配置类
@@ -18,20 +17,40 @@ import java.util.List;
 @AutoConfiguration
 public class ProvidersConfig {
 
+    /**
+     * init - method
+     * @return
+     */
     @Bean
-    ProvidersBootstrap providersBootstrap(){
-       return new ProvidersBootstrap();
+    ProviderBootstrap providersBootstrap(){
+       return new ProviderBootstrap();
     }
 
     /**
-     * 注册中心
+     * 在 applicationRunner后主动调用，确保实例全部加载完成，防止初始化的过程中被注册使用导致ClassNotFoundException
+     * @param providerBootstrap ProviderBootstrap
+     * @return ApplicationRunner
+     */
+    @Bean
+    @Order(Integer.MIN_VALUE)
+    public ApplicationRunner providerBootstrapRunner(ProviderBootstrap providerBootstrap) {
+        return x -> {
+            System.out.println("providerBootstrap starting ...");
+            providerBootstrap.start();
+            System.out.println("providerBootstrap started ...");
+        };
+    }
+
+    /**
+     * 加载注册中心
      * <pr>
-     *  启动执行 start
-     *  销毁执行 stop
+     *  启动自动执行 RegistryCenter#start
+     *  销毁自动执行 RegistryCenter#stop
      * </pr>
      */
     @Bean(initMethod = "start", destroyMethod = "stop")
-    RegistryCenter provider_rc(){
+    RegistryCenter providerRc(){
         return new ZkRegistryCenter();
     }
+
 }
