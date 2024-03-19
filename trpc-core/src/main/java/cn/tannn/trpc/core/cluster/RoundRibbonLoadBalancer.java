@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @version V1.0
  * @date 2024-03-16 19:53
  */
-public class RoundRibonLoadBalancer<T> implements LoadBalancer<T> {
+public class RoundRibbonLoadBalancer<T> implements LoadBalancer<T> {
 
     /**
      * int 小心超过上限，出溢出问题 变成负数
