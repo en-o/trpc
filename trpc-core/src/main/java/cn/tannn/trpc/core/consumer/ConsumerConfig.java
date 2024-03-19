@@ -3,8 +3,10 @@ package cn.tannn.trpc.core.consumer;
 import cn.tannn.trpc.core.api.LoadBalancer;
 import cn.tannn.trpc.core.api.RegistryCenter;
 import cn.tannn.trpc.core.api.Router;
-import cn.tannn.trpc.core.cluster.RoundRibonLoadBalancer;
+import cn.tannn.trpc.core.cluster.RandomLoadBalancer;
+import cn.tannn.trpc.core.cluster.RoundRibbonLoadBalancer;
 import cn.tannn.trpc.core.config.ConsumerProperties;
+import cn.tannn.trpc.core.enums.LoadBalancerEnum;
 import cn.tannn.trpc.core.registry.ZkRegistryCenter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
@@ -47,7 +49,7 @@ public class ConsumerConfig {
      */
     @Bean
     @Order(Integer.MIN_VALUE)
-    public ApplicationRunner consumerBootstrapRunner(@Autowired ConsumerBootstrap consumerBootstrap) {
+    public ApplicationRunner consumerBootstrapRunner(ConsumerBootstrap consumerBootstrap) {
         return x -> {
             System.out.println("consumerBootstrap starting ...");
             consumerBootstrap.start();
@@ -60,10 +62,13 @@ public class ConsumerConfig {
      * 加载负载均衡器
      */
     @Bean
-    LoadBalancer loadBalancer(){
-//       return LoadBalancer.Default;
-//       return new RandomLoadBalancer();
-       return new RoundRibonLoadBalancer();
+    LoadBalancer loadBalancer(ConsumerProperties consumerProperties){
+        // return LoadBalancer.Default;
+        if(consumerProperties.getLoadBalancer().equals(LoadBalancerEnum.ROUND_RIBBON)){
+            return new RoundRibbonLoadBalancer();
+        }else {
+            return new RandomLoadBalancer();
+        }
     }
 
     /**

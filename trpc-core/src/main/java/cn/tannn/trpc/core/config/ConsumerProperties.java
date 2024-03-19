@@ -1,5 +1,6 @@
 package cn.tannn.trpc.core.config;
 
+import cn.tannn.trpc.core.enums.LoadBalancerEnum;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -34,4 +35,21 @@ public class ConsumerProperties {
      * </pr>
      */
     private String[] scanPackages;
+
+
+    /**
+     * 负载均衡算法选择  [默认随机]
+     */
+    private LoadBalancerEnum loadBalancer;
+
+
+    /**
+     * 设置默认值
+     */
+    public LoadBalancerEnum getLoadBalancer() {
+        if(loadBalancer == null){
+            return LoadBalancerEnum.RANDOM;
+        }
+        return loadBalancer;
+    }
 }
