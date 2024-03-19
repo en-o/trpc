@@ -9,4 +9,4 @@ trpc:
     - http://127.0.0.1:8083
   scan-packages:
     - cn.tannn.trpc.demo.consumer
-  load-balancer: ROUND_RIBBON
+#  load-balancer: ROUND_RIBBON
