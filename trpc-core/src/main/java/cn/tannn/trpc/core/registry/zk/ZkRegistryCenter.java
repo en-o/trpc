@@ -114,7 +114,7 @@ public class ZkRegistryCenter implements RegistryCenter {
     public void unregister(ServiceMeta service, InstanceMeta instance) {
 
         // zk 路径以 / 分割
-        String servicePath = "/" + service;
+        String servicePath = "/" + service.toPath();
         try {
             // 判断服务是否存在
             if (client.checkExists().forPath(servicePath) == null) {
