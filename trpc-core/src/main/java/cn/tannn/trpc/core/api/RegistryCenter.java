@@ -1,5 +1,7 @@
 package cn.tannn.trpc.core.api;
 
+import cn.tannn.trpc.core.meta.InstanceMeta;
+import cn.tannn.trpc.core.meta.ServiceMeta;
 import cn.tannn.trpc.core.registry.ChangedListener;
 
 import java.util.List;
@@ -12,7 +14,15 @@ import java.util.List;
  * @date 2024-03-16 20:40
  */
 public interface RegistryCenter {
+
+    /**
+     * 启动注册
+     */
     void start();
+
+    /**
+     * 销毁注销
+     */
     void stop();
 
 
@@ -22,30 +32,31 @@ public interface RegistryCenter {
      * @param service 服务
      * @param instance 实例
      */
-    void register(String service, String instance);
+    void register(ServiceMeta service, InstanceMeta instance);
 
     /**
      * 注销
      * @param service 服务
      * @param instance 实例
      */
-    void unregister(String service, String instance);
+    void unregister(ServiceMeta service, InstanceMeta instance);
 
 
     // consumer侧
 
     /**
      * 获取服务的  instance
+     * @param service ServiceMeta
      * @return instance
      */
-    List<String> fetchAll(String service);
+    List<InstanceMeta> fetchAll(ServiceMeta service);
 
     /**
      * 订阅服务 instance 的变化，通知消费者刷新列表
      * @param service 服务
      * @param changedListener 监听
      */
-    void subscribe(String service, ChangedListener changedListener);
+    void subscribe(ServiceMeta service, ChangedListener changedListener);
 
 
     /**
@@ -53,9 +64,9 @@ public interface RegistryCenter {
      */
     class StaticRegistryCenter implements RegistryCenter {
 
-        List<String> providers;
+        List<InstanceMeta> providers;
 
-        public StaticRegistryCenter(List<String> providers) {
+        public StaticRegistryCenter(List<InstanceMeta> providers) {
             this.providers = providers;
         }
 
@@ -70,22 +81,22 @@ public interface RegistryCenter {
         }
 
         @Override
-        public void register(String service, String instance) {
+        public void register(ServiceMeta service, InstanceMeta instance) {
 
         }
 
         @Override
-        public void unregister(String service, String instance) {
+        public void unregister(ServiceMeta service, InstanceMeta instance) {
 
         }
 
         @Override
-        public List<String> fetchAll(String service) {
+        public List<InstanceMeta> fetchAll(ServiceMeta service) {
             return providers;
         }
 
         @Override
-        public void subscribe(String service, ChangedListener changedListener) {
+        public void subscribe(ServiceMeta service, ChangedListener changedListener) {
 
         }
 

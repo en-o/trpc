@@ -1,6 +1,7 @@
 package cn.tannn.trpc.core.cluster;
 
 import cn.tannn.trpc.core.api.LoadBalancer;
+import cn.tannn.trpc.core.meta.InstanceMeta;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -12,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @version V1.0
  * @date 2024-03-16 19:53
  */
-public class RoundRibbonLoadBalancer<T> implements LoadBalancer<T> {
+public class RoundRibbonLoadBalancer implements LoadBalancer {
 
     /**
      * int 小心超过上限，出溢出问题 变成负数
@@ -21,7 +22,7 @@ public class RoundRibbonLoadBalancer<T> implements LoadBalancer<T> {
     AtomicInteger index = new AtomicInteger(0);
 
     @Override
-    public T choose(List<T> providers) {
+    public InstanceMeta choose(List<InstanceMeta> providers) {
         if (providers == null || providers.isEmpty()) {
             return null;
         }

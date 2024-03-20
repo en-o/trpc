@@ -22,10 +22,10 @@ public class RpcContext<T> {
     /**
      * 路由
      */
-    Router<T> router;
+    Router router;
 
     /**
      * 负载均衡器
      */
-    LoadBalancer<T> loadBalancer;
+    LoadBalancer loadBalancer;
 }

@@ -1,5 +1,7 @@
 package cn.tannn.trpc.core.api;
 
+import cn.tannn.trpc.core.meta.InstanceMeta;
+
 import java.util.List;
 
 /**
@@ -11,14 +13,14 @@ import java.util.List;
  * @version V1.0
  * @date 2024-03-16 19:12
  */
-public interface LoadBalancer<T> {
+public interface LoadBalancer {
 
     /**
      * 选择路由
      * @param providers 服务提供者路由集合
      * @return 路由地址
      */
-    T choose(List<T> providers);
+    InstanceMeta choose(List<InstanceMeta> providers);
 
 
 

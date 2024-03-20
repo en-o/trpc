@@ -5,6 +5,7 @@ import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
 import cn.tannn.trpc.core.consumer.http.OkHttpInvoker;
 import cn.tannn.trpc.core.exception.ConsumerException;
+import cn.tannn.trpc.core.meta.InstanceMeta;
 import cn.tannn.trpc.core.util.MethodUtils;
 import cn.tannn.trpc.core.util.TypeUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -24,13 +25,13 @@ import java.util.List;
 public class TInvocationHandler implements InvocationHandler {
     Class<?> service;
     RpcContext<String> rpcContext;
-    List<String> providers;
+    List<InstanceMeta> providers;
 
     HttpInvoker httpInvoker = new OkHttpInvoker();
 
 
 
-    public TInvocationHandler(Class<?> service, RpcContext rpcContext, List<String> providers) {
+    public TInvocationHandler(Class<?> service, RpcContext rpcContext, List<InstanceMeta> providers) {
         this.service = service;
         this.rpcContext = rpcContext;
         this.providers = providers;
@@ -47,12 +48,12 @@ public class TInvocationHandler implements InvocationHandler {
         RpcRequest rpcRequest = new RpcRequest(service.getCanonicalName(), MethodUtils.methodSign(method), args);
 
         // 路由
-        List<String> urls = rpcContext.getRouter().route(this.providers);
+        List<InstanceMeta> instances = rpcContext.getRouter().route(this.providers);
         // 选择路由
-        String url = rpcContext.getLoadBalancer().choose(urls);
-        log.debug("loadBalancer.choose(urls) ==> " + url);
+        InstanceMeta instance = rpcContext.getLoadBalancer().choose(instances);
+        log.debug("loadBalancer.choose(urls) ==> " + instance);
         // 发送请求
-        RpcResponse<Object> rpcResponse = httpInvoker.post(rpcRequest, url);
+        RpcResponse<Object> rpcResponse = httpInvoker.post(rpcRequest,  instance.toUrl());
         if (rpcResponse.isStatus()) {
             Object data = rpcResponse.getData();
             return TypeUtils.castMethodResult(method, data);

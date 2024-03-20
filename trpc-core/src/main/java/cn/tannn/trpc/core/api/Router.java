@@ -1,5 +1,7 @@
 package cn.tannn.trpc.core.api;
 
+import cn.tannn.trpc.core.meta.InstanceMeta;
+
 import java.util.List;
 
 /**
@@ -9,14 +11,14 @@ import java.util.List;
  * @version V1.0
  * @date 2024-03-16 19:13
  */
-public interface Router<T> {
+public interface Router {
 
     /**
      * 路由
      * @param providers 服务提供者
      * @return 路由
      */
-    List<T> route(List<T> providers);
+    List<InstanceMeta> route(List<InstanceMeta> providers);
 
     /**
      * 默认实现

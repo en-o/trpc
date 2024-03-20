@@ -2,7 +2,11 @@ package cn.tannn.trpc.core.providers;
 
 import cn.tannn.trpc.core.annotation.TProvider;
 import cn.tannn.trpc.core.api.RegistryCenter;
+import cn.tannn.trpc.core.config.RpcProperties;
+import cn.tannn.trpc.core.config.ServiceProperties;
+import cn.tannn.trpc.core.meta.InstanceMeta;
 import cn.tannn.trpc.core.meta.ProviderMeta;
+import cn.tannn.trpc.core.meta.ServiceMeta;
 import cn.tannn.trpc.core.util.MethodUtils;
 import jakarta.annotation.PreDestroy;
 import lombok.Data;
@@ -31,6 +35,12 @@ import java.util.Map;
 @Data
 public class ProviderBootstrap implements ApplicationContextAware {
 
+    private final RpcProperties rpcProperties;
+
+    public ProviderBootstrap(RpcProperties rpcProperties) {
+        this.rpcProperties = rpcProperties;
+    }
+
     /**
      * 存储所有的提供者 , 其中包含了[全限定名，提供者元数据]
      */
@@ -46,16 +56,15 @@ public class ProviderBootstrap implements ApplicationContextAware {
      */
     RegistryCenter registryCenter;
 
-    /**
-     * 当前项目的端口 - 用于注册到rc
-     */
+
     @Value("${server.port}")
-    private String port;
+    private Integer port;
+
 
     /**
      * ip+port：start()的时候组装。unregisterService/registerService 的时候使用
      */
-    private String instance;
+    private InstanceMeta instance;
 
     /**
      * init : 拿到 所有标记了TProvider注解的类（所有的提供者），并存储
@@ -83,7 +92,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
         // 注册中心开始工作
         registryCenter.start();
         String ip = InetAddress.getLocalHost().getHostAddress();
-        instance = ip + "_" + port;
+        instance = InstanceMeta.http(ip,port);
         skeleton.keySet().forEach(this::registerService);
         log.info("ProviderBootstrap started.");
     }
@@ -104,41 +113,51 @@ public class ProviderBootstrap implements ApplicationContextAware {
     /**
      *  注销服务  - 注册中心
      *
-     * @param service service
+     * @param serviceName serviceName
      */
-    private void unregisterService(String service) {
-        registryCenter.unregister(service, instance);
+    private void unregisterService(String serviceName) {
+        ServiceProperties app = rpcProperties.getApp();
+        ServiceMeta meta = new ServiceMeta(serviceName);
+        meta.setAppid(app.getAppid());
+        meta.setNamespace(app.getNamespace());
+        meta.setEnv(app.getEnv());
+        registryCenter.unregister(meta, instance);
     }
 
     /**
      * 注册服务 - 注册中心
      *
-     * @param service service
+     * @param serviceName serviceName
      */
-    private void registerService(String service) {
-        registryCenter.register(service, instance);
+    private void registerService(String serviceName) {
+        ServiceProperties app = rpcProperties.getApp();
+        ServiceMeta meta = new ServiceMeta(serviceName);
+        meta.setAppid(app.getAppid());
+        meta.setNamespace(app.getNamespace());
+        meta.setEnv(app.getEnv());
+        registryCenter.register(meta, instance);
     }
 
 
     /**
      * 产出提供者
      *
-     * @param x 接口
+     * @param impl 接口
      */
-    public void genInterface(Object x) {
+    public void genInterface(Object impl) {
         // 默认只拿一个接口
 //        Class<?> anInterface = x.getClass().getInterfaces()[0];]
         // 处理多个接口
-        Arrays.stream(x.getClass().getInterfaces()).forEach(itfer -> {
+        Arrays.stream(impl.getClass().getInterfaces()).forEach(service -> {
             // todo 这里可以拦截某些接口不做处理 ps: spring不支持多个实现类的bean,非要弄的话需要做特殊处理
-            for (Method method : itfer.getMethods()) {
+            for (Method method : service.getMethods()) {
                 // todo 这里可以对方法进行白名单处理
 
                 //  这里过滤 Object的一些方法
                 if (MethodUtils.checkLocalMethod(method)) {
                     continue;
                 }
-                createProvider(itfer, x, method);
+                createProvider(service, impl, method);
             }
         });
 
@@ -148,11 +167,12 @@ public class ProviderBootstrap implements ApplicationContextAware {
     /**
      * 存储提供者
      */
-    private void createProvider(Class<?> anInterface, Object aclass, Method method) {
+    private void createProvider(Class<?> anInterface, Object impl, Method method) {
         ProviderMeta providerMeta = new ProviderMeta();
         providerMeta.setMethod(method);
-        providerMeta.setServiceImpl(aclass);
         providerMeta.setMethodSign(MethodUtils.methodSign(method));
+        providerMeta.setServiceImpl(impl);
+
         log.info(" create a provider: " + providerMeta);
         skeleton.add(anInterface.getCanonicalName(), providerMeta);
     }

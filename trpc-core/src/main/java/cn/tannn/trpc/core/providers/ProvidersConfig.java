@@ -3,7 +3,7 @@ package cn.tannn.trpc.core.providers;
 import cn.tannn.trpc.core.api.RegistryCenter;
 import cn.tannn.trpc.core.config.RpcProperties;
 import cn.tannn.trpc.core.enums.RegistryCenterEnum;
-import cn.tannn.trpc.core.registry.ZkRegistryCenter;
+import cn.tannn.trpc.core.registry.zk.ZkRegistryCenter;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -23,8 +23,8 @@ public class ProvidersConfig {
      * init - method
      */
     @Bean
-    ProviderBootstrap providersBootstrap(){
-       return new ProviderBootstrap();
+    ProviderBootstrap providersBootstrap(RpcProperties rpcProperties){
+       return new ProviderBootstrap(rpcProperties);
     }
 
     /**
