@@ -1,6 +1,7 @@
 package cn.tannn.trpc.core.config;
 
 import cn.tannn.trpc.core.enums.LoadBalancerEnum;
+import cn.tannn.trpc.core.enums.RegistryCenterEnum;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -15,14 +16,14 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "trpc")
 @Component
 @Data
-public class ConsumerProperties {
+public class RpcProperties {
 
     /**
-     * 服务端访问地址,多个逗号隔开[静态注册]
+     * 服务端访问地址,多个逗号隔开[静态注册 ip_port]
      * <pr>
-     *     - http://127.0.0.1:8081
-     *     - http://127.0.0.1:8082
-     *     - http://127.0.0.1:8083
+     *     - 127.0.0.1_8083
+     *     - 127.0.0.1_8083
+     *     - 127.0.0.1_8083
      * </pr>
      */
     private String[] providers;
@@ -43,6 +44,9 @@ public class ConsumerProperties {
     private LoadBalancerEnum loadBalancer;
 
 
+    private RegistryCenterEnum registryCenter;
+
+
     /**
      * 设置默认值
      */
@@ -51,5 +55,12 @@ public class ConsumerProperties {
             return LoadBalancerEnum.RANDOM;
         }
         return loadBalancer;
+    }
+
+    public RegistryCenterEnum getRegistryCenter() {
+        if(registryCenter == null){
+            return RegistryCenterEnum.DEF;
+        }
+        return registryCenter;
     }
 }
