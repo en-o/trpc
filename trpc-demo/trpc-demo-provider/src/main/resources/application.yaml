@@ -15,3 +15,7 @@ trpc:
       - ip: 127.0.0.1
         port: 20242
   load-balancer: round_ribbon
+  app:
+    appid: provider
+    env: dev
+    namespace: dev

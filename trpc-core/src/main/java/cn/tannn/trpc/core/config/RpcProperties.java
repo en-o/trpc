@@ -38,6 +38,13 @@ public class RpcProperties {
      */
     private LoadBalancerEnum loadBalancer;
 
+
+    /**
+     * 服务信息
+     */
+    @NestedConfigurationProperty
+    private ServiceProperties app;
+
     /**
      * 注册中心
      */

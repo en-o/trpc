@@ -1,10 +1,15 @@
 package cn.tannn.trpc.core.consumer;
 
+import cn.tannn.trpc.core.annotation.TConsumer;
 import cn.tannn.trpc.core.api.LoadBalancer;
 import cn.tannn.trpc.core.api.RegistryCenter;
 import cn.tannn.trpc.core.api.Router;
 import cn.tannn.trpc.core.api.RpcContext;
+import cn.tannn.trpc.core.config.RpcProperties;
+import cn.tannn.trpc.core.config.ServiceProperties;
 import cn.tannn.trpc.core.exception.ConsumerException;
+import cn.tannn.trpc.core.meta.InstanceMeta;
+import cn.tannn.trpc.core.meta.ServiceMeta;
 import cn.tannn.trpc.core.util.MethodUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
@@ -19,8 +24,10 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 消费者处理器
@@ -35,7 +42,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
     /**
      * 设置包扫描路径
      */
-    private final String[] scanPackages;
+    private final RpcProperties rpcProperties;
 
 
     /**
@@ -49,8 +56,10 @@ public class ConsumerBootstrap implements ApplicationContextAware {
     private Map<String, Object> stub = new HashMap<>();
 
 
-    public ConsumerBootstrap(String[] scanPackages) {
-        this.scanPackages = scanPackages;
+
+
+    public ConsumerBootstrap(RpcProperties rpcProperties) {
+        this.rpcProperties = rpcProperties;
     }
 
 
@@ -76,7 +85,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         provider.addIncludeFilter(new AnnotationTypeFilter(Component.class));
         provider.addIncludeFilter(new AnnotationTypeFilter(Service.class));
         provider.addIncludeFilter(new AnnotationTypeFilter(Bean.class));
-        for (String scanPackage : scanPackages) {
+        for (String scanPackage : rpcProperties.getScanPackages()) {
             Set<BeanDefinition> candidateComponents = provider.findCandidateComponents(scanPackage);
             scanConsumerAndProxy(candidateComponents);
         }
@@ -95,7 +104,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         Router router = context.getBean(Router.class);
         RegistryCenter registryCenter = context.getBean(RegistryCenter.class);
 
-        RpcContext<String> rpcContext = new RpcContext<>();
+        RpcContext rpcContext = new RpcContext();
         rpcContext.setLoadBalancer(loadBalancer);
         rpcContext.setRouter(router);
 
@@ -104,7 +113,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
                 Object bean = getBean(context, beanDefinition);
                 if (bean != null) {
                     // 获取标注了TConsumer注解的属性字段
-                    List<Field> fields = MethodUtils.findAnnotatedField(bean.getClass());
+                    List<Field> fields = MethodUtils.findAnnotatedField(bean.getClass(), TConsumer.class);
                     fields.forEach(field -> {
                         log.info(" ===> " + field.getName());
                         try {
@@ -143,16 +152,18 @@ public class ConsumerBootstrap implements ApplicationContextAware {
      */
     private Object createFromRegistry(Class<?> service, RpcContext rpcContext, RegistryCenter registryCenter) {
         String serviceName = service.getCanonicalName();
+        ServiceProperties app = rpcProperties.getApp();
+        ServiceMeta meta = new ServiceMeta(serviceName);
+        meta.setAppid(app.getAppid());
+        meta.setNamespace(app.getNamespace());
+        meta.setEnv(app.getEnv());
         // 由于此处只会在启动时处理一次，所以需要下面的订阅，订阅服务后，当数据发生了变动会重新执行
-        List<String> providers = mapUrl(registryCenter.fetchAll(serviceName));
+        List<InstanceMeta> providers = registryCenter.fetchAll(meta);
         log.info("===> map to provider: ");
-        if (log.isDebugEnabled()) {
-            providers.forEach(log::debug);
-        }
         // 订阅服务，感知服务变更
-        registryCenter.subscribe(serviceName, event -> {
+        registryCenter.subscribe(meta, event -> {
             providers.clear();
-            providers.addAll(mapUrl(event.getData()));
+            providers.addAll(event.getData());
         });
 
         return createConsumer(service, rpcContext, providers);
@@ -205,23 +216,10 @@ public class ConsumerBootstrap implements ApplicationContextAware {
      * @return 代理类
      */
     private Object createConsumer(Class<?> service
-            , RpcContext rpcContext, List<String> providers) {
+            , RpcContext rpcContext, List<InstanceMeta> providers) {
         // 对 service进行操作时才会被触发
         return Proxy.newProxyInstance(service.getClassLoader(),
                 new Class[]{service}, new TInvocationHandler(service, rpcContext, providers));
-    }
-
-
-
-
-    /**
-     * 处理注册中心中的
-     *
-     * @param nodes 注册中心里的所有节点
-     * @return 处理成标准http地址
-     */
-    private List<String> mapUrl(List<String> nodes) {
-        return nodes.stream().map(x -> "http://" + x.replace("_", ":")).collect(Collectors.toList());
     }
 
 }

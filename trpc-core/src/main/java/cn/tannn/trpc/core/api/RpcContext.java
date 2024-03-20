@@ -12,7 +12,7 @@ import java.util.List;
  * @date 2024-03-16 20:26
  */
 @Data
-public class RpcContext<T> {
+public class RpcContext {
 
     /**
      * 过滤器
@@ -22,10 +22,10 @@ public class RpcContext<T> {
     /**
      * 路由
      */
-    Router<T> router;
+    Router router;
 
     /**
      * 负载均衡器
      */
-    LoadBalancer<T> loadBalancer;
+    LoadBalancer loadBalancer;
 }
