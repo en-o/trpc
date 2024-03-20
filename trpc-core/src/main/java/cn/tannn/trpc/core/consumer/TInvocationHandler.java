@@ -3,11 +3,13 @@ package cn.tannn.trpc.core.consumer;
 import cn.tannn.trpc.core.api.RpcContext;
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
+import cn.tannn.trpc.core.exception.ConsumerException;
 import cn.tannn.trpc.core.util.MethodUtils;
 import cn.tannn.trpc.core.util.TypeUtils;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 
 import java.lang.reflect.*;
@@ -21,6 +23,7 @@ import java.util.concurrent.TimeUnit;
  * @version V1.0
  * @date 2024-03-10 20:03
  */
+@Slf4j
 public class TInvocationHandler implements InvocationHandler {
     Class<?> service;
     RpcContext<String> rpcContext;
@@ -51,7 +54,7 @@ public class TInvocationHandler implements InvocationHandler {
         List<String> urls = rpcContext.getRouter().route(this.providers);
         // 选择路由
         String url = rpcContext.getLoadBalancer().choose(urls);
-        System.out.println("loadBalancer.choose(urls) ==> " + url);
+        log.debug("loadBalancer.choose(urls) ==> " + url);
         // 发送请求
         RpcResponse rpcResponse = post(rpcRequest, url);
         if (rpcResponse.isStatus()) {
@@ -113,7 +116,7 @@ public class TInvocationHandler implements InvocationHandler {
         } else {
             // 处理回传的调用期间发生的异常
             Exception ex = rpcResponse.getEx();
-            throw new RuntimeException(ex);
+            throw new ConsumerException(ex);
         }
     }
 
@@ -138,17 +141,17 @@ public class TInvocationHandler implements InvocationHandler {
             return new RpcResponse(false,null,new RuntimeException("router is empty"));
         }
         String reqJson = JSON.toJSONString(rpcRequest);
-        System.out.println("reqJson =====> " + reqJson);
+        log.debug(" ===> reqJson = " + reqJson);
         Request request = new Request.Builder()
                 .url(url)
                 .post(RequestBody.create(reqJson, JSON_TYPE))
                 .build();
         try {
             String responseJson = httpClient.newCall(request).execute().body().string();
-            System.out.println("respJson =====> " + responseJson);
+            log.debug(" ===> respJson = " + responseJson);
             return JSON.parseObject(responseJson, RpcResponse.class);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new ConsumerException(e);
         }
     }
 }

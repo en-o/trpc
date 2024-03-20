@@ -5,6 +5,8 @@ import cn.tannn.trpc.core.api.LoadBalancer;
 import cn.tannn.trpc.core.api.RegistryCenter;
 import cn.tannn.trpc.core.api.Router;
 import cn.tannn.trpc.core.api.RpcContext;
+import cn.tannn.trpc.core.exception.ConsumerException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
@@ -27,6 +29,7 @@ import java.util.stream.Collectors;
  * @version V1.0
  * @date 2024-03-10 19:47
  */
+@Slf4j
 public class ConsumerBootstrap implements ApplicationContextAware {
 
     /**
@@ -64,13 +67,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
      * <pr>为了包装所有实例都已经加载完成，在 使用 runner 主动调用，确保实例都加载完成</pr>
      */
     public void start() {
-        LoadBalancer loadBalancer = context.getBean(LoadBalancer.class);
-        Router router = context.getBean(Router.class);
-        RegistryCenter registryCenter = context.getBean(RegistryCenter.class);
 
-        RpcContext<String> rpcContext = new RpcContext<>();
-        rpcContext.setLoadBalancer(loadBalancer);
-        rpcContext.setRouter(router);
 
         // 扫描指定路径 , true 扫描spring 注解 @Component, @Repository, @Service, and @Controller
         ClassPathScanningCandidateComponentProvider provider =
@@ -81,7 +78,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         provider.addIncludeFilter(new AnnotationTypeFilter(Bean.class));
         for (String scanPackage : scanPackages) {
             Set<BeanDefinition> candidateComponents = provider.findCandidateComponents(scanPackage);
-            scanConsumerAndProxy(candidateComponents, context, rpcContext, registryCenter);
+            scanConsumerAndProxy(candidateComponents);
         }
     }
 
@@ -89,41 +86,47 @@ public class ConsumerBootstrap implements ApplicationContextAware {
      * 扫描拥有注解的类并设置动态代理
      *
      * @param candidateComponents BeanDefinition
-     * @param applicationContext  ApplicationContext
      */
-    private void scanConsumerAndProxy(Set<BeanDefinition> candidateComponents
-            , ApplicationContext applicationContext
-            , RpcContext rpcContext, RegistryCenter registryCenter) {
+    private void scanConsumerAndProxy(Set<BeanDefinition> candidateComponents) {
+
+        LoadBalancer loadBalancer = context.getBean(LoadBalancer.class);
+        Router router = context.getBean(Router.class);
+        RegistryCenter registryCenter = context.getBean(RegistryCenter.class);
+
+        RpcContext<String> rpcContext = new RpcContext<>();
+        rpcContext.setLoadBalancer(loadBalancer);
+        rpcContext.setRouter(router);
+
         for (BeanDefinition beanDefinition : candidateComponents) {
             try {
-                Object bean = getBean(applicationContext, beanDefinition);
-                System.out.println("bean ===> " + bean);
+                Object bean = getBean(context, beanDefinition);
                 if (bean != null) {
                     // 获取标注了TConsumer注解的属性字段
                     List<Field> fields = findAnnotatedField(bean.getClass());
                     fields.forEach(field -> {
+                        log.info(" ===> " + field.getName());
                         try {
                             // 为获取到的属性对象生成代理
                             Class<?> service = field.getType();
                             // 获取全限定名称
                             String serviceName = service.getCanonicalName();
                             // 查询缓存 - 由于 rpc service会被多个地方用到，所有这里处理以就行了，后面再用直接取
-                            Object existBean = stub.get(serviceName);
-                            if (existBean == null) {
+                            Object consumer = stub.get(serviceName);
+                            if (consumer == null) {
                                 // 为属性字段查询他的实现对象 - getXXImplBean
-                                existBean = createFromRegistry(service, rpcContext, registryCenter);
-                                stub.put(serviceName, existBean);
+                                consumer = createFromRegistry(service, rpcContext, registryCenter);
+                                stub.put(serviceName, consumer);
                             }
                             // 将实现对象加载到当前属性字段里去 （filed = new XXImpl()）
                             field.setAccessible(true);
-                            field.set(bean, existBean);
+                            field.set(bean, consumer);
                         } catch (IllegalAccessException e) {
-                            throw new RuntimeException(e);
+                            throw new ConsumerException(e);
                         }
                     });
                 }
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new ConsumerException(e);
             }
         }
     }
@@ -132,7 +135,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
      * 通过注册中心创建代理
      *
      * @param service        service
-     * @param rpcContext 上下文
+     * @param rpcContext     上下文
      * @param registryCenter 注册中心
      * @return 代理类
      */
@@ -140,9 +143,10 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         String serviceName = service.getCanonicalName();
         // 由于此处只会在启动时处理一次，所以需要下面的订阅，订阅服务后，当数据发生了变动会重新执行
         List<String> providers = mapUrl(registryCenter.fetchAll(serviceName));
-        System.out.println("===> map to provider: ");
-        providers.forEach(System.out::println);
-
+        log.info("===> map to provider: ");
+        if (log.isDebugEnabled()) {
+            providers.forEach(log::debug);
+        }
         // 订阅服务，感知服务变更
         registryCenter.subscribe(serviceName, event -> {
             providers.clear();
@@ -188,7 +192,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         try {
             return Class.forName(beanDefinition.getBeanClassName());
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Cannot load bean class", e);
+            throw new ConsumerException("Cannot load bean class", e);
         }
     }
 

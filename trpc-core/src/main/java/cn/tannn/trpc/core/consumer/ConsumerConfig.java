@@ -8,7 +8,7 @@ import cn.tannn.trpc.core.cluster.RoundRibbonLoadBalancer;
 import cn.tannn.trpc.core.config.ConsumerProperties;
 import cn.tannn.trpc.core.enums.LoadBalancerEnum;
 import cn.tannn.trpc.core.registry.ZkRegistryCenter;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +22,7 @@ import org.springframework.core.annotation.Order;
  * @date 2024-03-06 21:33
  */
 @AutoConfiguration
+@Slf4j
 public class ConsumerConfig {
 
 
@@ -51,9 +52,9 @@ public class ConsumerConfig {
     @Order(Integer.MIN_VALUE)
     public ApplicationRunner consumerBootstrapRunner(ConsumerBootstrap consumerBootstrap) {
         return x -> {
-            System.out.println("consumerBootstrap starting ...");
+            log.info("consumerBootstrap starting ...");
             consumerBootstrap.start();
-            System.out.println("consumerBootstrap started ...");
+            log.info("consumerBootstrap started ...");
         };
     }
 

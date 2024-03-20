@@ -4,11 +4,13 @@ import cn.tannn.trpc.core.annotation.TProvider;
 import cn.tannn.trpc.core.api.RegistryCenter;
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
+import cn.tannn.trpc.core.exception.ProviderException;
 import cn.tannn.trpc.core.meta.ProviderMeta;
 import cn.tannn.trpc.core.util.MethodUtils;
 import cn.tannn.trpc.core.util.TypeUtils;
 import jakarta.annotation.PreDestroy;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -31,6 +33,7 @@ import java.util.Optional;
  * @version V1.0
  * @date 2024-03-06 21:33
  */
+@Slf4j
 public class ProviderBootstrap implements ApplicationContextAware {
     /**
      * 存储所有的提供者 , 其中包含了[全限定名，提供者元数据]
@@ -64,11 +67,14 @@ public class ProviderBootstrap implements ApplicationContextAware {
     @SneakyThrows
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        log.info("ProviderBootstrap init...");
         this.context = applicationContext;
         registryCenter = context.getBean(RegistryCenter.class);
         // 所有标记了 @TProvider 注解的类
         Map<String, Object> providers = context.getBeansWithAnnotation(TProvider.class);
+        providers.forEach((x,y) -> log.info(x));
         providers.values().forEach(this::genInterface);
+        log.info("ProviderBootstrap initialized.");
     }
 
     /**
@@ -77,9 +83,13 @@ public class ProviderBootstrap implements ApplicationContextAware {
      */
     @SneakyThrows
     public void start() {
+        log.info("ProviderBootstrap start...");
+        // 注册中心开始工作
+        registryCenter.start();
         String ip = InetAddress.getLocalHost().getHostAddress();
         instance = ip + "_" + port;
         skeleton.keySet().forEach(this::registerService);
+        log.info("ProviderBootstrap started.");
     }
 
     /**
@@ -87,7 +97,11 @@ public class ProviderBootstrap implements ApplicationContextAware {
      */
     @PreDestroy
     public void stop(){
+        log.info("ProviderBootstrap stop...");
         skeleton.keySet().forEach(this::unregisterService);
+        // 注册中心工作结束下班
+        registryCenter.stop();
+        log.info("ProviderBootstrap stopped.");
     }
 
 
@@ -106,8 +120,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
      * @param service service
      */
     private void registerService(String service) {
-        RegistryCenter rc = context.getBean(RegistryCenter.class);
-        rc.register(service, instance);
+        registryCenter.register(service, instance);
     }
 
 
@@ -144,7 +157,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
         providerMeta.setMethod(method);
         providerMeta.setServiceImpl(aclass);
         providerMeta.setMethodSign(MethodUtils.methodSign(method));
-        System.out.println(" create a provider: " + providerMeta);
+        log.info(" create a provider: " + providerMeta);
         skeleton.add(anInterface.getCanonicalName(), providerMeta);
     }
 
@@ -161,7 +174,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
         try {
             ProviderMeta meta = findProviderMeta(providerMetas, request.getMethodSign());
             if (meta == null) {
-                throw new NullPointerException("非法RPC方法调用，当前方法不是RPC接口");
+                throw new ProviderException("非法RPC方法调用，当前方法不是RPC接口");
             }
             Method method = meta.getMethod();
             Object[] args = processArgs(request.getArgs(), method.getParameterTypes());

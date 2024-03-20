@@ -82,38 +82,4 @@ public class TypeUtils {
         return null;
     }
 
-
-    /**
-     * 将基础类型变成包装类型
-     * @param typeName 基础类型名 int,long ..
-     * @return 包装类型
-     * @throws ClassNotFoundException
-     */
-    public static Class<?> castPrimitive(String typeName) throws ClassNotFoundException {
-        if ("int".equals(typeName)) {
-            return Integer.class;
-        }
-        if ("long".equals(typeName)) {
-            return Long.class;
-        }
-        if ("double".equals(typeName)) {
-            return Double.class;
-        }
-        if ("float".equals(typeName)) {
-            return Float.class;
-        }
-        if ("byte".equals(typeName)) {
-            return Byte.class;
-        }
-        if ("short".equals(typeName)) {
-            return Short.class;
-        }
-        if ("char".equals(typeName)) {
-            return Character.class;
-        }
-        if ("boolean".equals(typeName)) {
-            return Boolean.class;
-        }
-        return Class.forName(typeName);
-    }
 }

@@ -1,5 +1,7 @@
 package cn.tannn.trpc.core.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
@@ -8,6 +10,7 @@ import java.util.Arrays;
  * @version V1.0
  * @date 2024-03-12 18:43
  */
+@Slf4j
 public class MethodUtils {
 
     /**

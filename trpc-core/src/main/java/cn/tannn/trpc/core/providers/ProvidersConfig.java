@@ -35,20 +35,19 @@ public class ProvidersConfig {
     @Order(Integer.MIN_VALUE)
     public ApplicationRunner providerBootstrapRunner(ProviderBootstrap providerBootstrap) {
         return x -> {
-            System.out.println("providerBootstrap starting ...");
             providerBootstrap.start();
-            System.out.println("providerBootstrap started ...");
         };
     }
 
     /**
      * 加载注册中心
      * <pr>
-     *  启动自动执行 RegistryCenter#start
-     *  销毁自动执行 RegistryCenter#stop
+     *  启动自动执行 RegistryCenter#start (在providerBootstrap.start()中执行)
+     *  销毁自动执行 RegistryCenter#stop (在providerBootstrap.stop()中执行)
      * </pr>
      */
-    @Bean(initMethod = "start", destroyMethod = "stop")
+//    @Bean(initMethod = "start", destroyMethod = "stop")
+    @Bean
     RegistryCenter providerRc(){
         return new ZkRegistryCenter();
     }
