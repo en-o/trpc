@@ -57,7 +57,7 @@ public class TInvocationHandler implements InvocationHandler {
         String url = rpcContext.getLoadBalancer().choose(urls);
         log.debug("loadBalancer.choose(urls) ==> " + url);
         // 发送请求
-        RpcResponse rpcResponse = post(rpcRequest, url);
+        RpcResponse<Object> rpcResponse = post(rpcRequest, url);
         if (rpcResponse.isStatus()) {
             Object data = rpcResponse.getData();
             return TypeUtils.castMethodResult(method, data);
@@ -86,9 +86,9 @@ public class TInvocationHandler implements InvocationHandler {
      * @param url 请求地址
      * @return
      */
-    private RpcResponse post(RpcRequest rpcRequest, String url) {
+    private RpcResponse<Object> post(RpcRequest rpcRequest, String url) {
         if(url == null){
-            return new RpcResponse(false,null,new RuntimeException("router is empty"));
+            return new RpcResponse<>(false,null,new RuntimeException("router is empty"));
         }
         String reqJson = JSON.toJSONString(rpcRequest);
         log.debug(" ===> reqJson = " + reqJson);

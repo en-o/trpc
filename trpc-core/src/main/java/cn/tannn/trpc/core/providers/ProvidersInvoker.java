@@ -5,7 +5,6 @@ import cn.tannn.trpc.core.api.RpcResponse;
 import cn.tannn.trpc.core.exception.ProviderException;
 import cn.tannn.trpc.core.meta.ProviderMeta;
 import cn.tannn.trpc.core.util.TypeUtils;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.lang.reflect.InvocationTargetException;
@@ -38,8 +37,8 @@ public class ProvidersInvoker {
      * @param request 接口元数据
      * @return 调用结果
      */
-    public RpcResponse invoke(RpcRequest request) {
-        RpcResponse rpcResponse = new RpcResponse();
+    public RpcResponse<Object> invoke(RpcRequest request) {
+        RpcResponse<Object> rpcResponse = new RpcResponse<>();
         List<ProviderMeta> providerMetas = skeleton.get(request.getService());
         try {
             ProviderMeta meta = findProviderMeta(providerMetas, request.getMethodSign());

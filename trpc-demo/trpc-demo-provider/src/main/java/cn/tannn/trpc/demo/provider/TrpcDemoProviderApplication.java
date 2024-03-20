@@ -41,7 +41,7 @@ public class TrpcDemoProviderApplication {
      * @return RpcResponse
      */
     @RequestMapping("/")
-    public RpcResponse invoke(@RequestBody RpcRequest request) {
+    public RpcResponse<Object> invoke(@RequestBody RpcRequest request) {
         return providersInvoker.invoke(request);
     }
 
@@ -57,7 +57,7 @@ public class TrpcDemoProviderApplication {
             rpcRequest.setService("cn.tannn.trpc.demo.api.UserService");
             rpcRequest.setMethodSign(MethodUtils.methodSign(UserService.class.getMethod("findById",Integer.class)));
             rpcRequest.setArgs(new Object[]{100});
-            RpcResponse rpcResponse = providersInvoker.invoke(rpcRequest);
+            RpcResponse<Object> rpcResponse = providersInvoker.invoke(rpcRequest);
             System.out.println("return: " + rpcResponse.getData());
         };
     }
