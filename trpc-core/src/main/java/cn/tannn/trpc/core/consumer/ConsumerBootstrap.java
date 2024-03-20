@@ -1,6 +1,5 @@
 package cn.tannn.trpc.core.consumer;
 
-import cn.tannn.trpc.core.annotation.TConsumer;
 import cn.tannn.trpc.core.api.LoadBalancer;
 import cn.tannn.trpc.core.api.RegistryCenter;
 import cn.tannn.trpc.core.api.Router;
@@ -36,7 +35,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
     /**
      * 设置包扫描路径
      */
-    private String[] scanPackages;
+    private final String[] scanPackages;
 
 
     /**
