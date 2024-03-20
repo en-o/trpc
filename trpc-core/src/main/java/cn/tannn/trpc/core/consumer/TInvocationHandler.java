@@ -24,7 +24,7 @@ import java.util.List;
 @Slf4j
 public class TInvocationHandler implements InvocationHandler {
     Class<?> service;
-    RpcContext<String> rpcContext;
+    RpcContext rpcContext;
     List<InstanceMeta> providers;
 
     HttpInvoker httpInvoker = new OkHttpInvoker();

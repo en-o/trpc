@@ -104,7 +104,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         Router router = context.getBean(Router.class);
         RegistryCenter registryCenter = context.getBean(RegistryCenter.class);
 
-        RpcContext<String> rpcContext = new RpcContext<>();
+        RpcContext rpcContext = new RpcContext();
         rpcContext.setLoadBalancer(loadBalancer);
         rpcContext.setRouter(router);
 
