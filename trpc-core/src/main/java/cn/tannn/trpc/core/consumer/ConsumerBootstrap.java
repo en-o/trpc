@@ -6,6 +6,7 @@ import cn.tannn.trpc.core.api.RegistryCenter;
 import cn.tannn.trpc.core.api.Router;
 import cn.tannn.trpc.core.api.RpcContext;
 import cn.tannn.trpc.core.exception.ConsumerException;
+import cn.tannn.trpc.core.util.MethodUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -67,7 +68,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
      * <pr>为了包装所有实例都已经加载完成，在 使用 runner 主动调用，确保实例都加载完成</pr>
      */
     public void start() {
-
+        log.info("consumerBootstrap starting ...");
 
         // 扫描指定路径 , true 扫描spring 注解 @Component, @Repository, @Service, and @Controller
         ClassPathScanningCandidateComponentProvider provider =
@@ -80,6 +81,8 @@ public class ConsumerBootstrap implements ApplicationContextAware {
             Set<BeanDefinition> candidateComponents = provider.findCandidateComponents(scanPackage);
             scanConsumerAndProxy(candidateComponents);
         }
+
+        log.info("consumerBootstrap started ...");
     }
 
     /**
@@ -102,7 +105,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
                 Object bean = getBean(context, beanDefinition);
                 if (bean != null) {
                     // 获取标注了TConsumer注解的属性字段
-                    List<Field> fields = findAnnotatedField(bean.getClass());
+                    List<Field> fields = MethodUtils.findAnnotatedField(bean.getClass());
                     fields.forEach(field -> {
                         log.info(" ===> " + field.getName());
                         try {
@@ -210,25 +213,6 @@ public class ConsumerBootstrap implements ApplicationContextAware {
     }
 
 
-    /**
-     * 获取自定注解的属性字段
-     *
-     * @param aClass Class
-     * @return Field
-     */
-    private List<Field> findAnnotatedField(Class<?> aClass) {
-        ArrayList<Field> result = new ArrayList<>();
-        while (aClass != null) {
-            Field[] fields = aClass.getDeclaredFields();
-            for (Field field : fields) {
-                if (field.isAnnotationPresent(TConsumer.class)) {
-                    result.add(field);
-                }
-            }
-            aClass = aClass.getSuperclass();
-        }
-        return result;
-    }
 
 
     /**

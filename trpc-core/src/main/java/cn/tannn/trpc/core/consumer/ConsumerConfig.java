@@ -51,11 +51,7 @@ public class ConsumerConfig {
     @Bean
     @Order(Integer.MIN_VALUE)
     public ApplicationRunner consumerBootstrapRunner(ConsumerBootstrap consumerBootstrap) {
-        return x -> {
-            log.info("consumerBootstrap starting ...");
-            consumerBootstrap.start();
-            log.info("consumerBootstrap started ...");
-        };
+        return x -> consumerBootstrap.start();
     }
 
 

@@ -34,9 +34,7 @@ public class ProvidersConfig {
     @Bean
     @Order(Integer.MIN_VALUE)
     public ApplicationRunner providerBootstrapRunner(ProviderBootstrap providerBootstrap) {
-        return x -> {
-            providerBootstrap.start();
-        };
+        return x -> providerBootstrap.start();
     }
 
     /**
@@ -46,7 +44,6 @@ public class ProvidersConfig {
      *  销毁自动执行 RegistryCenter#stop (在providerBootstrap.stop()中执行)
      * </pr>
      */
-//    @Bean(initMethod = "start", destroyMethod = "stop")
     @Bean
     RegistryCenter providerRc(){
         return new ZkRegistryCenter();

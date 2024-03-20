@@ -183,14 +183,9 @@ public class ProviderBootstrap implements ApplicationContextAware {
             rpcResponse.setData(result);
         } catch (InvocationTargetException e) {
             // 把异常传递回去
-            e.printStackTrace();
-            // 多余的栈信息不要
             rpcResponse.setEx(new RuntimeException(e.getTargetException().getMessage()));
-        } catch (Exception e) {
-            e.printStackTrace();
+        }  catch (IllegalAccessException e) {
             // 把异常传递回去
-//            rpcResponse.setEx(e);
-            // 多余的栈信息不要
             rpcResponse.setEx(new RuntimeException(e.getMessage()));
         }
         return rpcResponse;
