@@ -1,7 +1,8 @@
-package cn.tannn.trpc.core.consumer;
+package cn.tannn.trpc.core.consumer.http;
 
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
+import cn.tannn.trpc.core.consumer.HttpInvoker;
 import cn.tannn.trpc.core.exception.ConsumerException;
 import com.alibaba.fastjson2.JSON;
 import lombok.extern.slf4j.Slf4j;

@@ -1,10 +1,9 @@
-package cn.tannn.trpc.core.consumer.http;
+package cn.tannn.trpc.core.consumer;
 
 import cn.tannn.trpc.core.api.RpcContext;
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
-import cn.tannn.trpc.core.consumer.HttpInvoker;
-import cn.tannn.trpc.core.consumer.OkHttpInvoker;
+import cn.tannn.trpc.core.consumer.http.OkHttpInvoker;
 import cn.tannn.trpc.core.exception.ConsumerException;
 import cn.tannn.trpc.core.util.MethodUtils;
 import cn.tannn.trpc.core.util.TypeUtils;

@@ -5,7 +5,6 @@ import cn.tannn.trpc.core.api.LoadBalancer;
 import cn.tannn.trpc.core.api.RegistryCenter;
 import cn.tannn.trpc.core.api.Router;
 import cn.tannn.trpc.core.api.RpcContext;
-import cn.tannn.trpc.core.consumer.http.TInvocationHandler;
 import cn.tannn.trpc.core.exception.ConsumerException;
 import cn.tannn.trpc.core.util.MethodUtils;
 import lombok.extern.slf4j.Slf4j;
