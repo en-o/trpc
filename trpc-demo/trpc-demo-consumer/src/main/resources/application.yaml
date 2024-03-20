@@ -1,5 +1,9 @@
 server:
   port: 8088
+logging:
+  level:
+    root: error
+    cn.tannn.trpc: info
 
 trpc:
   scan-packages:
