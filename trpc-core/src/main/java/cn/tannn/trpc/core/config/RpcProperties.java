@@ -1,9 +1,12 @@
 package cn.tannn.trpc.core.config;
 
+import cn.tannn.trpc.core.config.registry.RegistryCenterProperties;
 import cn.tannn.trpc.core.enums.LoadBalancerEnum;
-import cn.tannn.trpc.core.enums.RegistryCenterEnum;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.stereotype.Component;
 
 /**
@@ -15,18 +18,10 @@ import org.springframework.stereotype.Component;
  */
 @ConfigurationProperties(prefix = "trpc")
 @Component
-@Data
+@Getter
+@Setter
+@ToString
 public class RpcProperties {
-
-    /**
-     * 服务端访问地址,多个逗号隔开[静态注册 ip_port]
-     * <pr>
-     *     - 127.0.0.1_8083
-     *     - 127.0.0.1_8083
-     *     - 127.0.0.1_8083
-     * </pr>
-     */
-    private String[] providers;
 
     /**
      * 客户端扫描包路径
@@ -43,9 +38,11 @@ public class RpcProperties {
      */
     private LoadBalancerEnum loadBalancer;
 
-
-    private RegistryCenterEnum registryCenter;
-
+    /**
+     * 注册中心
+     */
+    @NestedConfigurationProperty
+    private RegistryCenterProperties rc = new RegistryCenterProperties();
 
     /**
      * 设置默认值
@@ -57,10 +54,5 @@ public class RpcProperties {
         return loadBalancer;
     }
 
-    public RegistryCenterEnum getRegistryCenter() {
-        if(registryCenter == null){
-            return RegistryCenterEnum.DEF;
-        }
-        return registryCenter;
-    }
+
 }

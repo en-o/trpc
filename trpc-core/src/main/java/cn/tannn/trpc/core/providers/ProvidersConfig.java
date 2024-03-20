@@ -4,13 +4,10 @@ import cn.tannn.trpc.core.api.RegistryCenter;
 import cn.tannn.trpc.core.config.RpcProperties;
 import cn.tannn.trpc.core.enums.RegistryCenterEnum;
 import cn.tannn.trpc.core.registry.ZkRegistryCenter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
-
-import java.util.List;
 
 /**
  * 配置类
@@ -59,7 +56,7 @@ public class ProvidersConfig {
      */
     @Bean
     RegistryCenter consumerRc(RpcProperties rpcProperties){
-        if(rpcProperties.getRegistryCenter().equals(RegistryCenterEnum.ZK)){
+        if(rpcProperties.getRc().getName().equals(RegistryCenterEnum.ZK)){
             return new ZkRegistryCenter();
         }else {
             return new RegistryCenter.StaticRegistryCenter(null);
