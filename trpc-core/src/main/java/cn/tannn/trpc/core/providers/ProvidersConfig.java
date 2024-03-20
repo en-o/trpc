@@ -28,6 +28,14 @@ public class ProvidersConfig {
     }
 
     /**
+     * create - providersInvoker
+     */
+    @Bean
+    ProvidersInvoker providersInvoker(ProviderBootstrap providersBootstrap){
+        return new ProvidersInvoker(providersBootstrap);
+    }
+
+    /**
      * 在 applicationRunner后主动调用，确保实例全部加载完成，防止初始化的过程中被注册使用导致ClassNotFoundException
      * @param providerBootstrap ProviderBootstrap
      * @return ApplicationRunner
