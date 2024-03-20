@@ -46,7 +46,7 @@ public class ZkRegistryCenter implements RegistryCenter {
         RetryPolicy retry = new ExponentialBackoffRetry(1000, 3);
 
         Connect[] connect = rcp.getConnect();
-        String connectString = "";
+        String connectString;
         if(connect == null || connect.length == 0){
             throw new RegistryCenterException("请填写注册中心连接信息");
         }else {
