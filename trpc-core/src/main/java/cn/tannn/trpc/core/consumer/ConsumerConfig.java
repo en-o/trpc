@@ -30,14 +30,6 @@ public class ConsumerConfig {
 
 
     /**
-     * 配置信息
-     */
-    @Bean
-    RpcProperties consumerProperties(){
-        return new RpcProperties();
-    }
-
-    /**
      * applicationContext
      * @param rpcProperties 设置扫描路径
      */

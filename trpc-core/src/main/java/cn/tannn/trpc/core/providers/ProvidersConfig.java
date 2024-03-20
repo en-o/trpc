@@ -20,16 +20,7 @@ import org.springframework.core.annotation.Order;
 public class ProvidersConfig {
 
     /**
-     * 配置信息
-     */
-    @Bean
-    RpcProperties consumerProperties(){
-        return new RpcProperties();
-    }
-
-    /**
      * init - method
-     * @return
      */
     @Bean
     ProviderBootstrap providersBootstrap(){
