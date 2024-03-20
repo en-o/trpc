@@ -1,10 +1,8 @@
 package cn.tannn.trpc.core.config;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 /**
  * 应用信息 [下面都是服务端的信息，服务端配置的自己的信息,客户端配置文件配置的是服务的信息]

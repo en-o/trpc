@@ -1,7 +1,6 @@
 package cn.tannn.trpc.core.meta;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

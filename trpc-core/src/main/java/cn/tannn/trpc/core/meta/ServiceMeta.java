@@ -1,12 +1,9 @@
 package cn.tannn.trpc.core.meta;
 
 import cn.tannn.trpc.core.config.ServiceProperties;
-import kotlin.Suppress;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 /**
  * 描述服务元数据

@@ -2,7 +2,6 @@ package cn.tannn.trpc.core.config;
 
 import cn.tannn.trpc.core.config.registry.RegistryCenterProperties;
 import cn.tannn.trpc.core.enums.LoadBalancerEnum;
-import cn.tannn.trpc.core.meta.ServiceMeta;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
