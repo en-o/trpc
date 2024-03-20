@@ -1,8 +1,8 @@
 package cn.tannn.trpc.core.util;
 
-import cn.tannn.trpc.core.annotation.TConsumer;
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -70,12 +70,12 @@ public class MethodUtils {
      * @param aClass Class
      * @return Field
      */
-    public static  List<Field> findAnnotatedField(Class<?> aClass) {
+    public static  List<Field> findAnnotatedField(Class<?> aClass, Class<? extends Annotation> annotation) {
         ArrayList<Field> result = new ArrayList<>();
         while (aClass != null) {
             Field[] fields = aClass.getDeclaredFields();
             for (Field field : fields) {
-                if (field.isAnnotationPresent(TConsumer.class)) {
+                if (field.isAnnotationPresent(annotation)) {
                     result.add(field);
                 }
             }

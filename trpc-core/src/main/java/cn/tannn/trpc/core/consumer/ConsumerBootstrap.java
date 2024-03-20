@@ -1,5 +1,6 @@
 package cn.tannn.trpc.core.consumer;
 
+import cn.tannn.trpc.core.annotation.TConsumer;
 import cn.tannn.trpc.core.api.LoadBalancer;
 import cn.tannn.trpc.core.api.RegistryCenter;
 import cn.tannn.trpc.core.api.Router;
@@ -104,7 +105,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
                 Object bean = getBean(context, beanDefinition);
                 if (bean != null) {
                     // 获取标注了TConsumer注解的属性字段
-                    List<Field> fields = MethodUtils.findAnnotatedField(bean.getClass());
+                    List<Field> fields = MethodUtils.findAnnotatedField(bean.getClass(), TConsumer.class);
                     fields.forEach(field -> {
                         log.info(" ===> " + field.getName());
                         try {
@@ -210,8 +211,6 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         return Proxy.newProxyInstance(service.getClassLoader(),
                 new Class[]{service}, new TInvocationHandler(service, rpcContext, providers));
     }
-
-
 
 
     /**
