@@ -40,8 +40,8 @@ public class RpcUserCallApi {
      * @return Integer
      */
     @GetMapping("/id")
-    public Integer findId(){
-        return userService.findId();
+    public float findId(){
+        return userService.findId(1f);
     }
 
     /**
@@ -50,6 +50,6 @@ public class RpcUserCallApi {
      */
     @GetMapping("/name")
     public String findName(){
-        return userService.findName();
+        return userService.getName();
     }
 }

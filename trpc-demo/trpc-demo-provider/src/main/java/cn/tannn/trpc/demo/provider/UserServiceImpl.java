@@ -30,8 +30,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Integer findId() {
-        return 1;
+    public User findById(int id, String name) {
+        return new User(id, "t-" + name + "_" + System.currentTimeMillis());
     }
 
     @Override
@@ -40,8 +40,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Float findId(Float id) {
+    public float findId(long id) {
         return id;
+    }
+
+    @Override
+    public float findId(User id) {
+        return id.getId();
+    }
+
+    @Override
+    public long getId(User user) {
+        return user.getId();
+    }
+
+    @Override
+    public long getId(float id) {
+        return 1L;
     }
 
     @Override
@@ -50,53 +65,38 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Double findId(Double id) {
+    public double findId(int id) {
         return id;
     }
 
     @Override
-    public Long findId(Long id) {
-        return id;
+    public String getName() {
+        return "tan 123";
     }
 
     @Override
-    public long findId(long id) {
-        return id;
+    public String getName(int id) {
+        return "tan -" + id;
     }
 
     @Override
-    public boolean findId(boolean id) {
-        return id;
+    public int[] getIds() {
+        return new int[] {1,2,3};
     }
 
     @Override
-    public boolean[] findId(boolean[] id) {
-        return id;
+    public long[] getLongIds() {
+        return new long[] {100,200,300};
     }
 
     @Override
-    public int findId(User user) {
-        return user.getId();
-    }
-
-    @Override
-    public User[] findUser(User[] user) {
-        return user;
-    }
-
-    @Override
-    public int[] findIds() {
-        return new int[]{1, 2, 3};
-    }
-
-    @Override
-    public int[] findIds(int[] ids) {
+    public int[] getIds(int[] ids) {
         return ids;
     }
 
     @Override
-    public long[] findLongIds() {
-        return new long[]{2, 3, 4};
+    public User[] findUsers(User[] users) {
+        return users;
     }
 
     @Override
@@ -120,7 +120,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String findName() {
-        return "tn";
+    public boolean getFlag(boolean id) {
+        return id;
     }
+
+    @Override
+    public boolean[] getFlag(boolean[] id) {
+        return id;
+    }
+
+    @Override
+    public User findById(long id) {
+        return new User(Long.valueOf(id).intValue(), "tan");
+    }
+
+    @Override
+    public User ex(boolean flag) {
+        if(flag) {
+            throw new RuntimeException("just throw an exception");
+        }
+        return new User(100, "tt100");
+    }
+
+
 }

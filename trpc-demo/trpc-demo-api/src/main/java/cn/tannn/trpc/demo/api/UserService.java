@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 用户接口
+ * 序列化 case
  *
  * @author tnnn
  * @version V1.0
@@ -14,44 +14,46 @@ import java.util.Map;
  */
 public interface UserService {
 
-    /**
-     * 查询用户
-     * @param id id
-     * @return User
-     */
     User findById(Integer id);
+    User findById(int id, String name);
 
-
-
-    /**
-     * 测试返回 Integer
-     * @return Integer
-     */
-    Integer findId();
     float findId(float id);
-    Float findId(Float id);
-    double findId(double id);
-    Double findId(Double id);
-    Long findId(Long id);
-    long findId(long id);
-    boolean findId(boolean id);
-    boolean[] findId(boolean[] id);
-    int findId(User user);
+    float findId(long id);
+    float findId(User id);
 
-    int[] findIds();
-    int[] findIds(int[] ids);
-    long[] findLongIds();
+    long getId(User user);
+
+    long getId(float id);
+
+    double findId(double id);
+
+    double findId(int id);
+
+    String getName();
+
+    String getName(int id);
+
+    int[] getIds();
+
+
+    long[] getLongIds();
+    int[] getIds(int[] ids);
+
+    User[] findUsers(User[] users);
 
     User findUser(User user);
-    User[] findUser(User[] user);
-    List<User> getList(List<User> userList);
-    List<Boolean> getListBoolean(List<Boolean> userListBoolean);
-    Map<String,User> getMap(Map<String,User> userMap);
 
-    /**
-     * 测试返回 String
-     * @return String
-     */
-    String findName();
+    List<User> getList(List<User> userList);
+
+    List<Boolean> getListBoolean(List<Boolean> userListBoolean);
+
+    Map<String, User> getMap(Map<String, User> userMap);
+
+    boolean getFlag(boolean id);
+    boolean[] getFlag(boolean[] id);
+
+    User findById(long id);
+    User ex(boolean flag);
+
 
 }
