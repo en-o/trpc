@@ -9,4 +9,5 @@ trpc:
     - 127.0.0.1_8083
   scan-packages:
     - cn.tannn.trpc.demo.consumer
+  registry-center: zk
 #  load-balancer: ROUND_RIBBON
