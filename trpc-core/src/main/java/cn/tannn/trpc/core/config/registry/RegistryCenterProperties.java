@@ -30,7 +30,7 @@ public class RegistryCenterProperties {
      * </pr>
      */
     @NestedConfigurationProperty
-    private Connect[] connect;
+    private Connect[] connect = new Connect[]{};
 
     /**
      * 注册中心为 def 时 这里用
@@ -56,4 +56,5 @@ public class RegistryCenterProperties {
         }
         return name;
     }
+
 }

@@ -1,8 +1,11 @@
 package cn.tannn.trpc.core.registry;
 
 import cn.tannn.trpc.core.api.RegistryCenter;
+import cn.tannn.trpc.core.config.registry.Connect;
+import cn.tannn.trpc.core.config.registry.RegistryCenterProperties;
 import cn.tannn.trpc.core.exception.ConsumerException;
 import cn.tannn.trpc.core.exception.ProviderException;
+import cn.tannn.trpc.core.exception.RegistryCenterException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.RetryPolicy;
@@ -26,6 +29,12 @@ public class ZkRegistryCenter implements RegistryCenter {
 
     private CuratorFramework client = null;
 
+    private final RegistryCenterProperties rcp;
+
+    public ZkRegistryCenter(RegistryCenterProperties rcp) {
+        this.rcp = rcp;
+    }
+
 
     /**
      * 初始化创建 zk连接
@@ -35,9 +44,18 @@ public class ZkRegistryCenter implements RegistryCenter {
         log.info("zkServer start: ");
         // 重试
         RetryPolicy retry = new ExponentialBackoffRetry(1000, 3);
+
+        Connect[] connect = rcp.getConnect();
+        String connectString = "";
+        if(connect == null || connect.length == 0){
+            throw new RegistryCenterException("请填写注册中心连接信息");
+        }else {
+            // todo 注册中心也可以设置多个, 目前只拿第一个
+            connectString = connect[0].connectString();
+        }
         client = CuratorFrameworkFactory.builder()
-                .connectString("localhost:20242")
-                .namespace("trpc")
+                .connectString(connectString)
+                .namespace(rcp.getNamespace())
                 .retryPolicy(retry)
                 .build();
 

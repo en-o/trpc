@@ -57,7 +57,7 @@ public class ProvidersConfig {
     @Bean
     RegistryCenter consumerRc(RpcProperties rpcProperties){
         if(rpcProperties.getRc().getName().equals(RegistryCenterEnum.ZK)){
-            return new ZkRegistryCenter();
+            return new ZkRegistryCenter(rpcProperties.getRc());
         }else {
             return new RegistryCenter.StaticRegistryCenter(null);
         }

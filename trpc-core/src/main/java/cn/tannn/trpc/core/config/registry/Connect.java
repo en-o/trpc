@@ -5,9 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 
-
 /**
- *
  * 连接
  *
  * @author <a href="https://tannn.cn/">tan</a>
@@ -27,4 +25,12 @@ public class Connect {
      * 端口
      */
     String port;
+
+    /**
+     * 组装 ip+port
+     * @return 127.0.0.1:8080
+     */
+    public String connectString() {
+        return ip + ":" + port;
+    }
 }

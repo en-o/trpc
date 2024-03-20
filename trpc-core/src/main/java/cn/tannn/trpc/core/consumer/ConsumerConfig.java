@@ -89,7 +89,7 @@ public class ConsumerConfig {
     @Bean(initMethod = "start", destroyMethod = "stop")
     RegistryCenter consumerRc(RpcProperties rpcProperties){
         if(rpcProperties.getRc().getName().equals(RegistryCenterEnum.ZK)){
-            return new ZkRegistryCenter();
+            return new ZkRegistryCenter(rpcProperties.getRc());
         }else {
             return new RegistryCenter.StaticRegistryCenter(List.of(rpcProperties.getRc().getProviders()));
         }
