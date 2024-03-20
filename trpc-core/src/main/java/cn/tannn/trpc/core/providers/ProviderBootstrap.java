@@ -145,23 +145,14 @@ public class ProviderBootstrap implements ApplicationContextAware {
      * @param impl 接口
      */
     public void genInterface(Object impl) {
-        // 默认只拿一个接口
-//        Class<?> anInterface = x.getClass().getInterfaces()[0];]
+        // todo 1. getInterfaces可以拦截某些接口不做处理 ps: spring不支持多个实现类的bean,非要弄的话需要做特殊处理
+        //      2. 还可以对方法进行白名单处理
         // 处理多个接口
-        Arrays.stream(impl.getClass().getInterfaces()).forEach(service -> {
-            // todo 这里可以拦截某些接口不做处理 ps: spring不支持多个实现类的bean,非要弄的话需要做特殊处理
-            for (Method method : service.getMethods()) {
-                // todo 这里可以对方法进行白名单处理
-
-                //  这里过滤 Object的一些方法
-                if (MethodUtils.checkLocalMethod(method)) {
-                    continue;
-                }
-                createProvider(service, impl, method);
-            }
-        });
-
-
+        Arrays.stream(impl.getClass().getInterfaces()).forEach(
+                service -> Arrays.stream(service.getMethods())
+                        .filter(MethodUtils::checkLocalMethod)
+                        .forEach(method -> createProvider(service, impl, method))
+                );
     }
 
     /**
