@@ -21,4 +21,5 @@ trpc:
     appid: provider
     env: dev
     namespace: dev
+    version: 0.0.1
 

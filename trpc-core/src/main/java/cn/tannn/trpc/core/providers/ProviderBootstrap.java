@@ -121,6 +121,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
         meta.setAppid(app.getAppid());
         meta.setNamespace(app.getNamespace());
         meta.setEnv(app.getEnv());
+        meta.setVersion(app.getVersion());
         registryCenter.unregister(meta, instance);
     }
 
@@ -135,6 +136,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
         meta.setAppid(app.getAppid());
         meta.setNamespace(app.getNamespace());
         meta.setEnv(app.getEnv());
+        meta.setVersion(app.getVersion());
         registryCenter.register(meta, instance);
     }
 
@@ -150,7 +152,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
         // 处理多个接口
         Arrays.stream(impl.getClass().getInterfaces()).forEach(
                 service -> Arrays.stream(service.getMethods())
-                        .filter(MethodUtils::checkLocalMethod)
+                        .filter(method -> !MethodUtils.checkLocalMethod(method))
                         .forEach(method -> createProvider(service, impl, method))
                 );
     }

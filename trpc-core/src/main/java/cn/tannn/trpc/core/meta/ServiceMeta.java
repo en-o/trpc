@@ -25,9 +25,9 @@ public class ServiceMeta extends ServiceProperties {
 
     /**
      * 组装 注册中心 path
-     * @return zk[app_namespace_env_name]
+     * @return zk[app_namespace_env_name_version]
      */
     public String toPath() {
-        return String.format("%s_%s_%s_%s", getAppid(), getNamespace(), getEnv(), name);
+        return String.format("%s_%s_%s_%s_%s", getAppid(), getNamespace(), getEnv(), name, getVersion());
     }
 }
