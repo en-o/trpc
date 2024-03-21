@@ -121,6 +121,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
         meta.setAppid(app.getAppid());
         meta.setNamespace(app.getNamespace());
         meta.setEnv(app.getEnv());
+        meta.setVersion(app.getVersion());
         registryCenter.unregister(meta, instance);
     }
 
@@ -135,6 +136,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
         meta.setAppid(app.getAppid());
         meta.setNamespace(app.getNamespace());
         meta.setEnv(app.getEnv());
+        meta.setVersion(app.getVersion());
         registryCenter.register(meta, instance);
     }
 

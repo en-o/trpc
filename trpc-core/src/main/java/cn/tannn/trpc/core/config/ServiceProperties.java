@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ServiceProperties {
     /**
-     * appid
+     * appid - 对其spring.application.name
      */
     String appid;
     /**
@@ -26,4 +26,11 @@ public class ServiceProperties {
      * 环境隔离
      */
     String env;
+
+    /**
+     * 版本隔离
+     */
+    String version;
+
+
 }

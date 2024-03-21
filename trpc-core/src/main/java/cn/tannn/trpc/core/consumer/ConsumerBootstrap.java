@@ -157,6 +157,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         meta.setAppid(app.getAppid());
         meta.setNamespace(app.getNamespace());
         meta.setEnv(app.getEnv());
+        meta.setVersion(app.getVersion());
         // 由于此处只会在启动时处理一次，所以需要下面的订阅，订阅服务后，当数据发生了变动会重新执行
         List<InstanceMeta> providers = registryCenter.fetchAll(meta);
         log.info("===> map to provider: ");
