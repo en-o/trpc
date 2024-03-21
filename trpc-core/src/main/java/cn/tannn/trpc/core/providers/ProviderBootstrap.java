@@ -150,7 +150,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
         // 处理多个接口
         Arrays.stream(impl.getClass().getInterfaces()).forEach(
                 service -> Arrays.stream(service.getMethods())
-                        .filter(MethodUtils::checkLocalMethod)
+                        .filter(method -> !MethodUtils.checkLocalMethod(method))
                         .forEach(method -> createProvider(service, impl, method))
                 );
     }
