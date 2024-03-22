@@ -92,7 +92,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         LoadBalancer loadBalancer = context.getBean(LoadBalancer.class);
         Router router = context.getBean(Router.class);
         RegistryCenter registryCenter = context.getBean(RegistryCenter.class);
-        // 启动 rc
+        // 启动 rc todo consumer 没有设置stop
         registryCenter.start();
         if(rpcProperties.getScanPackages() == null || rpcProperties.getScanPackages().length==0){
             throw new ConsumerException("consumer请设置扫描包路径");
