@@ -35,7 +35,7 @@ public class ZkRegistryCenter implements RegistryCenter {
     private CuratorFramework client = null;
 
     private final RegistryCenterProperties rcp;
-    TreeCache cache;
+
 
     public ZkRegistryCenter(RegistryCenterProperties rcp) {
         this.rcp = rcp;
@@ -47,8 +47,8 @@ public class ZkRegistryCenter implements RegistryCenter {
      */
     @Override
     public void start() {
-        if(client != null) {
-            log.info("zkServer starting ... ");
+        if (client != null) {
+            log.info("zkServer alive ... ");
             return;
         }
         log.info("zkServer start ...");
@@ -80,7 +80,6 @@ public class ZkRegistryCenter implements RegistryCenter {
     @Override
     public void stop() {
         log.info(" ===> zk client stopped.");
-        cache.close();
         client.close();
     }
 
@@ -161,7 +160,7 @@ public class ZkRegistryCenter implements RegistryCenter {
     @Override
     public void subscribe(ServiceMeta service, ChangedListener listener) {
         // 通过 client参数 感知服务的上下线
-        cache = TreeCache
+        final TreeCache cache = TreeCache
                 .newBuilder(client, "/" + service.toPath())
                 .setCacheData(true)
                 .setMaxDepth(2)
