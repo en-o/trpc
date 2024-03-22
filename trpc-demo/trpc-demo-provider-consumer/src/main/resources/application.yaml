@@ -24,7 +24,7 @@ trpc:
       - cn.tannn.trpc.demp.providerconsumer
     load-balancer: round_ribbon
     service:
-      appid: provider # 掉自己 providerConsumer # 掉别人provider
+      appid: providerConsumer # 掉自己 providerConsumer # 掉别人provider
       env: dev
       namespace: dev
       version: 0.0.1
