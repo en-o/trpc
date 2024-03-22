@@ -1,6 +1,5 @@
 package cn.tannn.trpc.demo.consumer;
 
-import cn.tannn.trpc.core.annotation.EnableProvider;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 

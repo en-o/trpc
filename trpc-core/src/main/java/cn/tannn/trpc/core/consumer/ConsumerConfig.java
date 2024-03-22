@@ -4,7 +4,6 @@ import cn.tannn.trpc.core.api.LoadBalancer;
 import cn.tannn.trpc.core.api.Router;
 import cn.tannn.trpc.core.cluster.RandomLoadBalancer;
 import cn.tannn.trpc.core.cluster.RoundRibbonLoadBalancer;
-import cn.tannn.trpc.core.config.ConsumerProperties;
 import cn.tannn.trpc.core.config.RpcProperties;
 import cn.tannn.trpc.core.enums.LoadBalancerEnum;
 import lombok.extern.slf4j.Slf4j;
