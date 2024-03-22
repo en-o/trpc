@@ -81,8 +81,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
      * <pr>为了包装所有实例都已经加载完成，在 使用 runner 主动调用，确保实例都加载完成</pr>
      */
     public void start() {
-        log.info("consumerBootstrap starting ...");
-
+        log.info("consumerBootstrap start...");
         // 扫描指定路径 , true 扫描spring 注解 @Component, @Repository, @Service, and @Controller
         ClassPathScanningCandidateComponentProvider provider =
                 new ClassPathScanningCandidateComponentProvider(false);
@@ -108,8 +107,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
                     router,
                     registryCenter);
         }
-
-        log.info("consumerBootstrap started ...");
+        log.info("consumerBootstrap started.");
     }
 
 
