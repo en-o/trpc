@@ -3,15 +3,16 @@ package cn.tannn.trpc.core.config;
 import cn.tannn.trpc.core.api.RegistryCenter;
 import cn.tannn.trpc.core.enums.RegistryCenterEnum;
 import cn.tannn.trpc.core.meta.InstanceMeta;
+import cn.tannn.trpc.core.providers.ProviderBootstrap;
 import cn.tannn.trpc.core.registry.zk.ZkRegistryCenter;
+import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 注册中心Bean加载
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 @AutoConfiguration
 @Slf4j
 public class RegistryCenterConfig {
+    RegistryCenter registryCenter;
 
     /**
      * 加载注册中心
@@ -30,15 +32,15 @@ public class RegistryCenterConfig {
      *  销毁自动执行 RegistryCenter#stop (在providerBootstrap.stop()中执行)
      * </pr>
      */
-//    @Bean(initMethod = "start", destroyMethod = "stop")
     @Bean
-    RegistryCenter consumerRc(RpcProperties rpcProperties){
+    RegistryCenter registryCenter(RpcProperties rpcProperties){
+
         if(rpcProperties.getRc().getName().equals(RegistryCenterEnum.ZK)){
-            return new ZkRegistryCenter(rpcProperties.getRc());
+            registryCenter = new ZkRegistryCenter(rpcProperties.getRc());
         }else {
             String[] providers = rpcProperties.getRc().getProviders();
             if(null == providers || providers.length == 0){
-                return new RegistryCenter.StaticRegistryCenter(null);
+                registryCenter =  new RegistryCenter.StaticRegistryCenter(null);
             }
             List<InstanceMeta> instanceMetas = new ArrayList<>();
             for (String s : providers) {
@@ -46,9 +48,9 @@ public class RegistryCenterConfig {
                 InstanceMeta apply = InstanceMeta.http(ipPort[0], Integer.valueOf(ipPort[1]));
                 instanceMetas.add(apply);
             }
-            return new RegistryCenter.StaticRegistryCenter(instanceMetas);
-
+            registryCenter =  new RegistryCenter.StaticRegistryCenter(instanceMetas);
         }
+        return registryCenter;
     }
 
 

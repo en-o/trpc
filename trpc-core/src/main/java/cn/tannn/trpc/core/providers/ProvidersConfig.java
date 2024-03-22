@@ -41,7 +41,7 @@ public class ProvidersConfig {
      * @return ApplicationRunner
      */
     @Bean
-    @Order(Integer.MIN_VALUE)
+    @Order(Integer.MIN_VALUE+1)
     public ApplicationRunner providerBootstrapRunner(ProviderBootstrap providerBootstrap) {
         return x -> providerBootstrap.start();
     }

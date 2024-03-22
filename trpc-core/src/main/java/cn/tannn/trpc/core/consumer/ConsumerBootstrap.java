@@ -23,6 +23,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.context.annotation.Conditional;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -48,11 +49,6 @@ public class ConsumerBootstrap implements ApplicationContextAware {
      * 设置包扫描路径
      */
     private final RpcProperties rpcProperties;
-
-    /**
-     * 注册中心缓存起来
-     */
-    RegistryCenter registryCenter;
 
     /**
      * spring 上下文
@@ -96,29 +92,27 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         provider.addIncludeFilter(new AnnotationTypeFilter(Bean.class));
         LoadBalancer loadBalancer = context.getBean(LoadBalancer.class);
         Router router = context.getBean(Router.class);
-        registryCenter = context.getBean(RegistryCenter.class);
+        RegistryCenter registryCenter = context.getBean(RegistryCenter.class);
         // 启动 rc
         registryCenter.start();
+        if(rpcProperties.getScanPackages() == null || rpcProperties.getScanPackages().length==0){
+            throw new ConsumerException("consumer请设置扫描包路径");
+        }
         for (String scanPackage : rpcProperties.getScanPackages()) {
             Set<BeanDefinition> candidateComponents = provider.findCandidateComponents(scanPackage);
-            scanConsumerAndProxy(candidateComponents, loadBalancer, router);
+            if(candidateComponents.isEmpty()){
+                log.warn("consumer["+scanPackage+"]扫描不到可用对象，请检查包路径是否正确");
+            }
+            scanConsumerAndProxy(candidateComponents,
+                    loadBalancer,
+                    router,
+                    registryCenter);
         }
 
         log.info("consumerBootstrap started ...");
     }
 
 
-    /**
-     * spring boot 生命完结时自动销毁
-     */
-    @PreDestroy
-    @ConditionalOnMissingBean(ProviderBootstrap.class)
-    public void stop(){
-        log.info("consumerBootstrap stop...");
-        // 注册中心工作结束下班
-        registryCenter.stop();
-        log.info("consumerBootstrap stopped.");
-    }
 
     /**
      * 扫描拥有注解的类并设置动态代理
@@ -129,7 +123,8 @@ public class ConsumerBootstrap implements ApplicationContextAware {
      */
     private void scanConsumerAndProxy(Set<BeanDefinition> candidateComponents,
                                       LoadBalancer loadBalancer,
-                                      Router router) {
+                                      Router router,
+                                      RegistryCenter registryCenter) {
 
 
         RpcContext rpcContext = new RpcContext();

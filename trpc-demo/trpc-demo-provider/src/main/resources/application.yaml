@@ -8,7 +8,7 @@ logging:
 trpc:
   rc:
     namespace: trpc
-    name: zk # zk def
+    name: def # zk def
     providers:
       - 127.0.0.1_8081 # def有效
     connect:

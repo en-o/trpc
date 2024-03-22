@@ -1,25 +1,23 @@
 server:
-  port: 8088
+  port: 8079
 logging:
   level:
     root: error
     cn.tannn.trpc: info
 
 trpc:
-  scan-packages:
-    - cn.tannn.trpc.demo.consumer
   rc:
     namespace: trpc
-    name: def # zk def
+    name: zk # zk def
     providers:
-      - 127.0.0.1_8081  # def有效
+      - 127.0.0.1_8079 # def有效
     connect:
       - ip: 127.0.0.1
         port: 20242
   load-balancer: round_ribbon
   app:
-    appid: provider
+    appid: providerConsumer
     env: dev
     namespace: dev
     version: 0.0.1
-
+  scan-packages: cn.tannn.trpc.demp.providerconsumer
