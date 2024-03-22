@@ -4,7 +4,9 @@ logging:
   level:
     root: error
     cn.tannn.trpc: info
-
+spring:
+  main:
+    allow-bean-definition-overriding: true
 trpc:
   app:
     appid: consumer
