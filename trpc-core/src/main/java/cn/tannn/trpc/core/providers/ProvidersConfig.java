@@ -46,20 +46,6 @@ public class ProvidersConfig {
         return x -> providerBootstrap.start();
     }
 
-    /**
-     * 加载注册中心
-     * <pr>
-     *  启动自动执行 RegistryCenter#start (在providerBootstrap.start()中执行)
-     *  销毁自动执行 RegistryCenter#stop (在providerBootstrap.stop()中执行)
-     * </pr>
-     */
-    @Bean
-    RegistryCenter consumerRc(RpcProperties rpcProperties){
-        if(rpcProperties.getRc().getName().equals(RegistryCenterEnum.ZK)){
-            return new ZkRegistryCenter(rpcProperties.getRc());
-        }else {
-            return new RegistryCenter.StaticRegistryCenter(null);
-        }
-    }
+
 
 }

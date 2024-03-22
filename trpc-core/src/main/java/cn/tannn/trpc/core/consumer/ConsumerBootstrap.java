@@ -10,14 +10,19 @@ import cn.tannn.trpc.core.config.ServiceProperties;
 import cn.tannn.trpc.core.exception.ConsumerException;
 import cn.tannn.trpc.core.meta.InstanceMeta;
 import cn.tannn.trpc.core.meta.ServiceMeta;
+import cn.tannn.trpc.core.providers.ProviderBootstrap;
 import cn.tannn.trpc.core.util.MethodUtils;
+import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -44,6 +49,10 @@ public class ConsumerBootstrap implements ApplicationContextAware {
      */
     private final RpcProperties rpcProperties;
 
+    /**
+     * 注册中心缓存起来
+     */
+    RegistryCenter registryCenter;
 
     /**
      * spring 上下文
@@ -54,8 +63,6 @@ public class ConsumerBootstrap implements ApplicationContextAware {
      * 消费端存根 - 用户代理创建时不重复创建直接复用
      */
     private Map<String, Object> stub = new HashMap<>();
-
-
 
 
     public ConsumerBootstrap(RpcProperties rpcProperties) {
@@ -71,6 +78,8 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         context = applicationContext;
     }
 
+
+
     /**
      * init  init : 拿到 所有标记了TConsumer注解的类（所有的提供者接口元数据），并设置代理
      * <pr>为了包装所有实例都已经加载完成，在 使用 runner 主动调用，确保实例都加载完成</pr>
@@ -85,24 +94,43 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         provider.addIncludeFilter(new AnnotationTypeFilter(Component.class));
         provider.addIncludeFilter(new AnnotationTypeFilter(Service.class));
         provider.addIncludeFilter(new AnnotationTypeFilter(Bean.class));
+        LoadBalancer loadBalancer = context.getBean(LoadBalancer.class);
+        Router router = context.getBean(Router.class);
+        registryCenter = context.getBean(RegistryCenter.class);
+        // 启动 rc
+        registryCenter.start();
         for (String scanPackage : rpcProperties.getScanPackages()) {
             Set<BeanDefinition> candidateComponents = provider.findCandidateComponents(scanPackage);
-            scanConsumerAndProxy(candidateComponents);
+            scanConsumerAndProxy(candidateComponents, loadBalancer, router);
         }
 
         log.info("consumerBootstrap started ...");
+    }
+
+
+    /**
+     * spring boot 生命完结时自动销毁
+     */
+    @PreDestroy
+    @ConditionalOnMissingBean(ProviderBootstrap.class)
+    public void stop(){
+        log.info("consumerBootstrap stop...");
+        // 注册中心工作结束下班
+        registryCenter.stop();
+        log.info("consumerBootstrap stopped.");
     }
 
     /**
      * 扫描拥有注解的类并设置动态代理
      *
      * @param candidateComponents BeanDefinition
+     * @param loadBalancer 负载均衡
+     * @param router 路由机制
      */
-    private void scanConsumerAndProxy(Set<BeanDefinition> candidateComponents) {
+    private void scanConsumerAndProxy(Set<BeanDefinition> candidateComponents,
+                                      LoadBalancer loadBalancer,
+                                      Router router) {
 
-        LoadBalancer loadBalancer = context.getBean(LoadBalancer.class);
-        Router router = context.getBean(Router.class);
-        RegistryCenter registryCenter = context.getBean(RegistryCenter.class);
 
         RpcContext rpcContext = new RpcContext();
         rpcContext.setLoadBalancer(loadBalancer);

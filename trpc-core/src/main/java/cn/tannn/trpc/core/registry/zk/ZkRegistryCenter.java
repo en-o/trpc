@@ -47,7 +47,11 @@ public class ZkRegistryCenter implements RegistryCenter {
      */
     @Override
     public void start() {
-        log.info("zkServer start: ");
+        if(client != null) {
+            log.info("zkServer starting ... ");
+            return;
+        }
+        log.info("zkServer start ...");
         // 重试
         RetryPolicy retry = new ExponentialBackoffRetry(1000, 3);
 

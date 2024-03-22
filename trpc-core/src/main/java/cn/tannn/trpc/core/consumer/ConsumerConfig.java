@@ -74,26 +74,6 @@ public class ConsumerConfig {
         }
     }
 
-    /**
-     * 加载注册中心
-     * <pr>
-     *  启动自动执行 RegistryCenter#start
-     *  销毁自动执行 RegistryCenter#stop
-     * </pr>
-     */
-    @Bean(initMethod = "start", destroyMethod = "stop")
-    RegistryCenter consumerRc(RpcProperties rpcProperties){
-        if(rpcProperties.getRc().getName().equals(RegistryCenterEnum.ZK)){
-            return new ZkRegistryCenter(rpcProperties.getRc());
-        }else {
-            String[] providers = rpcProperties.getRc().getProviders();
-            List<InstanceMeta> instanceMetas = Arrays.stream(providers).map(provider -> {
-                String[] ipPort = provider.split("_");
-                return InstanceMeta.http(ipPort[0], Integer.valueOf(ipPort[1]));
-            }).collect(Collectors.toList());
 
-            return new RegistryCenter.StaticRegistryCenter(instanceMetas);
-        }
-    }
 
 }
