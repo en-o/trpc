@@ -1,5 +1,5 @@
 server:
-  port: 8088
+  port: 8079
 logging:
   level:
     root: error
@@ -10,16 +10,21 @@ trpc:
     namespace: trpc
     name: zk # zk def
     providers:
-      - 127.0.0.1_8081  # def有效
+      - 127.0.0.1_8079 # def有效
     connect:
       - ip: 127.0.0.1
         port: 20242
+  app:
+    appid: providerConsumer
+    env: dev
+    namespace: dev
+    version: 0.0.1
   consumer:
     scan-packages:
-      - cn.tannn.trpc.demo.consumer
+      - cn.tannn.trpc.demp.providerconsumer
     load-balancer: round_ribbon
     service:
-      appid: provider
+      appid: provider # 掉自己 providerConsumer # 掉别人provider
       env: dev
       namespace: dev
       version: 0.0.1

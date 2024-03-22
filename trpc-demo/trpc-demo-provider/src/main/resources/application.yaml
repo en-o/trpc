@@ -6,6 +6,11 @@ logging:
     cn.tannn.trpc: info
 
 trpc:
+  app:
+    appid: provider
+    env: dev
+    namespace: dev
+    version: 0.0.1
   rc:
     namespace: trpc
     name: zk # zk def
@@ -14,9 +19,4 @@ trpc:
     connect:
       - ip: 127.0.0.1
         port: 20242
-  load-balancer: round_ribbon
-  app:
-    appid: provider
-    env: dev
-    namespace: dev
-    version: 0.0.1
+

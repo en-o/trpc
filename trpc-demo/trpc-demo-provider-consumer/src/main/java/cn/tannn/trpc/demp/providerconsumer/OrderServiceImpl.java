@@ -1,4 +1,4 @@
-package cn.tannn.trpc.demo.provider;
+package cn.tannn.trpc.demp.providerconsumer;
 
 import cn.tannn.trpc.core.annotation.TProvider;
 import cn.tannn.trpc.demo.api.OrderService;
@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 @TProvider
 public class OrderServiceImpl implements OrderService {
+
 
     @Autowired
     Environment environment;

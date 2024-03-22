@@ -19,6 +19,8 @@
         <module>trpc-demo-api</module>
         <module>trpc-demo-provider</module>
         <module>trpc-demo-consumer</module>
+        <!-- 测试自给自足 -->
+        <module>trpc-demo-provider-consumer</module>
     </modules>
 
 </project>

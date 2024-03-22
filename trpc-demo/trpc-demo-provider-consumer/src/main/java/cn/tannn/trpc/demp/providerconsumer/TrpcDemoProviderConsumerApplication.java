@@ -1,16 +1,13 @@
-package cn.tannn.trpc.demo.provider;
+package cn.tannn.trpc.demp.providerconsumer;
 
+import cn.tannn.trpc.core.annotation.EnableConsumer;
 import cn.tannn.trpc.core.annotation.EnableProvider;
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
 import cn.tannn.trpc.core.providers.ProvidersInvoker;
-import cn.tannn.trpc.core.util.MethodUtils;
-import cn.tannn.trpc.demo.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,14 +17,15 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @SpringBootApplication
+@EnableConsumer
 @EnableProvider
-public class TrpcDemoProviderApplication {
+public class TrpcDemoProviderConsumerApplication {
 
     @Autowired
     private ProvidersInvoker providersInvoker;
 
     public static void main(String[] args) {
-        SpringApplication.run(TrpcDemoProviderApplication.class, args);
+        SpringApplication.run(TrpcDemoProviderConsumerApplication.class, args);
     }
 
 
@@ -43,20 +41,5 @@ public class TrpcDemoProviderApplication {
     }
 
 
-    /**
-     * 启动 模拟调用一次请求测试下 （接口测试：demo.http）
-     * @return ApplicationRunner
-     */
-    @Bean
-    public ApplicationRunner provideRun(){
-        return x -> {
-            RpcRequest rpcRequest = new RpcRequest();
-            rpcRequest.setService("cn.tannn.trpc.demo.api.UserService");
-            rpcRequest.setMethodSign(MethodUtils.methodSign(UserService.class.getMethod("findById",Integer.class)));
-            rpcRequest.setArgs(new Object[]{100});
-            RpcResponse<Object> rpcResponse = providersInvoker.invoke(rpcRequest);
-            System.out.println("return: " + rpcResponse.getData());
-        };
-    }
 
 }
