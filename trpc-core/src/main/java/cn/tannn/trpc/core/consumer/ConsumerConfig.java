@@ -57,9 +57,9 @@ public class ConsumerConfig {
      * 加载负载均衡器
      */
     @Bean
-    LoadBalancer loadBalancer(ConsumerProperties consumerProperties){
+    LoadBalancer loadBalancer(RpcProperties rpcProperties){
         // return LoadBalancer.Default;
-        if(consumerProperties.getLoadBalancer().equals(LoadBalancerEnum.ROUND_RIBBON)){
+        if(rpcProperties.getConsumer().getLoadBalancer().equals(LoadBalancerEnum.ROUND_RIBBON)){
             return new RoundRibbonLoadBalancer();
         }else {
             return new RandomLoadBalancer();
