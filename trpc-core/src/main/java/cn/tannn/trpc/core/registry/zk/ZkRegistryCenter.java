@@ -40,7 +40,7 @@ public class ZkRegistryCenter implements RegistryCenter {
     public ZkRegistryCenter(RegistryCenterProperties rcp) {
         this.rcp = rcp;
     }
-
+     TreeCache cache;
 
     /**
      * 初始化创建 zk连接
@@ -80,6 +80,7 @@ public class ZkRegistryCenter implements RegistryCenter {
     @Override
     public void stop() {
         log.info(" ===> zk client stopped.");
+        cache.close();
         client.close();
     }
 
@@ -160,7 +161,7 @@ public class ZkRegistryCenter implements RegistryCenter {
     @Override
     public void subscribe(ServiceMeta service, ChangedListener listener) {
         // 通过 client参数 感知服务的上下线
-        final TreeCache cache = TreeCache
+         cache = TreeCache
                 .newBuilder(client, "/" + service.toPath())
                 .setCacheData(true)
                 .setMaxDepth(2)
