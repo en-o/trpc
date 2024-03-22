@@ -3,12 +3,9 @@ package cn.tannn.trpc.core.config;
 import cn.tannn.trpc.core.api.RegistryCenter;
 import cn.tannn.trpc.core.enums.RegistryCenterEnum;
 import cn.tannn.trpc.core.meta.InstanceMeta;
-import cn.tannn.trpc.core.providers.ProviderBootstrap;
 import cn.tannn.trpc.core.registry.zk.ZkRegistryCenter;
-import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 
 import java.util.ArrayList;

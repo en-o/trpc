@@ -3,7 +3,6 @@ package cn.tannn.trpc.demo.provider;
 import cn.tannn.trpc.core.annotation.EnableProvider;
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
-import cn.tannn.trpc.core.providers.ProviderBootstrap;
 import cn.tannn.trpc.core.providers.ProvidersInvoker;
 import cn.tannn.trpc.core.util.MethodUtils;
 import cn.tannn.trpc.demo.api.UserService;

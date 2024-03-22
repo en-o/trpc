@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 应用信息 [下面都是服务端的信息，服务端配置的自己的信息,客户端配置文件配置的是服务的信息]
+ * 应用信息 [服务端写自己的发布信息，客户端写服务端的连接信息]
  * @author tnnn
  * @version V1.0
  * @date 2024-03-20 22:31
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ServiceProperties {
     /**
-     * appid - 对其spring.application.name
+     * appid
      */
     String appid;
     /**

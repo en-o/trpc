@@ -1,9 +1,6 @@
 package cn.tannn.trpc.core.providers;
 
-import cn.tannn.trpc.core.api.RegistryCenter;
 import cn.tannn.trpc.core.config.RpcProperties;
-import cn.tannn.trpc.core.enums.RegistryCenterEnum;
-import cn.tannn.trpc.core.registry.zk.ZkRegistryCenter;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +15,7 @@ import org.springframework.core.annotation.Order;
  */
 @AutoConfiguration
 public class ProvidersConfig {
+
 
     /**
      * init - method

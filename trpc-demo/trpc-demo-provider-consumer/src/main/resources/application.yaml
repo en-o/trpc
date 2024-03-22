@@ -14,10 +14,18 @@ trpc:
     connect:
       - ip: 127.0.0.1
         port: 20242
-  load-balancer: round_ribbon
   app:
     appid: providerConsumer
     env: dev
     namespace: dev
     version: 0.0.1
-  scan-packages: cn.tannn.trpc.demp.providerconsumer
+  consumer:
+    scan-packages:
+      - cn.tannn.trpc.demp.providerconsumer
+    load-balancer: round_ribbon
+    service:
+      appid: provider # 掉自己 providerConsumer # 掉别人provider
+      env: dev
+      namespace: dev
+      version: 0.0.1
+

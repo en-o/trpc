@@ -5,25 +5,20 @@ import cn.tannn.trpc.core.api.LoadBalancer;
 import cn.tannn.trpc.core.api.RegistryCenter;
 import cn.tannn.trpc.core.api.Router;
 import cn.tannn.trpc.core.api.RpcContext;
+import cn.tannn.trpc.core.config.ConsumerProperties;
 import cn.tannn.trpc.core.config.RpcProperties;
 import cn.tannn.trpc.core.config.ServiceProperties;
 import cn.tannn.trpc.core.exception.ConsumerException;
 import cn.tannn.trpc.core.meta.InstanceMeta;
 import cn.tannn.trpc.core.meta.ServiceMeta;
-import cn.tannn.trpc.core.providers.ProviderBootstrap;
 import cn.tannn.trpc.core.util.MethodUtils;
-import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
-import org.springframework.context.annotation.Conditional;
-import org.springframework.core.annotation.Order;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -45,14 +40,8 @@ import java.util.Set;
 @Slf4j
 public class ConsumerBootstrap implements ApplicationContextAware {
 
-    /**
-     * 设置包扫描路径
-     */
     private final RpcProperties rpcProperties;
 
-    /**
-     * spring 上下文
-     */
     private ApplicationContext context;
 
     /**
@@ -94,10 +83,11 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         RegistryCenter registryCenter = context.getBean(RegistryCenter.class);
         // 启动 rc todo consumer 没有设置stop
         registryCenter.start();
-        if(rpcProperties.getScanPackages() == null || rpcProperties.getScanPackages().length==0){
+        ConsumerProperties consumerProperties = rpcProperties.getConsumer();
+        if(consumerProperties.getScanPackages() == null || consumerProperties.getScanPackages().length==0){
             throw new ConsumerException("consumer请设置扫描包路径");
         }
-        for (String scanPackage : rpcProperties.getScanPackages()) {
+        for (String scanPackage : consumerProperties.getScanPackages()) {
             Set<BeanDefinition> candidateComponents = provider.findCandidateComponents(scanPackage);
             if(candidateComponents.isEmpty()){
                 log.warn("consumer["+scanPackage+"]扫描不到可用对象，请检查包路径是否正确");
@@ -173,12 +163,12 @@ public class ConsumerBootstrap implements ApplicationContextAware {
      */
     private Object createFromRegistry(Class<?> service, RpcContext rpcContext, RegistryCenter registryCenter) {
         String serviceName = service.getCanonicalName();
-        ServiceProperties app = rpcProperties.getApp();
+        ServiceProperties serviceProperties = rpcProperties.getConsumer().getService();
         ServiceMeta meta = new ServiceMeta(serviceName);
-        meta.setAppid(app.getAppid());
-        meta.setNamespace(app.getNamespace());
-        meta.setEnv(app.getEnv());
-        meta.setVersion(app.getVersion());
+        meta.setAppid(serviceProperties.getAppid());
+        meta.setNamespace(serviceProperties.getNamespace());
+        meta.setEnv(serviceProperties.getEnv());
+        meta.setVersion(serviceProperties.getVersion());
         // 由于此处只会在启动时处理一次，所以需要下面的订阅，订阅服务后，当数据发生了变动会重新执行
         List<InstanceMeta> providers = registryCenter.fetchAll(meta);
         log.info("===> map to provider: ");
