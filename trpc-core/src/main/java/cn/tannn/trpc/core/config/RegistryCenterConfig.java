@@ -36,16 +36,17 @@ public class RegistryCenterConfig {
             registryCenter = new ZkRegistryCenter(rpcProperties.getRc());
         }else {
             String[] providers = rpcProperties.getRc().getProviders();
-            if(null == providers || providers.length == 0){
+            if(null == providers || providers.length == 0 ){
                 registryCenter =  new RegistryCenter.StaticRegistryCenter(null);
+            }else {
+                List<InstanceMeta> instanceMetas = new ArrayList<>();
+                for (String s : providers) {
+                    String[] ipPort = s.split("_");
+                    InstanceMeta apply = InstanceMeta.http(ipPort[0], Integer.valueOf(ipPort[1]));
+                    instanceMetas.add(apply);
+                }
+                registryCenter =  new RegistryCenter.StaticRegistryCenter(instanceMetas);
             }
-            List<InstanceMeta> instanceMetas = new ArrayList<>();
-            for (String s : providers) {
-                String[] ipPort = s.split("_");
-                InstanceMeta apply = InstanceMeta.http(ipPort[0], Integer.valueOf(ipPort[1]));
-                instanceMetas.add(apply);
-            }
-            registryCenter =  new RegistryCenter.StaticRegistryCenter(instanceMetas);
         }
         return registryCenter;
     }
