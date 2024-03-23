@@ -36,7 +36,7 @@ public class ProxyUtils {
         // 获取标注了TConsumer注解的属性字段
         List<Field> fields = MethodUtils.findAnnotatedField(bean.getClass(), TConsumer.class);
         fields.forEach(field -> {
-            log.info(" ===> " + field.getName());
+            log.info(" ===> {}", field.getName());
             try {
                 // 为获取到的属性对象生成代理
                 Class<?> service = field.getType();
