@@ -1,11 +1,13 @@
 package cn.tannn.trpc.core.consumer;
 
+import cn.tannn.trpc.core.api.Filter;
 import cn.tannn.trpc.core.api.LoadBalancer;
 import cn.tannn.trpc.core.api.Router;
 import cn.tannn.trpc.core.cluster.RandomLoadBalancer;
 import cn.tannn.trpc.core.cluster.RoundRibbonLoadBalancer;
 import cn.tannn.trpc.core.config.RpcProperties;
 import cn.tannn.trpc.core.enums.LoadBalancerEnum;
+import cn.tannn.trpc.core.filter.CacheFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -50,6 +52,14 @@ public class ConsumerConfig {
     @Bean
     Router router(){
         return Router.Default;
+    }
+
+    /**
+     * 加载过滤器
+     */
+    @Bean
+    Filter filter(){
+        return new CacheFilter();
     }
 
     /**

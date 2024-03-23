@@ -1,9 +1,6 @@
 package cn.tannn.trpc.core.consumer;
 
-import cn.tannn.trpc.core.api.LoadBalancer;
-import cn.tannn.trpc.core.api.RegistryCenter;
-import cn.tannn.trpc.core.api.Router;
-import cn.tannn.trpc.core.api.RpcContext;
+import cn.tannn.trpc.core.api.*;
 import cn.tannn.trpc.core.config.ConsumerProperties;
 import cn.tannn.trpc.core.config.RpcProperties;
 import cn.tannn.trpc.core.exception.ConsumerException;
@@ -15,6 +12,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -59,6 +57,8 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         LoadBalancer loadBalancer = context.getBean(LoadBalancer.class);
         Router router = context.getBean(Router.class);
         RegistryCenter registryCenter = context.getBean(RegistryCenter.class);
+        // 获取Filter多个注入
+        List<Filter> filters = context.getBeansOfType(Filter.class).values().stream().toList();
         // 启动 rc todo consumer 没有设置stop
         registryCenter.start();
         ConsumerProperties consumerProperties = rpcProperties.getConsumer();
@@ -70,6 +70,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         scanConsumerAndProxy(beanDefinitions,
                 loadBalancer,
                 router,
+                filters,
                 registryCenter);
         log.info("consumerBootstrap started.");
     }
@@ -86,12 +87,14 @@ public class ConsumerBootstrap implements ApplicationContextAware {
     private void scanConsumerAndProxy(Set<BeanDefinition> candidateComponents,
                                       LoadBalancer loadBalancer,
                                       Router router,
+                                      List<Filter> filters,
                                       RegistryCenter registryCenter) {
 
 
         RpcContext rpcContext = new RpcContext();
         rpcContext.setLoadBalancer(loadBalancer);
         rpcContext.setRouter(router);
+        rpcContext.setFilters(filters);
         rpcContext.setRegistryCenter(registryCenter);
         rpcContext.setRpcProperties(rpcProperties);
         for (BeanDefinition beanDefinition : candidateComponents) {
