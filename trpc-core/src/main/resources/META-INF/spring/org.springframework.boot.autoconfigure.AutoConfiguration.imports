@@ -1,2 +1,3 @@
 cn.tannn.trpc.core.config.RpcProperties
 cn.tannn.trpc.core.config.RegistryCenterConfig
+cn.tannn.trpc.core.consumer.ConsumerPreDestroy

@@ -35,7 +35,7 @@ public class ZkRegistryCenter implements RegistryCenter {
     private CuratorFramework client = null;
 
     private final RegistryCenterProperties rcp;
-
+    TreeCache cacheGlobal = null;
 
     public ZkRegistryCenter(RegistryCenterProperties rcp) {
         this.rcp = rcp;
@@ -78,7 +78,9 @@ public class ZkRegistryCenter implements RegistryCenter {
      */
     @Override
     public void stop() {
-//        cache.close();
+        if(cacheGlobal != null){
+            cacheGlobal.close();
+        }
         client.close();
         log.info(" ===> zk client stopped.");
     }
@@ -102,7 +104,7 @@ public class ZkRegistryCenter implements RegistryCenter {
             }
             // 创建实例的临时节点
             String instancePath = servicePath + "/" + instance.toPath();
-            log.info(" ===> register to zk: " + instancePath);
+            log.info(" ===> register to zk: {}", instancePath);
             client.create().withMode(CreateMode.EPHEMERAL).forPath(instancePath, "provider".getBytes());
         } catch (Exception e) {
             throw new ProviderException(e);
@@ -141,7 +143,7 @@ public class ZkRegistryCenter implements RegistryCenter {
         try {
             // 获取所有子节点
             List<String> nodes = client.getChildren().forPath(servicePath);
-            log.info(" ===> fetchAll from zk: " + servicePath);
+            log.info(" ===> fetchAll from zk: {}", servicePath);
             return mapInstances(nodes);
         } catch (Exception e) {
             throw new ConsumerException(e);
@@ -167,11 +169,12 @@ public class ZkRegistryCenter implements RegistryCenter {
                 .build();
         cache.getListenable().addListener((curator, event) -> {
             // 节点变动，这里会感知到
-            log.info("zk subscribe event: " + event);
+            log.info("zk subscribe event: {}", event);
             List<InstanceMeta> nodes = fetchAll(service);
             listener.fire(new Event(nodes));
         });
         cache.start();
+        cacheGlobal = cache;
     }
 
 
