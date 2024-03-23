@@ -22,6 +22,9 @@
     <properties>
         <java.version>17</java.version>
         <trpc.version>0.0.1-SNAPSHOT</trpc.version>
+        <fastjson2.version>2.0.47</fastjson2.version>
+        <okhttp.version>4.12.0</okhttp.version>
+        <curator.version>5.1.0</curator.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
