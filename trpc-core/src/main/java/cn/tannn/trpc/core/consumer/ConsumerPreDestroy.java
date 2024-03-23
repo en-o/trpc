@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.ApplicationContext;
 
 /**
+ * 消费端 注销rc操作，如果服务端同时存在，销毁操作只由服务端发起
  * @author tnnn
  * @version V1.0
  * @date 2024/3/23 上午11:17
