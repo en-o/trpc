@@ -1,33 +1,20 @@
 package cn.tannn.trpc.core.consumer;
 
-import cn.tannn.trpc.core.annotation.TConsumer;
 import cn.tannn.trpc.core.api.LoadBalancer;
 import cn.tannn.trpc.core.api.RegistryCenter;
 import cn.tannn.trpc.core.api.Router;
 import cn.tannn.trpc.core.api.RpcContext;
 import cn.tannn.trpc.core.config.ConsumerProperties;
 import cn.tannn.trpc.core.config.RpcProperties;
-import cn.tannn.trpc.core.config.ServiceProperties;
 import cn.tannn.trpc.core.exception.ConsumerException;
-import cn.tannn.trpc.core.meta.InstanceMeta;
-import cn.tannn.trpc.core.meta.ServiceMeta;
-import cn.tannn.trpc.core.util.MethodUtils;
+import cn.tannn.trpc.core.util.ProxyUtils;
+import cn.tannn.trpc.core.util.ScanPackagesUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
-import org.springframework.core.type.filter.AnnotationTypeFilter;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Proxy;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -44,10 +31,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
 
     private ApplicationContext context;
 
-    /**
-     * 消费端存根 - 用户代理创建时不重复创建直接复用
-     */
-    private Map<String, Object> stub = new HashMap<>();
+
 
 
     public ConsumerBootstrap(RpcProperties rpcProperties) {
@@ -71,13 +55,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
      */
     public void start() {
         log.info("consumerBootstrap start...");
-        // 扫描指定路径 , true 扫描spring 注解 @Component, @Repository, @Service, and @Controller
-        ClassPathScanningCandidateComponentProvider provider =
-                new ClassPathScanningCandidateComponentProvider(false);
-        // rpc的接口调用一般只会出现在这几个spring注解之下, 如何自定义注解的会加大开发复杂度
-        provider.addIncludeFilter(new AnnotationTypeFilter(Component.class));
-        provider.addIncludeFilter(new AnnotationTypeFilter(Service.class));
-        provider.addIncludeFilter(new AnnotationTypeFilter(Bean.class));
+
         LoadBalancer loadBalancer = context.getBean(LoadBalancer.class);
         Router router = context.getBean(Router.class);
         RegistryCenter registryCenter = context.getBean(RegistryCenter.class);
@@ -87,16 +65,12 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         if(consumerProperties.getScanPackages() == null || consumerProperties.getScanPackages().length==0){
             throw new ConsumerException("consumer请设置扫描包路径");
         }
-        for (String scanPackage : consumerProperties.getScanPackages()) {
-            Set<BeanDefinition> candidateComponents = provider.findCandidateComponents(scanPackage);
-            if(candidateComponents.isEmpty()){
-                log.warn("consumer["+scanPackage+"]扫描不到可用对象，请检查包路径是否正确");
-            }
-            scanConsumerAndProxy(candidateComponents,
-                    loadBalancer,
-                    router,
-                    registryCenter);
-        }
+        // 扫描指定路径的类
+        Set<BeanDefinition> beanDefinitions = ScanPackagesUtils.scanPackages(consumerProperties.getScanPackages());
+        scanConsumerAndProxy(beanDefinitions,
+                loadBalancer,
+                router,
+                registryCenter);
         log.info("consumerBootstrap started.");
     }
 
@@ -118,120 +92,17 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         RpcContext rpcContext = new RpcContext();
         rpcContext.setLoadBalancer(loadBalancer);
         rpcContext.setRouter(router);
-
+        rpcContext.setRegistryCenter(registryCenter);
+        rpcContext.setRpcProperties(rpcProperties);
         for (BeanDefinition beanDefinition : candidateComponents) {
             try {
-                Object bean = getBean(context, beanDefinition);
-                if (bean != null) {
-                    // 获取标注了TConsumer注解的属性字段
-                    List<Field> fields = MethodUtils.findAnnotatedField(bean.getClass(), TConsumer.class);
-                    fields.forEach(field -> {
-                        log.info(" ===> " + field.getName());
-                        try {
-                            // 为获取到的属性对象生成代理
-                            Class<?> service = field.getType();
-                            // 获取全限定名称
-                            String serviceName = service.getCanonicalName();
-                            // 查询缓存 - 由于 rpc service会被多个地方用到，所有这里处理以就行了，后面再用直接取
-                            Object consumer = stub.get(serviceName);
-                            if (consumer == null) {
-                                // 为属性字段查询他的实现对象 - getXXImplBean
-                                consumer = createFromRegistry(service, rpcContext, registryCenter);
-                                stub.put(serviceName, consumer);
-                            }
-                            // 将实现对象加载到当前属性字段里去 （filed = new XXImpl()）
-                            field.setAccessible(true);
-                            field.set(bean, consumer);
-                        } catch (IllegalAccessException e) {
-                            throw new ConsumerException(e);
-                        }
-                    });
-                }
+                Object bean = ScanPackagesUtils.getBean(context, beanDefinition);
+                ProxyUtils.rpcApiProxy(bean,rpcContext);
             } catch (Exception e) {
                 throw new ConsumerException(e);
             }
         }
     }
 
-    /**
-     * 通过注册中心创建代理
-     *
-     * @param service        service
-     * @param rpcContext     上下文
-     * @param registryCenter 注册中心
-     * @return 代理类
-     */
-    private Object createFromRegistry(Class<?> service, RpcContext rpcContext, RegistryCenter registryCenter) {
-        String serviceName = service.getCanonicalName();
-        ServiceProperties serviceProperties = rpcProperties.getConsumer().getService();
-        ServiceMeta meta = new ServiceMeta(serviceName);
-        meta.setAppid(serviceProperties.getAppid());
-        meta.setNamespace(serviceProperties.getNamespace());
-        meta.setEnv(serviceProperties.getEnv());
-        meta.setVersion(serviceProperties.getVersion());
-        // 由于此处只会在启动时处理一次，所以需要下面的订阅，订阅服务后，当数据发生了变动会重新执行
-        List<InstanceMeta> providers = registryCenter.fetchAll(meta);
-        log.info("===> map to provider: ");
-        // 订阅服务，感知服务变更
-        registryCenter.subscribe(meta, event -> {
-            providers.clear();
-            providers.addAll(event.getData());
-        });
-
-        return createConsumer(service, rpcContext, providers);
-    }
-
-
-    /**
-     * 查询 spring bean
-     *
-     * @param applicationContext ApplicationContext
-     * @param beanDefinition     beanDefinition
-     * @return 扫描出来的spring bean
-     */
-    private static Object getBean(ApplicationContext applicationContext, BeanDefinition beanDefinition) {
-        Object bean = null;
-        String beanName = beanDefinition.getBeanClassName();
-        if (applicationContext.containsBean(beanName)) {
-            // 如果该名称在上下文中已注册,则使用该名称获取实例
-            bean = applicationContext.getBean(beanName);
-        } else {
-            // 否则,使用 getBeanNamesForType 获取该类型的所有 Bean 名称
-            String[] beanNames = applicationContext
-                    .getBeanNamesForType(getBeanClassFromDefinition(beanDefinition));
-            if (beanNames.length > 0) {
-                // 如果存在该类型的 Bean,则使用第一个名称获取实例
-                bean = applicationContext.getBean(beanNames[0]);
-            }
-        }
-        return bean;
-    }
-
-    /**
-     * getBean时没有Class 自己for一个
-     *
-     * @param beanDefinition BeanDefinition
-     * @return Class
-     */
-    private static Class<?> getBeanClassFromDefinition(BeanDefinition beanDefinition) {
-        try {
-            return Class.forName(beanDefinition.getBeanClassName());
-        } catch (ClassNotFoundException e) {
-            throw new ConsumerException("Cannot load bean class", e);
-        }
-    }
-
-    /**
-     * 为服务创建代理
-     *
-     * @param service service
-     * @return 代理类
-     */
-    private Object createConsumer(Class<?> service
-            , RpcContext rpcContext, List<InstanceMeta> providers) {
-        // 对 service进行操作时才会被触发
-        return Proxy.newProxyInstance(service.getClassLoader(),
-                new Class[]{service}, new TInvocationHandler(service, rpcContext, providers));
-    }
 
 }
