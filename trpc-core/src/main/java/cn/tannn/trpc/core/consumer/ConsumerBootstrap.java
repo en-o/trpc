@@ -59,16 +59,10 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         RegistryCenter registryCenter = context.getBean(RegistryCenter.class);
         // 获取Filter多个注入
         List<Filter> filters = context.getBeansOfType(Filter.class).values().stream().toList();
-        // 启动 rc todo consumer 没有设置stop
+        // 启动 rc  ，stop在 ConsumerPreDestroy
         registryCenter.start();
-        ConsumerProperties consumerProperties = rpcProperties.getConsumer();
-        if(consumerProperties.getScanPackages() == null || consumerProperties.getScanPackages().length==0){
-            throw new ConsumerException("consumer请设置扫描包路径");
-        }
-        // 扫描指定路径的类
-        Set<BeanDefinition> beanDefinitions = ScanPackagesUtils.scanPackages(consumerProperties.getScanPackages());
-        scanConsumerAndProxy(beanDefinitions,
-                loadBalancer,
+        // 设置代理
+        scanConsumerAndProxy(loadBalancer,
                 router,
                 filters,
                 registryCenter);
@@ -76,28 +70,30 @@ public class ConsumerBootstrap implements ApplicationContextAware {
     }
 
 
-
     /**
      * 扫描拥有注解的类并设置动态代理
-     *
-     * @param candidateComponents BeanDefinition
      * @param loadBalancer 负载均衡
      * @param router 路由机制
      */
-    private void scanConsumerAndProxy(Set<BeanDefinition> candidateComponents,
+    private void scanConsumerAndProxy(
                                       LoadBalancer loadBalancer,
                                       Router router,
                                       List<Filter> filters,
                                       RegistryCenter registryCenter) {
 
-
+        // 扫描指定路径的类
+        ConsumerProperties consumerProperties = rpcProperties.getConsumer();
+        if(consumerProperties.getScanPackages() == null || consumerProperties.getScanPackages().length==0){
+            throw new ConsumerException("consumer请设置扫描包路径");
+        }
+        Set<BeanDefinition> beanDefinitions = ScanPackagesUtils.scanPackages(consumerProperties.getScanPackages());
         RpcContext rpcContext = new RpcContext();
         rpcContext.setLoadBalancer(loadBalancer);
         rpcContext.setRouter(router);
         rpcContext.setFilters(filters);
         rpcContext.setRegistryCenter(registryCenter);
         rpcContext.setRpcProperties(rpcProperties);
-        for (BeanDefinition beanDefinition : candidateComponents) {
+        for (BeanDefinition beanDefinition : beanDefinitions) {
             try {
                 Object bean = ScanPackagesUtils.getBean(context, beanDefinition);
                 ProxyUtils.rpcApiProxy(bean,rpcContext);
