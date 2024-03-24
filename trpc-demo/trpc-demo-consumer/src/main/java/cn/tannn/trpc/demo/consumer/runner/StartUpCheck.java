@@ -163,7 +163,9 @@ public class StartUpCheck implements ApplicationRunner {
             System.out.println(" ===> exception: " + e.getMessage());
         }
 
-
+        System.out.println("Case 26. >>===[null类型，返回User对象]===");
+        User nUser = userService.findById(null);
+        System.out.println("RPC result userService.findById(null) = " + nUser);
 
     }
 }
