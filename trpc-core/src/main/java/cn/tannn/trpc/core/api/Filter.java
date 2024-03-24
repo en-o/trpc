@@ -20,7 +20,6 @@ public interface Filter {
 
     /**
      * 请求后置处理
-     * @param response RpcResponse
      * @param request RpcRequest
      * @param result 返回值处理结果
      * @return RpcResponse
