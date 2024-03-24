@@ -40,14 +40,14 @@ public class OkHttpInvoker implements HttpInvoker {
             return new RpcResponse<>(false,null,new RuntimeException("router is empty"));
         }
         String reqJson = JSON.toJSONString(rpcRequest);
-        log.debug(" ===> reqJson = " + reqJson);
+        log.debug(" ===> reqJson = {}", reqJson);
         Request request = new Request.Builder()
                 .url(url)
                 .post(RequestBody.create(reqJson, JSON_TYPE))
                 .build();
         try {
             String responseJson = httpClient.newCall(request).execute().body().string();
-            log.debug(" ===> respJson = " + responseJson);
+            log.debug(" ===> respJson = {}", responseJson);
             return JSON.parseObject(responseJson, RpcResponse.class);
         } catch (Exception e) {
             throw new ConsumerException(e);

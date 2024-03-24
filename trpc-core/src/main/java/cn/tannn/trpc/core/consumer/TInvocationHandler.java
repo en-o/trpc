@@ -1,5 +1,6 @@
 package cn.tannn.trpc.core.consumer;
 
+import cn.tannn.trpc.core.api.Filter;
 import cn.tannn.trpc.core.api.RpcContext;
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
@@ -9,6 +10,7 @@ import cn.tannn.trpc.core.meta.InstanceMeta;
 import cn.tannn.trpc.core.util.MethodUtils;
 import cn.tannn.trpc.core.util.TypeUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -44,16 +46,42 @@ public class TInvocationHandler implements InvocationHandler {
             return null;
         }
 
-        //组装调用参数 ： 类全限定名称，方法，参数
+        // 组装调用参数 ： 类全限定名称，方法，参数
         RpcRequest rpcRequest = new RpcRequest(service.getCanonicalName(), MethodUtils.methodSign(method), args);
-
+        // 对请求就像处理: 缓存减少IO[CacheFilter],
+        for (Filter filter : rpcContext.getFilters()) {
+            Object prefilter = filter.prefilter(rpcRequest);
+            if(prefilter != null) {
+                log.debug(" {} ===> prefilter {}",filter.getClass().getName() ,rpcRequest);
+                return prefilter;
+            }
+        }
         // 路由
         List<InstanceMeta> instances = rpcContext.getRouter().route(this.providers);
         // 选择路由
         InstanceMeta instance = rpcContext.getLoadBalancer().choose(instances);
-        log.debug("loadBalancer.choose(urls) ==> " + instance);
+        log.debug("loadBalancer.choose(urls) ==> {}", instance);
         // 发送请求
         RpcResponse<Object> rpcResponse = httpInvoker.post(rpcRequest,  instance.toUrl());
+        Object result = castReturnResult(method, rpcResponse);
+        // 对结果进行处理 - 可能不是最终值，需要设计
+        for (Filter filter : rpcContext.getFilters()) {
+           Object filterResult = filter.postFilter(rpcRequest, result);
+           // 为空就一直处理其他的filter
+           if(filterResult != null){
+               return filterResult;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 处理RpcResponse格式
+     * @param method Method
+     * @param rpcResponse RpcResponse
+     * @return Object
+     */
+    private static @Nullable Object castReturnResult(Method method, RpcResponse<Object> rpcResponse) {
         if (rpcResponse.isStatus()) {
             Object data = rpcResponse.getData();
             return TypeUtils.castMethodResult(method, data);

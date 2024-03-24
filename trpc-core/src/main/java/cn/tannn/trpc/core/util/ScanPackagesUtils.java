@@ -44,7 +44,7 @@ public class ScanPackagesUtils {
         for (String scanPackage : scanPackages) {
             Set<BeanDefinition> candidateComponents = provider.findCandidateComponents(scanPackage);
             if(candidateComponents.isEmpty()){
-                log.warn("consumer["+scanPackage+"]扫描不到可用对象，请检查包路径是否正确");
+                log.warn("consumer[{}]扫描不到可用对象，请检查包路径是否正确", scanPackage);
             }else {
                 beanDefinitions.addAll(candidateComponents);
             }
