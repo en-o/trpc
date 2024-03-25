@@ -8,25 +8,20 @@ spring:
   main:
     allow-bean-definition-overriding: true
 trpc:
-  app:
-    appid: consumer
-    env: dev
-    namespace: dev
-    version: 0.0.1
   rc:
     namespace: trpc
-    name: def # zk def
+    name: zk # zk def
     providers:
-      - 127.0.0.1_8088  # def有效
+      - 127.0.0.1_8089  # def有效
     connect:
       - ip: 127.0.0.1
-        port: 20242
+        port: 2182
   consumer:
     scan-packages:
       - cn.tannn.trpc.demo.consumer
     load-balancer: round_ribbon
     service:
-      appid: consumer
+      appid: provider
       env: dev
       namespace: dev
       version: 0.0.1
