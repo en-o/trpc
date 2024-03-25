@@ -8,12 +8,12 @@ logging:
 trpc:
   rc:
     namespace: trpc
-    name: def # zk def
+    name: zk # zk def
     providers:
       - 127.0.0.1_8081 # def有效
     connect:
       - ip: 127.0.0.1
-        port: 20242
+        port: 2182
   app:
     appid: provider
     env: dev
