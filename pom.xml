@@ -19,7 +19,7 @@
         <!-- Spring -->
         <spring.boot.version>3.2.3</spring.boot.version>
         <!--当前项目版本-->
-        <trpc.version>${version}</trpc.version>
+        <trpc.version>${project.version}</trpc.version>
         <!-- 工具 -->
         <fastjson2.version>2.0.47</fastjson2.version>
         <okhttp.version>4.12.0</okhttp.version>
