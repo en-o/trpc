@@ -2,12 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.3</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
     <groupId>cn.tannn</groupId>
     <artifactId>trpc</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -20,11 +14,20 @@
     </description>
 
     <properties>
+        <!-- JDK -->
         <java.version>17</java.version>
-        <trpc.version>0.0.1-SNAPSHOT</trpc.version>
+        <!-- Spring -->
+        <spring.boot.version>3.2.3</spring.boot.version>
+        <!--当前项目版本-->
+        <trpc.version>${version}</trpc.version>
+        <!-- 工具 -->
         <fastjson2.version>2.0.47</fastjson2.version>
         <okhttp.version>4.12.0</okhttp.version>
         <curator.version>5.1.0</curator.version>
+        <lombok.version>1.18.30</lombok.version>
+        <!-- 测试 -->
+        <maven-surefire.version>3.2.3</maven-surefire.version>
+        <!-- 编译 -->
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
