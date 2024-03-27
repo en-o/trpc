@@ -1,6 +1,7 @@
 package cn.tannn.trpc.demo.consumer.runner;
 
 import cn.tannn.trpc.core.annotation.TConsumer;
+import cn.tannn.trpc.core.exception.ConsumerException;
 import cn.tannn.trpc.demo.api.OrderService;
 import cn.tannn.trpc.demo.api.UserService;
 import cn.tannn.trpc.demo.api.entity.User;
@@ -52,9 +53,15 @@ public class StartUpCheck implements ApplicationRunner {
         System.out.println("Case 4. >>===[测试重载方法返回字符串]===");
         System.out.println("userService.getName(123) = " + userService.getName(123));
 
-        // 测试local toString方法
-        System.out.println("Case 5. >>===[测试local toString方法]===");
-        System.out.println("userService.toString() = " + userService.toString());
+
+        try {
+            // 测试local toString方法
+            System.out.println("Case 5. >>===[测试local toString方法]===");
+            System.out.println("userService.toString() = " + userService.toString());
+        } catch (ConsumerException e) {
+            System.out.println(" ===> 调用本地方法 exception: " + e.getMessage());
+        }
+
 
         // 测试long类型
         System.out.println("Case 6. >>===[常规int类型，返回User对象]===");

@@ -41,16 +41,14 @@ public class TInvocationHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        // 屏蔽 toString / equals 等 Object 的一些基本方法
-        if (MethodUtils.checkLocalMethod(method)) {
-            return null;
-        }
+
 
         // 组装调用参数 ： 类全限定名称，方法，参数
         RpcRequest rpcRequest = new RpcRequest(service.getCanonicalName(), MethodUtils.methodSign(method), args);
         // 对请求就像处理: 缓存减少IO[CacheFilter],
         Object prefilter = rpcContext.getFilters().executePref(rpcRequest);
         if(prefilter != null) {
+            log.debug("============================前置过滤处理到了噢！============================");
             return prefilter;
         }
         // 路由

@@ -9,6 +9,7 @@ import cn.tannn.trpc.core.config.RpcProperties;
 import cn.tannn.trpc.core.enums.LoadBalancerEnum;
 import cn.tannn.trpc.core.filter.CacheFilter;
 import cn.tannn.trpc.core.filter.FilterChain;
+import cn.tannn.trpc.core.filter.LocalMethodFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -64,7 +65,7 @@ public class ConsumerConfig {
      */
     @Bean
     FilterChain filterChain(){
-        List<Filter> filters = Arrays.asList(new CacheFilter());
+        List<Filter> filters = Arrays.asList(new CacheFilter(),new LocalMethodFilter());
         return new FilterChain(filters);
     }
 
