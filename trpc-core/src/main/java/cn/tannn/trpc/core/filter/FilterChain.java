@@ -52,7 +52,7 @@ public class FilterChain {
      */
     public Object executePost(RpcRequest rpcRequest, Object result){
         for (Filter filter : filters) {
-            // 将处理好的数据数据赋值给下一位再继续处理
+            // 将处理好的数据数据赋值给下一位再继续处理,等于空还是继续使用以前的
             Object filterResult = filter.postFilter(rpcRequest, result);
             if(filterResult != null){
                 result = filterResult;

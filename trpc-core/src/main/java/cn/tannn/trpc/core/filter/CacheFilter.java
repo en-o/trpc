@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version V1.0
  * @date 2024/3/23 下午8:28
  */
-@Order(1)
+@Order
 public class CacheFilter implements Filter {
     /**
      * todo : 优化 -> 容量，淘汰策略, filter 排序
