@@ -36,7 +36,7 @@ public class StartUpCheck implements ApplicationRunner {
     public void run(ApplicationArguments args) {
 
         cases();
-
+        System.out.println("Case 27. >>===[测试超时]===");
         long start = System.currentTimeMillis();
         userService.find(80);
         System.out.println("userService.find task : " + (System.currentTimeMillis() - start) + " ms");
