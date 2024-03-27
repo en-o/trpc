@@ -25,5 +25,5 @@ trpc:
       version: 0.0.1
   http:
     retries: 2
-    timeout: 10
+    timeout: 1000
 

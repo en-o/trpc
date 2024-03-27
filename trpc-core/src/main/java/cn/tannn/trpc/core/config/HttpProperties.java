@@ -25,4 +25,13 @@ public class HttpProperties {
      * http[r,w,c]超时时间/毫秒 ，默认1s
      */
     Integer timeout = 1000;
+
+
+    public Integer getRetries() {
+        return retries<1?1:retries;
+    }
+
+    public Integer getTimeout() {
+        return timeout<1000?1000:timeout;
+    }
 }
