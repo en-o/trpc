@@ -35,18 +35,18 @@ public class StartUpCheck implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
 
-//       cases();
+        cases();
 
         long start = System.currentTimeMillis();
-        userService.find(800);
-        System.out.println("userService.find task : " + (System.currentTimeMillis() - start) + " ms" );
+        userService.find(80);
+        System.out.println("userService.find task : " + (System.currentTimeMillis() - start) + " ms");
 
     }
 
     /**
      * 测试
      */
-    public void cases(){
+    public void cases() {
         // 常规int类型，返回User对象
         System.out.println("Case 1. >>===[常规int类型，返回User对象]===");
         User user = userService.findById(1);
@@ -85,7 +85,7 @@ public class StartUpCheck implements ApplicationRunner {
 
         // 测试User+float类型
         System.out.println("Case 8. >>===[测试long+float类型]===");
-        System.out.println("userService.findId(new User(100,\"tan_f\")) = " + userService.findId(new User(100,"tan_f")));
+        System.out.println("userService.findId(new User(100,\"tan_f\")) = " + userService.findId(new User(100, "tan_f")));
 
 
         // 测试long+float类型
@@ -103,12 +103,12 @@ public class StartUpCheck implements ApplicationRunner {
         // 测试参数是User类型
         System.out.println("Case 12. >>===[测试参数是User类型]===");
         System.out.println("userService.getId(new User(100,\"KK\")) = " +
-                userService.getId(new User(100,"KK")));
+                userService.getId(new User(100, "KK")));
 
         // 测试参数返回都是是User类型
         System.out.println("Case 13. >>===[测试参数是User类型]===");
         User tanUser = userService.findUser(new User(100, "tan"));
-        System.out.println("userService.findUser(new User(100,\"tan\")) = " + tanUser );
+        System.out.println("userService.findUser(new User(100,\"tan\")) = " + tanUser);
 
 
         System.out.println("Case 14. >>===[测试返回long[]]===");
@@ -119,7 +119,7 @@ public class StartUpCheck implements ApplicationRunner {
 
         System.out.println("Case 15. >>===[测试参数和返回值都是long[]]===");
         System.out.println(" ===> userService.getIds(new int[]{4,5,6})): ");
-        for (long id : userService.getIds(new int[]{4,5,6})) {
+        for (long id : userService.getIds(new int[]{4, 5, 6})) {
             System.out.println(id);
         }
 
@@ -151,14 +151,14 @@ public class StartUpCheck implements ApplicationRunner {
         map.put("A200", new User(200, "KK200"));
         map.put("A201", new User(201, "KK201"));
         userService.getMap(map).forEach(
-                (k,v) -> System.out.println(k + " -> " + v)
+                (k, v) -> System.out.println(k + " -> " + v)
         );
 
         System.out.println("Case 20. >>===[测试参数和返回值都是Boolean/boolean类型]===");
         System.out.println("userService.getFlag(false) = " + userService.getFlag(false));
 
         System.out.println("Case 21. >>===[测试参数和返回值都是Boolean[]/boolean[]类型]===");
-        System.out.println("userService.getFlag(false) = " + userService.getFlag(new boolean[]{true,false}));
+        System.out.println("userService.getFlag(false) = " + userService.getFlag(new boolean[]{true, false}));
 
         System.out.println("Case 22. >>===[测试参数和返回值都是User[]类型]===");
         User[] users = new User[]{
