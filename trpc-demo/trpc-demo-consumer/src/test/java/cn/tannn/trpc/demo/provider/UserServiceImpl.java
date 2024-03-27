@@ -1,6 +1,7 @@
 package cn.tannn.trpc.demo.provider;
 
 import cn.tannn.trpc.core.annotation.TProvider;
+import cn.tannn.trpc.core.exception.TrpcException;
 import cn.tannn.trpc.demo.api.UserService;
 import cn.tannn.trpc.demo.api.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -137,7 +138,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User ex(boolean flag) {
         if(flag) {
-            throw new RuntimeException("just throw an exception");
+            throw new TrpcException("just throw an exception");
         }
         return new User(100, "tt100");
     }

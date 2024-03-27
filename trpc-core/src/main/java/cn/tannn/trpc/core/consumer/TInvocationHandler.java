@@ -80,8 +80,8 @@ public class TInvocationHandler implements InvocationHandler {
             return TypeUtils.castMethodResult(method, data);
         } else {
             Exception ex = rpcResponse.getEx();
-            if(ex instanceof ){
-
+            if(ex instanceof TrpcException trpcException){
+                throw trpcException;
             }
             // 处理回传的调用期间发生的异常
             throw new TrpcException(ExceptionCode.SOCKET_TIME_EX, rpcResponse.getEx());

@@ -2,6 +2,7 @@ package cn.tannn.trpc.demo.consumer.runner;
 
 import cn.tannn.trpc.core.annotation.TConsumer;
 import cn.tannn.trpc.core.exception.ConsumerException;
+import cn.tannn.trpc.core.exception.TrpcException;
 import cn.tannn.trpc.demo.api.OrderService;
 import cn.tannn.trpc.demo.api.UserService;
 import cn.tannn.trpc.demo.api.entity.User;
@@ -162,11 +163,11 @@ public class StartUpCheck implements ApplicationRunner {
         User user100 = userService.ex(false);
         System.out.println(user100);
 
-        System.out.println("Case 25. >>===[测试服务端抛出一个RuntimeException异常]===");
+        System.out.println("Case 25. >>===[测试服务端抛出一个TrpcException异常]===");
         try {
             User userEx = userService.ex(true);
             System.out.println(userEx);
-        } catch (RuntimeException e) {
+        } catch (TrpcException e) {
             System.out.println(" ===> exception: " + e.getMessage());
         }
 

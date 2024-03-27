@@ -37,7 +37,7 @@ public class OkHttpInvoker implements HttpInvoker {
     @Override
     public RpcResponse<Object> post(RpcRequest rpcRequest, String url) {
         if(url == null){
-            return new RpcResponse<>(false,null,new RuntimeException("router is empty"));
+            return new RpcResponse<>(false,null, new TrpcException("router is empty"));
         }
         String reqJson = JSON.toJSONString(rpcRequest);
         log.debug(" ===> reqJson = {}", reqJson);

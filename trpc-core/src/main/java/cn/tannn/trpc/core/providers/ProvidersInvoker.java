@@ -52,10 +52,10 @@ public class ProvidersInvoker {
             rpcResponse.setData(result);
         } catch (InvocationTargetException e) {
             // 把异常传递回去
-            rpcResponse.setEx(new RuntimeException(e.getTargetException().getMessage()));
+            rpcResponse.setEx(new TrpcException(e.getTargetException().getMessage()));
         }  catch (IllegalAccessException e) {
             // 把异常传递回去
-            rpcResponse.setEx(new RuntimeException(e.getMessage()));
+            rpcResponse.setEx(new TrpcException(e.getMessage()));
         }
         return rpcResponse;
     }
