@@ -11,6 +11,11 @@ class TrpcDemoProviderApplicationTests {
     static TestZKServer zkServer = new TestZKServer();
     @BeforeAll
     static void init() {
+        System.out.println(" ====================================== ");
+        System.out.println(" ====================================== ");
+        System.out.println(" =============     ZK2182    ========== ");
+        System.out.println(" ====================================== ");
+        System.out.println(" ====================================== ");
         zkServer.start();
     }
 

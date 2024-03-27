@@ -12,16 +12,44 @@ import org.springframework.context.ApplicationContext;
 @SpringBootTest(classes = TrpcDemoConsumerApplication.class)
 class TrpcDemoConsumerApplicationTests {
 
-    static ApplicationContext context;
+    static ApplicationContext context1;
+    static ApplicationContext context2;
 
     static TestZKServer zkServer = new TestZKServer();
 
     @BeforeAll
     static void init() {
         System.out.println(" ====================================== ");
+        System.out.println(" ====================================== ");
+        System.out.println(" =============     ZK2182    ========== ");
+        System.out.println(" ====================================== ");
+        System.out.println(" ====================================== ");
         zkServer.start();
-        context = SpringApplication.run(TrpcDemoProviderApplication.class,
+        System.out.println(" ====================================== ");
+        System.out.println(" ====================================== ");
+
+        System.out.println(" =============      P8089    ========== ");
+        System.out.println(" ====================================== ");
+        System.out.println(" ====================================== ");
+        context1 = SpringApplication.run(TrpcDemoProviderApplication.class,
                 "--server.port=8089",
+                "--trpc.rc.connect[0].port=2182",
+                "--trpc.rc.connect[0].ip=127.0.0.1",
+                "--trpc.rc.name=zk",
+                "--trpc.rc.namespace=trpc",
+                "--trpc.app.appid=provider",
+                "--trpc.app.env=dev",
+                "--trpc.app.namespace=dev",
+                "--trpc.app.version=0.0.1",
+                "--logging.level.cn.tannn.trpc=info");
+
+        System.out.println(" ====================================== ");
+        System.out.println(" ====================================== ");
+        System.out.println(" =============      P8090    ========== ");
+        System.out.println(" ====================================== ");
+        System.out.println(" ====================================== ");
+        context2  = SpringApplication.run(TrpcDemoProviderApplication.class,
+                "--server.port=8090",
                 "--trpc.rc.connect[0].port=2182",
                 "--trpc.rc.connect[0].ip=127.0.0.1",
                 "--trpc.rc.name=zk",
@@ -40,7 +68,8 @@ class TrpcDemoConsumerApplicationTests {
 
     @AfterAll
     static void destory() {
-//        SpringApplication.exit(context, () -> 1);
+        SpringApplication.exit(context1, () -> 1);
+        SpringApplication.exit(context2, () -> 1);
         zkServer.stop();
     }
 
