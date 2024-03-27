@@ -2,7 +2,7 @@ package cn.tannn.trpc.core.providers;
 
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
-import cn.tannn.trpc.core.exception.ProviderException;
+import cn.tannn.trpc.core.exception.RpcException;
 import cn.tannn.trpc.core.meta.ProviderMeta;
 import cn.tannn.trpc.core.util.TypeUtils;
 import org.springframework.util.MultiValueMap;
@@ -43,7 +43,7 @@ public class ProvidersInvoker {
         try {
             ProviderMeta meta = findProviderMeta(providerMetas, request.getMethodSign());
             if (meta == null) {
-                throw new ProviderException("非法RPC方法调用，当前方法不是RPC接口");
+                throw new RpcException("非法RPC方法调用，当前方法不是RPC接口");
             }
             Method method = meta.getMethod();
             Object[] args = processArgs(request.getArgs(), method.getParameterTypes());

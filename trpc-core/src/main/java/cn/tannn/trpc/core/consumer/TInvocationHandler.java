@@ -5,7 +5,8 @@ import cn.tannn.trpc.core.api.RpcContext;
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
 import cn.tannn.trpc.core.consumer.http.OkHttpInvoker;
-import cn.tannn.trpc.core.exception.ConsumerException;
+import cn.tannn.trpc.core.exception.RpcException;
+import cn.tannn.trpc.core.exception.ExceptionCode;
 import cn.tannn.trpc.core.meta.InstanceMeta;
 import cn.tannn.trpc.core.util.MethodUtils;
 import cn.tannn.trpc.core.util.TypeUtils;
@@ -86,9 +87,12 @@ public class TInvocationHandler implements InvocationHandler {
             Object data = rpcResponse.getData();
             return TypeUtils.castMethodResult(method, data);
         } else {
-            // 处理回传的调用期间发生的异常
             Exception ex = rpcResponse.getEx();
-            throw new ConsumerException(ex);
+            if(ex instanceof ){
+
+            }
+            // 处理回传的调用期间发生的异常
+            throw new RpcException(ExceptionCode.SOCKET_TIME_EX, rpcResponse.getEx());
         }
     }
 }

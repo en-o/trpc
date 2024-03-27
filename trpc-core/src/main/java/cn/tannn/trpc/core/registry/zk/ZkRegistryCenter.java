@@ -3,9 +3,7 @@ package cn.tannn.trpc.core.registry.zk;
 import cn.tannn.trpc.core.api.RegistryCenter;
 import cn.tannn.trpc.core.config.registry.Connect;
 import cn.tannn.trpc.core.config.registry.RegistryCenterProperties;
-import cn.tannn.trpc.core.exception.ConsumerException;
-import cn.tannn.trpc.core.exception.ProviderException;
-import cn.tannn.trpc.core.exception.RegistryCenterException;
+import cn.tannn.trpc.core.exception.RpcException;
 import cn.tannn.trpc.core.meta.InstanceMeta;
 import cn.tannn.trpc.core.meta.ServiceMeta;
 import cn.tannn.trpc.core.registry.ChangedListener;
@@ -57,7 +55,7 @@ public class ZkRegistryCenter implements RegistryCenter {
         Connect[] connect = rcp.getConnect();
         String connectString;
         if (connect == null || connect.length == 0) {
-            throw new RegistryCenterException("请填写注册中心连接信息");
+            throw new RpcException("请填写注册中心连接信息");
         } else {
             // todo 注册中心也可以设置多个, 目前只拿第一个
             connectString = connect[0].connectString();
@@ -107,7 +105,7 @@ public class ZkRegistryCenter implements RegistryCenter {
             log.info(" ===> register to zk: {}", instancePath);
             client.create().withMode(CreateMode.EPHEMERAL).forPath(instancePath, "provider".getBytes());
         } catch (Exception e) {
-            throw new ProviderException(e);
+            throw new RpcException(e);
         }
     }
 
@@ -132,7 +130,7 @@ public class ZkRegistryCenter implements RegistryCenter {
             log.info(" ===> unregister from zk: {}", instancePath);
             client.delete().quietly().forPath(instancePath);
         } catch (Exception e) {
-            throw new ProviderException(e);
+            throw new RpcException(e);
         }
     }
 
@@ -146,7 +144,7 @@ public class ZkRegistryCenter implements RegistryCenter {
             log.info(" ===> fetchAll from zk: {}", servicePath);
             return mapInstances(nodes);
         } catch (Exception e) {
-            throw new ConsumerException(e);
+            throw new RpcException(e);
         }
     }
 

@@ -3,7 +3,7 @@ package cn.tannn.trpc.core.consumer;
 import cn.tannn.trpc.core.api.*;
 import cn.tannn.trpc.core.config.ConsumerProperties;
 import cn.tannn.trpc.core.config.RpcProperties;
-import cn.tannn.trpc.core.exception.ConsumerException;
+import cn.tannn.trpc.core.exception.RpcException;
 import cn.tannn.trpc.core.util.ProxyUtils;
 import cn.tannn.trpc.core.util.ScanPackagesUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -84,7 +84,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         // 扫描指定路径的类
         ConsumerProperties consumerProperties = rpcProperties.getConsumer();
         if(consumerProperties.getScanPackages() == null || consumerProperties.getScanPackages().length==0){
-            throw new ConsumerException("consumer请设置扫描包路径");
+            throw new RpcException("consumer请设置扫描包路径");
         }
         Set<BeanDefinition> beanDefinitions = ScanPackagesUtils.scanPackages(consumerProperties.getScanPackages());
         RpcContext rpcContext = new RpcContext();
@@ -98,7 +98,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
                 Object bean = ScanPackagesUtils.getBean(context, beanDefinition);
                 ProxyUtils.rpcApiProxy(bean,rpcContext);
             } catch (Exception e) {
-                throw new ConsumerException(e);
+                throw new RpcException(e);
             }
         }
     }

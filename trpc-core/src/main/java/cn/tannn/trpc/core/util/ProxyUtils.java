@@ -4,7 +4,7 @@ import cn.tannn.trpc.core.annotation.TConsumer;
 import cn.tannn.trpc.core.api.RpcContext;
 import cn.tannn.trpc.core.config.ServiceProperties;
 import cn.tannn.trpc.core.consumer.TInvocationHandler;
-import cn.tannn.trpc.core.exception.ConsumerException;
+import cn.tannn.trpc.core.exception.RpcException;
 import cn.tannn.trpc.core.meta.InstanceMeta;
 import cn.tannn.trpc.core.meta.ServiceMeta;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +53,7 @@ public class ProxyUtils {
                 field.setAccessible(true);
                 field.set(bean, consumer);
             } catch (IllegalAccessException e) {
-                throw new ConsumerException(e);
+                throw new RpcException(e);
             }
         });
     }
