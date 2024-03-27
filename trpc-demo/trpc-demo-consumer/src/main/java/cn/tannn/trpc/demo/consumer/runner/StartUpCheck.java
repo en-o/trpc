@@ -1,7 +1,6 @@
 package cn.tannn.trpc.demo.consumer.runner;
 
 import cn.tannn.trpc.core.annotation.TConsumer;
-import cn.tannn.trpc.core.exception.ConsumerException;
 import cn.tannn.trpc.core.exception.TrpcException;
 import cn.tannn.trpc.demo.api.OrderService;
 import cn.tannn.trpc.demo.api.UserService;
@@ -59,7 +58,7 @@ public class StartUpCheck implements ApplicationRunner {
             // 测试local toString方法
             System.out.println("Case 5. >>===[测试local toString方法]===");
             System.out.println("userService.toString() = " + userService.toString());
-        } catch (ConsumerException e) {
+        } catch (TrpcException e) {
             System.out.println(" ===> 调用本地方法 exception: " + e.getMessage());
         }
 
