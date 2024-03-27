@@ -8,11 +8,15 @@ import cn.tannn.trpc.core.cluster.RoundRibbonLoadBalancer;
 import cn.tannn.trpc.core.config.RpcProperties;
 import cn.tannn.trpc.core.enums.LoadBalancerEnum;
 import cn.tannn.trpc.core.filter.CacheFilter;
+import cn.tannn.trpc.core.filter.FilterChain;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 将自己的类加载进 spring 容器
@@ -54,12 +58,14 @@ public class ConsumerConfig {
         return Router.Default;
     }
 
+
     /**
      * 加载过滤器
      */
     @Bean
-    Filter filter(){
-        return new CacheFilter();
+    FilterChain filterChain(){
+        List<Filter> filters = Arrays.asList(new CacheFilter());
+        return new FilterChain(filters);
     }
 
     /**

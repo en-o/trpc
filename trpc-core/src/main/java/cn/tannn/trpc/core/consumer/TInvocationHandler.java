@@ -49,12 +49,9 @@ public class TInvocationHandler implements InvocationHandler {
         // 组装调用参数 ： 类全限定名称，方法，参数
         RpcRequest rpcRequest = new RpcRequest(service.getCanonicalName(), MethodUtils.methodSign(method), args);
         // 对请求就像处理: 缓存减少IO[CacheFilter],
-        for (Filter filter : rpcContext.getFilters()) {
-            Object prefilter = filter.prefilter(rpcRequest);
-            if(prefilter != null) {
-                log.debug(" {} ===> prefilter {}",filter.getClass().getName() ,rpcRequest);
-                return prefilter;
-            }
+        Object prefilter = rpcContext.getFilters().executePref(rpcRequest);
+        if(prefilter != null) {
+            return prefilter;
         }
         // 路由
         List<InstanceMeta> instances = rpcContext.getRouter().route(this.providers);
@@ -65,12 +62,10 @@ public class TInvocationHandler implements InvocationHandler {
         RpcResponse<Object> rpcResponse = httpInvoker.post(rpcRequest,  instance.toUrl());
         Object result = castReturnResult(method, rpcResponse);
         // 对结果进行处理 - 可能不是最终值，需要设计
-        for (Filter filter : rpcContext.getFilters()) {
-           Object filterResult = filter.postFilter(rpcRequest, result);
-           // 为空就一直处理其他的filter
-           if(filterResult != null){
-               return filterResult;
-            }
+        Object filterResult = rpcContext.getFilters().executePost(rpcRequest, result);
+        // 不是空就返回处理之后的结果
+        if(filterResult != null){
+            return filterResult;
         }
         return result;
     }
