@@ -2,6 +2,7 @@ package cn.tannn.trpc.core.consumer.http;
 
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
+import cn.tannn.trpc.core.config.HttpProperties;
 import cn.tannn.trpc.core.consumer.HttpInvoker;
 import cn.tannn.trpc.core.exception.TrpcException;
 import com.alibaba.fastjson2.JSON;
@@ -19,20 +20,30 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 public class OkHttpInvoker implements HttpInvoker {
-
     /**
      * HTTP JSON_TYPE
      */
     final static MediaType JSON_TYPE = MediaType.get("application/json; charset=UTF-8");
 
-    OkHttpClient httpClient = new OkHttpClient().newBuilder()
-            // 连接池
-            .connectionPool(new ConnectionPool(16, 60, TimeUnit.SECONDS))
-            // 各项超时时间
-            .readTimeout(10, TimeUnit.SECONDS)
-            .writeTimeout(10, TimeUnit.SECONDS)
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .build();
+    OkHttpClient httpClient;
+
+    /**
+     *
+     * @param httpProperties  r,w,c 超时时间
+     */
+    public OkHttpInvoker(HttpProperties httpProperties) {
+        this.httpClient = new OkHttpClient().newBuilder()
+                // 连接池
+                .connectionPool(new ConnectionPool(16, 60, TimeUnit.SECONDS))
+                // 各项超时时间
+                .readTimeout(httpProperties.getTimeout(), TimeUnit.MILLISECONDS)
+                .writeTimeout(httpProperties.getTimeout(), TimeUnit.MILLISECONDS)
+                .connectTimeout(httpProperties.getTimeout(), TimeUnit.MILLISECONDS)
+                .build();
+    }
+
+
+
 
     @Override
     public RpcResponse<Object> post(RpcRequest rpcRequest, String url) {

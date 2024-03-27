@@ -14,6 +14,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.util.List;
 
 /**
@@ -29,7 +31,7 @@ public class TInvocationHandler implements InvocationHandler {
     RpcContext rpcContext;
     List<InstanceMeta> providers;
 
-    HttpInvoker httpInvoker = new OkHttpInvoker();
+    HttpInvoker httpInvoker;
 
 
 
@@ -37,35 +39,46 @@ public class TInvocationHandler implements InvocationHandler {
         this.service = service;
         this.rpcContext = rpcContext;
         this.providers = providers;
+        this.httpInvoker = new OkHttpInvoker(rpcContext.getRpcProperties().getHttp());
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-
-
         // 组装调用参数 ： 类全限定名称，方法，参数
         RpcRequest rpcRequest = new RpcRequest(service.getCanonicalName(), MethodUtils.methodSign(method), args);
-        // 对请求进行前置处理
-        Object prefilter = rpcContext.getFilters().executePref(rpcRequest);
-        if(prefilter != null) {
-            log.debug("============================前置过滤处理到了噢！============================");
-            return prefilter;
+
+        Integer retries = rpcContext.getRpcProperties().getHttp().getRetries();
+        while (retries -- > 0){
+            log.info("====> retries = {}", retries);
+            try {
+                // 对请求进行前置处理
+                Object prefilter = rpcContext.getFilters().executePref(rpcRequest);
+                if(prefilter != null) {
+                    log.debug("============================前置过滤处理到了噢！============================");
+                    return prefilter;
+                }
+                // 路由
+                List<InstanceMeta> instances = rpcContext.getRouter().route(this.providers);
+                // 选择路由
+                InstanceMeta instance = rpcContext.getLoadBalancer().choose(instances);
+                log.debug("loadBalancer.choose(urls) ==> {}", instance);
+                // 发送请求
+                RpcResponse<Object> rpcResponse = httpInvoker.post(rpcRequest,  instance.toUrl());
+                Object result = castReturnResult(method, rpcResponse);
+                // 对结果进行后置处理
+                Object filterResult = rpcContext.getFilters().executePost(rpcRequest, result);
+                // 不是空就返回处理之后的结果
+                if(filterResult != null){
+                    return filterResult;
+                }
+                return result;
+            }catch (RuntimeException e){
+                if(!(e.getCause() instanceof SocketTimeoutException)){
+                    throw e;
+                }
+            }
         }
-        // 路由
-        List<InstanceMeta> instances = rpcContext.getRouter().route(this.providers);
-        // 选择路由
-        InstanceMeta instance = rpcContext.getLoadBalancer().choose(instances);
-        log.debug("loadBalancer.choose(urls) ==> {}", instance);
-        // 发送请求
-        RpcResponse<Object> rpcResponse = httpInvoker.post(rpcRequest,  instance.toUrl());
-        Object result = castReturnResult(method, rpcResponse);
-        // 对结果进行后置处理
-        Object filterResult = rpcContext.getFilters().executePost(rpcRequest, result);
-        // 不是空就返回处理之后的结果
-        if(filterResult != null){
-            return filterResult;
-        }
-        return result;
+        return null;
     }
 
     /**

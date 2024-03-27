@@ -65,7 +65,8 @@ public class ConsumerConfig {
      */
     @Bean
     FilterChain filterChain(){
-        List<Filter> filters = Arrays.asList(new LocalMethodFilter(),new CacheFilter());
+//        List<Filter> filters = Arrays.asList(new LocalMethodFilter(),new CacheFilter());
+        List<Filter> filters = Arrays.asList(new LocalMethodFilter());
         return new FilterChain(filters);
     }
 

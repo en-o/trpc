@@ -38,4 +38,10 @@ public class RpcProperties {
      */
     @NestedConfigurationProperty
     private RegistryCenterProperties rc = new RegistryCenterProperties();
+
+    /**
+     * rpc请求http配置
+     */
+    @NestedConfigurationProperty
+    private HttpProperties http = new HttpProperties();
 }

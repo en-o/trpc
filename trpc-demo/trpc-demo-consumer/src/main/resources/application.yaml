@@ -23,4 +23,7 @@ trpc:
       env: dev
       namespace: dev
       version: 0.0.1
+  http:
+    retries: 2
+    timeout: 10
 
