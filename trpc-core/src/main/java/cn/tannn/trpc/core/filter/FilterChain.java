@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * 过滤器责任链 -- 利用 spring 体系注入 filters
+ * 过滤器责任链 -- 利用 spring 体系注入 filters,如果用构造自己传入的话要注意顺序
  *
  * @author <a href="https://tannn.cn/">tan</a>
  * @date 2024/3/27 15:47
