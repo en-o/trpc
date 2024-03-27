@@ -6,21 +6,21 @@ package cn.tannn.trpc.core.exception;
  * @author <a href="https://tannn.cn/">tan</a>
  * @date 2024/3/20 9:22
  */
-public class RpcException extends RuntimeException{
+public class TrpcException extends RuntimeException{
 
-    public RpcException() {
+    public TrpcException() {
         super();
     }
 
-    public RpcException(String message) {
+    public TrpcException(String message) {
         super(message);
     }
 
-    public RpcException(String message, Throwable cause) {
+    public TrpcException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public RpcException(Throwable cause) {
+    public TrpcException(Throwable cause) {
         super(cause);
     }
 

@@ -3,7 +3,7 @@ package cn.tannn.trpc.core.consumer;
 import cn.tannn.trpc.core.api.*;
 import cn.tannn.trpc.core.config.ConsumerProperties;
 import cn.tannn.trpc.core.config.RpcProperties;
-import cn.tannn.trpc.core.exception.RpcException;
+import cn.tannn.trpc.core.exception.TrpcException;
 import cn.tannn.trpc.core.filter.FilterChain;
 import cn.tannn.trpc.core.util.ProxyUtils;
 import cn.tannn.trpc.core.util.ScanPackagesUtils;
@@ -13,7 +13,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -84,7 +83,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         // 扫描指定路径的类
         ConsumerProperties consumerProperties = rpcProperties.getConsumer();
         if(consumerProperties.getScanPackages() == null || consumerProperties.getScanPackages().length==0){
-            throw new RpcException("consumer请设置扫描包路径");
+            throw new TrpcException("consumer请设置扫描包路径");
         }
         Set<BeanDefinition> beanDefinitions = ScanPackagesUtils.scanPackages(consumerProperties.getScanPackages());
         RpcContext rpcContext = new RpcContext();
@@ -98,7 +97,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
                 Object bean = ScanPackagesUtils.getBean(context, beanDefinition);
                 ProxyUtils.rpcApiProxy(bean,rpcContext);
             } catch (Exception e) {
-                throw new RpcException(e);
+                throw new TrpcException(e);
             }
         }
     }

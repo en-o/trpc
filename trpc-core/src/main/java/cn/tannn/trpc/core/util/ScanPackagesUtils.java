@@ -1,6 +1,6 @@
 package cn.tannn.trpc.core.util;
 
-import cn.tannn.trpc.core.exception.RpcException;
+import cn.tannn.trpc.core.exception.TrpcException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
@@ -87,7 +87,7 @@ public class ScanPackagesUtils {
         try {
             return Class.forName(beanDefinition.getBeanClassName());
         } catch (ClassNotFoundException e) {
-            throw new RpcException("Cannot load bean class", e);
+            throw new TrpcException("Cannot load bean class", e);
         }
     }
 }

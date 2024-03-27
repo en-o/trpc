@@ -3,7 +3,7 @@ package cn.tannn.trpc.core.consumer.http;
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
 import cn.tannn.trpc.core.consumer.HttpInvoker;
-import cn.tannn.trpc.core.exception.RpcException;
+import cn.tannn.trpc.core.exception.TrpcException;
 import com.alibaba.fastjson2.JSON;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
@@ -50,7 +50,7 @@ public class OkHttpInvoker implements HttpInvoker {
             log.debug(" ===> respJson = {}", responseJson);
             return JSON.parseObject(responseJson, RpcResponse.class);
         } catch (Exception e) {
-            throw new RpcException(e);
+            throw new TrpcException(e);
         }
     }
 
