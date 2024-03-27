@@ -28,4 +28,4 @@ GET http://localhost:8088/order/l/22
 GET http://localhost:8088/loadBalancer/12
 
 ### 超时测试
-GET http://localhost:8088/user/timeOut/10000
+GET http://localhost:8088/user/timeOut/8000
