@@ -4,6 +4,7 @@ import cn.tannn.trpc.core.api.*;
 import cn.tannn.trpc.core.config.ConsumerProperties;
 import cn.tannn.trpc.core.config.RpcProperties;
 import cn.tannn.trpc.core.exception.RpcException;
+import cn.tannn.trpc.core.filter.FilterChain;
 import cn.tannn.trpc.core.util.ProxyUtils;
 import cn.tannn.trpc.core.util.ScanPackagesUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -57,14 +58,13 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         LoadBalancer loadBalancer = context.getBean(LoadBalancer.class);
         Router router = context.getBean(Router.class);
         RegistryCenter registryCenter = context.getBean(RegistryCenter.class);
-        // 获取Filter多个注入
-        List<Filter> filters = context.getBeansOfType(Filter.class).values().stream().toList();
+        FilterChain filterChains =  context.getBean(FilterChain.class);
         // 启动 rc  ，stop在 ConsumerPreDestroy
         registryCenter.start();
         // 设置代理
         scanConsumerAndProxy(loadBalancer,
                 router,
-                filters,
+                filterChains,
                 registryCenter);
         log.info("consumerBootstrap started.");
     }
@@ -78,7 +78,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
     private void scanConsumerAndProxy(
                                       LoadBalancer loadBalancer,
                                       Router router,
-                                      List<Filter> filters,
+                                      FilterChain filters,
                                       RegistryCenter registryCenter) {
 
         // 扫描指定路径的类
