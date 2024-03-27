@@ -29,9 +29,9 @@ public class OkHttpInvoker implements HttpInvoker {
             // 连接池
             .connectionPool(new ConnectionPool(16, 60, TimeUnit.SECONDS))
             // 各项超时时间
-            .readTimeout(10000, TimeUnit.SECONDS)
-            .writeTimeout(10000, TimeUnit.SECONDS)
-            .connectTimeout(10000, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)
+            .writeTimeout(10, TimeUnit.SECONDS)
+            .connectTimeout(10, TimeUnit.SECONDS)
             .build();
 
     @Override

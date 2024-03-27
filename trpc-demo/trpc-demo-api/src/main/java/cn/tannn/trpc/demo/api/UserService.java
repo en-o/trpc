@@ -56,4 +56,9 @@ public interface UserService {
     User ex(boolean flag);
 
 
+    /**
+     * 8081端口模拟超时
+     * @param timeout 超时/毫秒
+     */
+    User find(int timeout);
 }

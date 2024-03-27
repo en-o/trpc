@@ -35,6 +35,18 @@ public class StartUpCheck implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
 
+//       cases();
+
+        long start = System.currentTimeMillis();
+        userService.find(800);
+        System.out.println("userService.find task : " + (System.currentTimeMillis() - start) + " ms" );
+
+    }
+
+    /**
+     * 测试
+     */
+    public void cases(){
         // 常规int类型，返回User对象
         System.out.println("Case 1. >>===[常规int类型，返回User对象]===");
         User user = userService.findById(1);
@@ -173,6 +185,5 @@ public class StartUpCheck implements ApplicationRunner {
         System.out.println("Case 26. >>===[null类型，返回User对象]===");
         User nUser = userService.findById(null);
         System.out.println("RPC result userService.findById(null) = " + nUser);
-
     }
 }

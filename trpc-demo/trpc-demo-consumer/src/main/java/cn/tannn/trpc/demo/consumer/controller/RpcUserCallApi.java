@@ -52,4 +52,17 @@ public class RpcUserCallApi {
     public String findName(){
         return userService.getName();
     }
+
+
+    /**
+     * 测试超时
+     * @return Integer
+     */
+    @GetMapping("/timeOut/{timeOut}")
+    public User timeOut(@PathVariable("timeOut") Integer timeOut){
+        long start = System.currentTimeMillis();
+        User user = userService.find(timeOut);
+        System.out.println("userService.find task : " + (System.currentTimeMillis() - start) + " ms" );
+        return user;
+    }
 }
