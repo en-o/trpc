@@ -2,7 +2,8 @@ package cn.tannn.trpc.core.filter;
 
 import cn.tannn.trpc.core.api.Filter;
 import cn.tannn.trpc.core.api.RpcRequest;
-import cn.tannn.trpc.core.exception.ConsumerException;
+import cn.tannn.trpc.core.exception.ExceptionCode;
+import cn.tannn.trpc.core.exception.TrpcException;
 import cn.tannn.trpc.core.util.MethodUtils;
 import org.springframework.core.annotation.Order;
 
@@ -19,7 +20,8 @@ public class LocalMethodFilter implements Filter {
     public Object prefilter(RpcRequest request) {
         // 屏蔽 toString / equals 等 Object 的一些基本方法
         if (MethodUtils.checkLocalMethod(request.getMethodSign().substring(0,request.getMethodSign().indexOf("@")))) {
-            throw new ConsumerException("不允许调用本地方法");
+            // "不允许调用本地方法"
+            throw new TrpcException(ExceptionCode.NO_SUCH_METHOD_EX);
         }
         return null;
     }

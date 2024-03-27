@@ -19,10 +19,10 @@ public class ExceptionCode {
     /**
      * 方法不存在
      */
-    public static final String METHOD_NOT_EX = "X002"+"-"+"method_not_exists";
+    public static final String NO_SUCH_METHOD_EX = "X002"+"-"+"method_not_exists";
 
     /**
      * 未知异常
      */
-    public static final String UNKNOWN_EX = "Z001"+"-"+"method_not_exists";
+    public static final String UNKNOWN_EX = "Z001"+"-"+"unknown";
 }
