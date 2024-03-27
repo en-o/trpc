@@ -2,7 +2,6 @@ package cn.tannn.trpc.core.filter;
 
 import cn.tannn.trpc.core.api.Filter;
 import cn.tannn.trpc.core.api.RpcRequest;
-import cn.tannn.trpc.core.api.RpcResponse;
 import cn.tannn.trpc.core.util.MethodUtils;
 import cn.tannn.trpc.core.util.MockUtils;
 import lombok.SneakyThrows;

@@ -4,8 +4,6 @@ import cn.tannn.trpc.core.config.RpcProperties;
 import cn.tannn.trpc.core.filter.FilterChain;
 import lombok.Data;
 
-import java.util.List;
-
 /**
  * rpc上下文 - 参数传递
  *
