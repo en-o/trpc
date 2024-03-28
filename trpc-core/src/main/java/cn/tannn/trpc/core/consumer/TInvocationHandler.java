@@ -48,7 +48,7 @@ public class TInvocationHandler implements InvocationHandler {
 
         Integer retries = rpcContext.getRpcProperties().getHttp().getRetries();
         while (retries-- > 0) {
-            log.info("====> retries = {}", retries);
+            log.debug("====> retries = {}", retries);
             try {
                 // 对请求进行前置处理
                 Object prefilter = rpcContext.getFilters().executePref(rpcRequest);

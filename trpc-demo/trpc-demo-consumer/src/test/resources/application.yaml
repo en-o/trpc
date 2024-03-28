@@ -3,7 +3,7 @@ server:
 logging:
   level:
     root: error
-    cn.tannn.trpc: info
+    cn.tannn.trpc: debug
 spring:
   main:
     allow-bean-definition-overriding: true
