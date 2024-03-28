@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static cn.tannn.trpc.core.exception.ExceptionCode.PROXY_CREATE_EX;
+
 /**
  * 代理工具类
  *
@@ -53,7 +55,7 @@ public class ProxyUtils {
                 field.setAccessible(true);
                 field.set(bean, consumer);
             } catch (IllegalAccessException e) {
-                throw new TrpcException(e);
+                throw new TrpcException(e, PROXY_CREATE_EX);
             }
         });
     }

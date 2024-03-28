@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.Set;
 
+import static cn.tannn.trpc.core.exception.ExceptionCode.NO_SUCH_CLASS_EX;
+
 /**
  * 扫描
  *
@@ -27,10 +29,11 @@ public class ScanPackagesUtils {
 
     /**
      * 扫描指定路径下的类 （必须要是 spring bean里的容器
+     *
      * @param scanPackages
      * @return
      */
-    public static Set<BeanDefinition> scanPackages(String[] scanPackages){
+    public static Set<BeanDefinition> scanPackages(String[] scanPackages) {
 
         Set<BeanDefinition> beanDefinitions = new HashSet<>();
         // 扫描指定路径 , true 扫描spring 注解 @Component, @Repository, @Service, and @Controller
@@ -43,9 +46,9 @@ public class ScanPackagesUtils {
         provider.addIncludeFilter(new AnnotationTypeFilter(Bean.class));
         for (String scanPackage : scanPackages) {
             Set<BeanDefinition> candidateComponents = provider.findCandidateComponents(scanPackage);
-            if(candidateComponents.isEmpty()){
+            if (candidateComponents.isEmpty()) {
                 log.warn("consumer[{}]扫描不到可用对象，请检查包路径是否正确", scanPackage);
-            }else {
+            } else {
                 beanDefinitions.addAll(candidateComponents);
             }
         }
@@ -87,7 +90,7 @@ public class ScanPackagesUtils {
         try {
             return Class.forName(beanDefinition.getBeanClassName());
         } catch (ClassNotFoundException e) {
-            throw new TrpcException("Cannot load bean class", e);
+            throw new TrpcException(e, NO_SUCH_CLASS_EX);
         }
     }
 }

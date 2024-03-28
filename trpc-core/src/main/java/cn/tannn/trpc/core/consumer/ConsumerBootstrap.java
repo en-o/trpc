@@ -18,6 +18,8 @@ import org.springframework.context.ApplicationContextAware;
 
 import java.util.Set;
 
+import static cn.tannn.trpc.core.exception.ExceptionCode.SCAN_PACKAGE_EX;
+
 /**
  * 消费者处理器
  *
@@ -86,7 +88,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         // 扫描指定路径的类
         ConsumerProperties consumerProperties = rpcProperties.getConsumer();
         if(consumerProperties.getScanPackages() == null || consumerProperties.getScanPackages().length==0){
-            throw new TrpcException("consumer请设置扫描包路径");
+            throw new TrpcException(SCAN_PACKAGE_EX);
         }
         Set<BeanDefinition> beanDefinitions = ScanPackagesUtils.scanPackages(consumerProperties.getScanPackages());
         RpcContext rpcContext = new RpcContext();
@@ -96,12 +98,8 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         rpcContext.setRegistryCenter(registryCenter);
         rpcContext.setRpcProperties(rpcProperties);
         for (BeanDefinition beanDefinition : beanDefinitions) {
-            try {
-                Object bean = ScanPackagesUtils.getBean(context, beanDefinition);
-                ProxyUtils.rpcApiProxy(bean,rpcContext);
-            } catch (Exception e) {
-                throw new TrpcException(e);
-            }
+            Object bean = ScanPackagesUtils.getBean(context, beanDefinition);
+            ProxyUtils.rpcApiProxy(bean,rpcContext);
         }
     }
 

@@ -11,6 +11,9 @@ import okhttp3.*;
 
 import java.util.concurrent.TimeUnit;
 
+import static cn.tannn.trpc.core.exception.ExceptionCode.HTTP_POST_EX;
+import static cn.tannn.trpc.core.exception.ExceptionCode.HTTP_URI_EX;
+
 /**
  * okhttp 请求
  *
@@ -28,8 +31,7 @@ public class OkHttpInvoker implements HttpInvoker {
     OkHttpClient httpClient;
 
     /**
-     *
-     * @param httpProperties  r,w,c 超时时间
+     * @param httpProperties r,w,c 超时时间
      */
     public OkHttpInvoker(HttpProperties httpProperties) {
         this.httpClient = new OkHttpClient().newBuilder()
@@ -43,12 +45,10 @@ public class OkHttpInvoker implements HttpInvoker {
     }
 
 
-
-
     @Override
     public RpcResponse<Object> post(RpcRequest rpcRequest, String url) {
-        if(url == null){
-            return new RpcResponse<>(false,null, new TrpcException("router is empty"));
+        if (url == null) {
+            return new RpcResponse<>(false, null, new TrpcException(HTTP_URI_EX));
         }
         String reqJson = JSON.toJSONString(rpcRequest);
         log.debug(" ===> reqJson = {}", reqJson);
@@ -61,7 +61,7 @@ public class OkHttpInvoker implements HttpInvoker {
             log.debug(" ===> respJson = {}", responseJson);
             return JSON.parseObject(responseJson, RpcResponse.class);
         } catch (Exception e) {
-            throw new TrpcException(e);
+            throw new TrpcException(e, HTTP_POST_EX);
         }
     }
 

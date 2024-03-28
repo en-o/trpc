@@ -34,7 +34,6 @@ public class TInvocationHandler implements InvocationHandler {
     HttpInvoker httpInvoker;
 
 
-
     public TInvocationHandler(Class<?> service, RpcContext rpcContext, List<InstanceMeta> providers) {
         this.service = service;
         this.rpcContext = rpcContext;
@@ -48,12 +47,12 @@ public class TInvocationHandler implements InvocationHandler {
         RpcRequest rpcRequest = new RpcRequest(service.getCanonicalName(), MethodUtils.methodSign(method), args);
 
         Integer retries = rpcContext.getRpcProperties().getHttp().getRetries();
-        while (retries -- > 0){
+        while (retries-- > 0) {
             log.info("====> retries = {}", retries);
             try {
                 // 对请求进行前置处理
                 Object prefilter = rpcContext.getFilters().executePref(rpcRequest);
-                if(prefilter != null) {
+                if (prefilter != null) {
                     log.debug("============================前置过滤处理到了噢！============================");
                     return prefilter;
                 }
@@ -63,17 +62,17 @@ public class TInvocationHandler implements InvocationHandler {
                 InstanceMeta instance = rpcContext.getLoadBalancer().choose(instances);
                 log.debug("loadBalancer.choose(urls) ==> {}", instance);
                 // 发送请求
-                RpcResponse<Object> rpcResponse = httpInvoker.post(rpcRequest,  instance.toUrl());
+                RpcResponse<Object> rpcResponse = httpInvoker.post(rpcRequest, instance.toUrl());
                 Object result = castReturnResult(method, rpcResponse);
                 // 对结果进行后置处理
                 Object filterResult = rpcContext.getFilters().executePost(rpcRequest, result);
                 // 不是空就返回处理之后的结果
-                if(filterResult != null){
+                if (filterResult != null) {
                     return filterResult;
                 }
                 return result;
-            }catch (RuntimeException e){
-                if(!(e.getCause() instanceof SocketTimeoutException)){
+            } catch (RuntimeException e) {
+                if (!(e.getCause() instanceof SocketTimeoutException)) {
                     throw e;
                 }
             }
@@ -83,7 +82,8 @@ public class TInvocationHandler implements InvocationHandler {
 
     /**
      * 处理RpcResponse格式
-     * @param method Method
+     *
+     * @param method      Method
      * @param rpcResponse RpcResponse
      * @return Object
      */
@@ -93,11 +93,11 @@ public class TInvocationHandler implements InvocationHandler {
             return TypeUtils.castMethodResult(method, data);
         } else {
             Exception ex = rpcResponse.getEx();
-            if(ex instanceof TrpcException trpcException){
+            if (ex instanceof TrpcException trpcException) {
                 throw trpcException;
             }
             // 处理回传的调用期间发生的异常
-            throw new TrpcException(ExceptionCode.SOCKET_TIME_EX, rpcResponse.getEx());
+            throw new TrpcException(rpcResponse.getEx(), ExceptionCode.UNKNOWN_EX);
         }
     }
 }

@@ -12,6 +12,8 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
 
+import static cn.tannn.trpc.core.exception.ExceptionCode.NO_SUCH_METHOD_EX;
+
 /**
  * 服务调用
  *
@@ -43,7 +45,8 @@ public class ProvidersInvoker {
         try {
             ProviderMeta meta = findProviderMeta(providerMetas, request.getMethodSign());
             if (meta == null) {
-                throw new TrpcException("非法RPC方法调用，当前方法不是RPC接口");
+                // "非法RPC方法调用，当前方法不是RPC接口"
+                throw new TrpcException(NO_SUCH_METHOD_EX);
             }
             Method method = meta.getMethod();
             Object[] args = processArgs(request.getArgs(), method.getParameterTypes());

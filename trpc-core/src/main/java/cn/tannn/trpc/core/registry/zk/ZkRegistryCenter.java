@@ -20,6 +20,8 @@ import org.apache.zookeeper.CreateMode;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static cn.tannn.trpc.core.exception.ExceptionCode.*;
+
 /**
  * zk注册中心
  *
@@ -55,7 +57,8 @@ public class ZkRegistryCenter implements RegistryCenter {
         Connect[] connect = rcp.getConnect();
         String connectString;
         if (connect == null || connect.length == 0) {
-            throw new TrpcException("请填写注册中心连接信息");
+            // "请填写注册中心连接信息"
+            throw new TrpcException(ZK_NOT_SETTING);
         } else {
             // todo 注册中心也可以设置多个, 目前只拿第一个
             connectString = connect[0].connectString();
@@ -76,7 +79,7 @@ public class ZkRegistryCenter implements RegistryCenter {
      */
     @Override
     public void stop() {
-        if(cacheGlobal != null){
+        if (cacheGlobal != null) {
             cacheGlobal.close();
         }
         client.close();
@@ -105,7 +108,7 @@ public class ZkRegistryCenter implements RegistryCenter {
             log.info(" ===> register to zk: {}", instancePath);
             client.create().withMode(CreateMode.EPHEMERAL).forPath(instancePath, "provider".getBytes());
         } catch (Exception e) {
-            throw new TrpcException(e);
+            throw new TrpcException(e, ZK_REGISTER_FAIL);
         }
     }
 
@@ -130,7 +133,7 @@ public class ZkRegistryCenter implements RegistryCenter {
             log.info(" ===> unregister from zk: {}", instancePath);
             client.delete().quietly().forPath(instancePath);
         } catch (Exception e) {
-            throw new TrpcException(e);
+            throw new TrpcException(e, ZK_UNREGISTER_FAIL);
         }
     }
 
@@ -144,7 +147,7 @@ public class ZkRegistryCenter implements RegistryCenter {
             log.info(" ===> fetchAll from zk: {}", servicePath);
             return mapInstances(nodes);
         } catch (Exception e) {
-            throw new TrpcException(e);
+            throw new TrpcException(e, ZK_FETCH_INSTANCE_FAIL);
         }
     }
 

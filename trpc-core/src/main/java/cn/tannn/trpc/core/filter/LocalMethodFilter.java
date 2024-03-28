@@ -20,8 +20,7 @@ public class LocalMethodFilter implements Filter {
     public Object prefilter(RpcRequest request) {
         // 屏蔽 toString / equals 等 Object 的一些基本方法
         if (MethodUtils.checkLocalMethod(request.getMethodSign().substring(0,request.getMethodSign().indexOf("@")))) {
-            // "不允许调用本地方法"
-            throw new TrpcException(ExceptionCode.NO_SUCH_METHOD_EX);
+            throw new TrpcException(ExceptionCode.ILLEGALITY_METHOD_EX);
         }
         return null;
     }
