@@ -12,7 +12,7 @@ public interface Filter{
     /**
      * 请求前置处理
      * @param request RpcRequest
-     * @return result
+     * @return result（不想处理就直接返回空）
      */
     Object prefilter(RpcRequest request);
 
@@ -22,7 +22,7 @@ public interface Filter{
      * 请求后置处理
      * @param request RpcRequest
      * @param result 返回值处理结果
-     * @return RpcResponse
+     * @return RpcResponse （不想处理就直接返回空）
      */
     Object postFilter(RpcRequest request, Object result);
 

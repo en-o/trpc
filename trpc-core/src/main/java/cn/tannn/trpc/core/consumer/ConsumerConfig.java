@@ -6,6 +6,7 @@ import cn.tannn.trpc.core.api.Router;
 import cn.tannn.trpc.core.cluster.RandomLoadBalancer;
 import cn.tannn.trpc.core.cluster.RoundRibbonLoadBalancer;
 import cn.tannn.trpc.core.config.RpcProperties;
+import cn.tannn.trpc.core.enums.FilterEnum;
 import cn.tannn.trpc.core.enums.LoadBalancerEnum;
 import cn.tannn.trpc.core.filter.CacheFilter;
 import cn.tannn.trpc.core.filter.FilterChain;
@@ -66,9 +67,8 @@ public class ConsumerConfig {
      * 加载过滤器
      */
     @Bean
-    FilterChain filterChain() {
-//        List<Filter> filters = Arrays.asList(new LocalMethodFilter(), new CacheFilter());
-        List<Filter> filters = Arrays.asList(new CacheFilter(), new LocalMethodFilter());
+    FilterChain filterChain(RpcProperties rpcProperties) {
+        List<Filter> filters = FilterEnum.findFilter(rpcProperties.getConsumer().getFilter());
         return new FilterChain(filters);
     }
 

@@ -3,7 +3,7 @@ server:
 logging:
   level:
     root: error
-    cn.tannn.trpc: info
+    cn.tannn.trpc: debug
 
 trpc:
   rc:
@@ -23,6 +23,9 @@ trpc:
       env: dev
       namespace: dev
       version: 0.0.1
+    filter:
+      - cache
+      - local_method
   http:
     retries: 2
     timeout: 1000

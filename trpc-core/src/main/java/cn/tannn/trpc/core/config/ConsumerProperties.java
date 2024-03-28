@@ -1,10 +1,14 @@
 package cn.tannn.trpc.core.config;
 
+import cn.tannn.trpc.core.api.Filter;
+import cn.tannn.trpc.core.enums.FilterEnum;
 import cn.tannn.trpc.core.enums.LoadBalancerEnum;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
+
+import java.util.Arrays;
 
 /**
  * 客户端配置
@@ -33,6 +37,11 @@ public class ConsumerProperties {
      */
     private LoadBalancerEnum loadBalancer;
 
+    /**
+     * 过滤器设置
+     */
+    private FilterEnum[] filter;
+
 
     /**
      * 服务信息 - 不做new处理让他不填直接错
@@ -51,5 +60,14 @@ public class ConsumerProperties {
         return loadBalancer;
     }
 
-
+    /**
+     * 设置默认
+     * @return FilterEnum
+     */
+    public FilterEnum[] getFilter() {
+        if(filter == null || filter.length == 0){
+            return new FilterEnum[]{FilterEnum.DEFAULT};
+        }
+        return filter;
+    }
 }
