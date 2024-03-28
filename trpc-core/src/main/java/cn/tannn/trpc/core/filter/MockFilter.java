@@ -39,4 +39,9 @@ public class MockFilter implements Filter {
     public Object postFilter(RpcRequest request,  Object result) {
         return null;
     }
+
+    @Override
+    public int getOrder() {
+        return 0;
+    }
 }

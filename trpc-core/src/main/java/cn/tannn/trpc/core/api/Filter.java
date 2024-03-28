@@ -7,7 +7,7 @@ package cn.tannn.trpc.core.api;
  * @version V1.0
  * @date 2024-03-16 19:13
  */
-public interface Filter {
+public interface Filter{
 
     /**
      * 请求前置处理
@@ -28,6 +28,13 @@ public interface Filter {
 
 
     /**
+     * 排序 [倒叙]
+     * @return 顺序值
+     */
+    int getOrder();
+
+
+    /**
      * 默认实现
      */
     Filter Default = new Filter(){
@@ -40,6 +47,11 @@ public interface Filter {
         @Override
         public Object postFilter(RpcRequest request, Object object) {
             return null;
+        }
+
+        @Override
+        public int getOrder() {
+            return 0;
         }
     };
 }

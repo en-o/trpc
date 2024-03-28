@@ -5,6 +5,7 @@ import cn.tannn.trpc.core.api.RpcRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -23,6 +24,7 @@ public class FilterChain {
     private final List<Filter> filters;
 
     public FilterChain(List<Filter> filters) {
+        filters.sort(Comparator.comparing(Filter::getOrder).reversed());
         this.filters = filters;
     }
 

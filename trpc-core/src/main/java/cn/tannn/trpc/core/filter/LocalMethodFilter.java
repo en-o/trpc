@@ -29,4 +29,9 @@ public class LocalMethodFilter implements Filter {
     public Object postFilter(RpcRequest request, Object result) {
         return null;
     }
+
+    @Override
+    public int getOrder() {
+        return 2;
+    }
 }

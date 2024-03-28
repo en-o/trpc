@@ -32,4 +32,9 @@ public class CacheFilter implements Filter {
         cache.putIfAbsent(request.toString(), result);
         return result;
     }
+
+    @Override
+    public int getOrder() {
+        return 1;
+    }
 }

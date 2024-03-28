@@ -32,15 +32,17 @@ public class ConsumerConfig {
 
     /**
      * applicationContext
+     *
      * @param rpcProperties RpcProperties
      */
     @Bean
-    ConsumerBootstrap createConsumerBootstrap(RpcProperties rpcProperties){
-       return new ConsumerBootstrap(rpcProperties);
+    ConsumerBootstrap createConsumerBootstrap(RpcProperties rpcProperties) {
+        return new ConsumerBootstrap(rpcProperties);
     }
 
     /**
      * 在 applicationRunner后主动调用，确保实例全部加载完成，防止初始化的过程中被注册使用导致ClassNotFoundException
+     *
      * @param consumerBootstrap ConsumerBootstrap
      * @return ApplicationRunner
      */
@@ -55,7 +57,7 @@ public class ConsumerConfig {
      * 加载路由处理器
      */
     @Bean
-    Router router(){
+    Router router() {
         return Router.Default;
     }
 
@@ -64,9 +66,9 @@ public class ConsumerConfig {
      * 加载过滤器
      */
     @Bean
-    FilterChain filterChain(){
-//        List<Filter> filters = Arrays.asList(new LocalMethodFilter(),new CacheFilter());
-        List<Filter> filters = Arrays.asList(new LocalMethodFilter());
+    FilterChain filterChain() {
+//        List<Filter> filters = Arrays.asList(new LocalMethodFilter(), new CacheFilter());
+        List<Filter> filters = Arrays.asList(new CacheFilter(), new LocalMethodFilter());
         return new FilterChain(filters);
     }
 
@@ -74,15 +76,14 @@ public class ConsumerConfig {
      * 加载负载均衡器
      */
     @Bean
-    LoadBalancer loadBalancer(RpcProperties rpcProperties){
+    LoadBalancer loadBalancer(RpcProperties rpcProperties) {
         // return LoadBalancer.Default;
-        if(rpcProperties.getConsumer().getLoadBalancer().equals(LoadBalancerEnum.ROUND_RIBBON)){
+        if (rpcProperties.getConsumer().getLoadBalancer().equals(LoadBalancerEnum.ROUND_RIBBON)) {
             return new RoundRibbonLoadBalancer();
-        }else {
+        } else {
             return new RandomLoadBalancer();
         }
     }
-
 
 
 }
