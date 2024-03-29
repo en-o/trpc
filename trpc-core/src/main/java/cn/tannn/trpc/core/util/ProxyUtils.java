@@ -2,7 +2,7 @@ package cn.tannn.trpc.core.util;
 
 import cn.tannn.trpc.core.annotation.TConsumer;
 import cn.tannn.trpc.core.api.RpcContext;
-import cn.tannn.trpc.core.config.ServiceProperties;
+import cn.tannn.trpc.core.properties.ServiceProperties;
 import cn.tannn.trpc.core.consumer.TInvocationHandler;
 import cn.tannn.trpc.core.exception.TrpcException;
 import cn.tannn.trpc.core.meta.InstanceMeta;

@@ -1,14 +1,11 @@
-package cn.tannn.trpc.core.config;
+package cn.tannn.trpc.core.properties;
 
-import cn.tannn.trpc.core.api.Filter;
 import cn.tannn.trpc.core.enums.FilterEnum;
 import cn.tannn.trpc.core.enums.LoadBalancerEnum;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
-
-import java.util.Arrays;
 
 /**
  * 客户端配置

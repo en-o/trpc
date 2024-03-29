@@ -1,6 +1,6 @@
 package cn.tannn.trpc.core.api;
 
-import cn.tannn.trpc.core.config.RpcProperties;
+import cn.tannn.trpc.core.properties.RpcProperties;
 import cn.tannn.trpc.core.filter.FilterChain;
 import lombok.Data;
 

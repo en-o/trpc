@@ -2,7 +2,7 @@ package cn.tannn.trpc.core.consumer.http;
 
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
-import cn.tannn.trpc.core.config.HttpProperties;
+import cn.tannn.trpc.core.properties.HttpProperties;
 import cn.tannn.trpc.core.consumer.HttpInvoker;
 import cn.tannn.trpc.core.exception.TrpcException;
 import com.alibaba.fastjson2.JSON;

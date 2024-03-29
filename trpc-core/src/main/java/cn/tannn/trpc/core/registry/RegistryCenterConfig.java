@@ -1,6 +1,7 @@
-package cn.tannn.trpc.core.config;
+package cn.tannn.trpc.core.registry;
 
 import cn.tannn.trpc.core.api.RegistryCenter;
+import cn.tannn.trpc.core.properties.RpcProperties;
 import cn.tannn.trpc.core.enums.RegistryCenterEnum;
 import cn.tannn.trpc.core.meta.InstanceMeta;
 import cn.tannn.trpc.core.registry.zk.ZkRegistryCenter;

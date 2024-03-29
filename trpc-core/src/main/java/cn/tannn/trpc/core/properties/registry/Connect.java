@@ -1,4 +1,4 @@
-package cn.tannn.trpc.core.config.registry;
+package cn.tannn.trpc.core.properties.registry;
 
 import lombok.Getter;
 import lombok.Setter;

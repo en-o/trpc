@@ -1,8 +1,8 @@
 package cn.tannn.trpc.core.registry.zk;
 
 import cn.tannn.trpc.core.api.RegistryCenter;
-import cn.tannn.trpc.core.config.registry.Connect;
-import cn.tannn.trpc.core.config.registry.RegistryCenterProperties;
+import cn.tannn.trpc.core.properties.registry.Connect;
+import cn.tannn.trpc.core.properties.registry.RegistryCenterProperties;
 import cn.tannn.trpc.core.exception.TrpcException;
 import cn.tannn.trpc.core.meta.InstanceMeta;
 import cn.tannn.trpc.core.meta.ServiceMeta;

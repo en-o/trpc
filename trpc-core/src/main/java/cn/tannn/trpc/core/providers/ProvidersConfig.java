@@ -1,6 +1,6 @@
 package cn.tannn.trpc.core.providers;
 
-import cn.tannn.trpc.core.config.RpcProperties;
+import cn.tannn.trpc.core.properties.RpcProperties;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;

@@ -1,4 +1,4 @@
-package cn.tannn.trpc.core.config.registry;
+package cn.tannn.trpc.core.properties.registry;
 
 import cn.tannn.trpc.core.enums.RegistryCenterEnum;
 import lombok.Getter;

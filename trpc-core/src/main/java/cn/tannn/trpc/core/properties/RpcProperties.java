@@ -1,6 +1,6 @@
-package cn.tannn.trpc.core.config;
+package cn.tannn.trpc.core.properties;
 
-import cn.tannn.trpc.core.config.registry.RegistryCenterProperties;
+import cn.tannn.trpc.core.properties.registry.RegistryCenterProperties;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

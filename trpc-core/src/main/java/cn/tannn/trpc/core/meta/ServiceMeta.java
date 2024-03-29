@@ -1,6 +1,6 @@
 package cn.tannn.trpc.core.meta;
 
-import cn.tannn.trpc.core.config.ServiceProperties;
+import cn.tannn.trpc.core.properties.ServiceProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

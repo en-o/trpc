@@ -2,8 +2,8 @@ package cn.tannn.trpc.core.providers;
 
 import cn.tannn.trpc.core.annotation.TProvider;
 import cn.tannn.trpc.core.api.RegistryCenter;
-import cn.tannn.trpc.core.config.RpcProperties;
-import cn.tannn.trpc.core.config.ServiceProperties;
+import cn.tannn.trpc.core.properties.RpcProperties;
+import cn.tannn.trpc.core.properties.ServiceProperties;
 import cn.tannn.trpc.core.meta.InstanceMeta;
 import cn.tannn.trpc.core.meta.ProviderMeta;
 import cn.tannn.trpc.core.meta.ServiceMeta;

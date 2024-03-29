@@ -5,19 +5,16 @@ import cn.tannn.trpc.core.api.LoadBalancer;
 import cn.tannn.trpc.core.api.Router;
 import cn.tannn.trpc.core.cluster.RandomLoadBalancer;
 import cn.tannn.trpc.core.cluster.RoundRibbonLoadBalancer;
-import cn.tannn.trpc.core.config.RpcProperties;
+import cn.tannn.trpc.core.properties.RpcProperties;
 import cn.tannn.trpc.core.enums.FilterEnum;
 import cn.tannn.trpc.core.enums.LoadBalancerEnum;
-import cn.tannn.trpc.core.filter.CacheFilter;
 import cn.tannn.trpc.core.filter.FilterChain;
-import cn.tannn.trpc.core.filter.LocalMethodFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
