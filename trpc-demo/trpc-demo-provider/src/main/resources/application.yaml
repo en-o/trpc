@@ -1,17 +1,2 @@
 server:
   port: 8081
-logging:
-  level:
-    root: error
-    cn.tannn.trpc: info
-
-trpc:
-  rc:
-    namespace: trpc
-    name: zk # zk def
-    providers:
-      - 127.0.0.1_8081 # def有效
-    connect:
-      - ip: 127.0.0.1
-        port: 20242
-  load-balancer: round_ribbon
