@@ -56,6 +56,7 @@ public class TrpcDemoProviderApplication {
             rpcRequest.setMethodSign(MethodUtils.methodSign(OrderService.class.getMethod("findById",Integer.class)));
             rpcRequest.setArgs(new Object[]{100});
             RpcResponse<Object> rpcResponse = providersInvoker.invoke(rpcRequest);
+            // Order(id=100, amount=15.0)
             System.out.println("return: " + rpcResponse.getData());
         };
     }
