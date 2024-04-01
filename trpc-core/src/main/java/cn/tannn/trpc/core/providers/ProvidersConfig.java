@@ -26,7 +26,7 @@ public class ProvidersConfig {
      */
     @Bean
     ProvidersInvoker providersInvoker(ProviderBootstrap providersBootstrap){
-        return new ProvidersInvoker(providersBootstrap.getSkeleton());
+        return new ProvidersInvoker(providersBootstrap);
     }
 
 }

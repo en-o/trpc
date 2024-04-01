@@ -30,8 +30,8 @@ public class ProvidersInvoker {
      */
     private MultiValueMap<String, ProviderMeta> skeleton = new LinkedMultiValueMap<>();
 
-    public ProvidersInvoker(MultiValueMap<String, ProviderMeta> skeleton) {
-        this.skeleton = skeleton;
+    public ProvidersInvoker(ProviderBootstrap providersBootstrap) {
+        this.skeleton = providersBootstrap.getSkeleton();
     }
 
 
