@@ -3,8 +3,7 @@ package cn.tannn.trpc.core.util;
 import cn.tannn.trpc.core.util.entity.UserImpl;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 class MethodUtilsTest {
@@ -22,5 +21,13 @@ class MethodUtilsTest {
         assertTrue(MethodUtils.checkLocalMethod("toString"));
         assertTrue(MethodUtils.checkLocalMethod("hashCode"));
         assertFalse(MethodUtils.checkLocalMethod("hi"));
+    }
+
+    @Test
+    void methodSign() throws NoSuchMethodException {
+        assertEquals("toString@0",MethodUtils.methodSign(UserImpl.class.getMethod("toString")));
+        assertEquals("hi@0",MethodUtils.methodSign(UserImpl.class.getMethod("hi")));
+        assertEquals("lo@2_java.lang.String_java.lang.Integer",MethodUtils.methodSign(UserImpl.class.getMethod("lo",String.class,Integer.class)));
+        assertEquals("lo@1_java.lang.String",MethodUtils.methodSign(UserImpl.class.getMethod("lo",String.class)));
     }
 }

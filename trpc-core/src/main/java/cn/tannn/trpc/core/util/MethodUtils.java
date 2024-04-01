@@ -1,6 +1,7 @@
 package cn.tannn.trpc.core.util;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 /**
  * 类方法工具
@@ -10,6 +11,27 @@ import java.lang.reflect.Method;
  * @date 2024/4/1 下午10:37
  */
 public class MethodUtils {
+
+
+    /**
+     * 生成方法签名
+     *
+     * @param method Method
+     * @return 方法签名 方法名@参数数量_参数类型1_参数类型2 [lo@2_java.lang.String_java.lang.Integer
+     */
+    public static String methodSign(Method method) {
+        // 方法名
+        StringBuilder signature = new StringBuilder(method.getName());
+        // 参数个数
+        signature.append("@").append(method.getParameterCount());
+
+        Arrays.stream(method.getParameterTypes()).forEach(parameter -> {
+            signature.append("_").append(parameter.getCanonicalName());
+        });
+        return signature.toString();
+    }
+
+
 
     /**
      * 检查 method 是不是 Object 的内置方法
