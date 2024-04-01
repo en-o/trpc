@@ -1,4 +1,4 @@
-package cn.tannn.trpc.core.util;
+package cn.tannn.trpc.core.util.entity;
 
 public interface User{
          void hi();

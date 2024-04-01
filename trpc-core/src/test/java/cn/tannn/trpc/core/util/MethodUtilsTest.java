@@ -1,8 +1,7 @@
 package cn.tannn.trpc.core.util;
 
+import cn.tannn.trpc.core.util.entity.UserImpl;
 import org.junit.jupiter.api.Test;
-
-import java.lang.reflect.Method;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
