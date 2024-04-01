@@ -4,19 +4,24 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 class MethodUtilsTest {
 
     @Test
-    void cccc(){
-        System.out.println(Long.class.isPrimitive());
+    void checkLocalMethod() throws NoSuchMethodException {
+        // 不能处理重写方法
+        assertFalse(MethodUtils.checkLocalMethod(UserImpl.class.getMethod("toString")));
+        assertTrue(MethodUtils.checkLocalMethod(UserImpl.class.getMethod("hashCode")));
+        assertFalse(MethodUtils.checkLocalMethod(UserImpl.class.getMethod("hi")));
     }
 
     @Test
-    void methodSign2() {
-        Method[] methods = User.class.getMethods();
-        for (Method method : methods) {
-            System.out.println(MethodUtils.methodSign(method));
-        }
+    void testCheckLocalMethod() {
+        assertTrue(MethodUtils.checkLocalMethod("toString"));
+        assertTrue(MethodUtils.checkLocalMethod("hashCode"));
+        assertFalse(MethodUtils.checkLocalMethod("hi"));
     }
 }
