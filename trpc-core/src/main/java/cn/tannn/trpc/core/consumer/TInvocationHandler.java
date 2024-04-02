@@ -57,10 +57,10 @@ public class TInvocationHandler implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         // 组装调用参数 ： 类全限定名称，方法，参数
         RpcRequest rpcRequest = new RpcRequest(service.getCanonicalName(), MethodUtils.methodSign(method), args);
-
-        // 故障隔离
-        Object result;
-
+        // 屏蔽 toString / equals 等 Object 的一些基本方法
+        if (MethodUtils.checkLocalMethodSign(MethodUtils.methodSign(method))) {
+            throw new TrpcException(ExceptionCode.ILLEGALITY_METHOD_EX);
+        }
         // 随机获取请求地址
         InstanceMeta instance = providers.get(random.nextInt(providers.size()));
         // 发送请求

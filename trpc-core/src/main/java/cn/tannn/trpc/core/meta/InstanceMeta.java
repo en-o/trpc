@@ -70,11 +70,21 @@ public class InstanceMeta {
     }
 
     /**
-     * 组装 url
+     * 组装基础 http基础构造 [http,host,port,null]
+     * @param host host
+     * @param port port
+     * @return InstanceMeta
+     */
+    public static InstanceMeta http(String host, Integer port, String context) {
+        return new InstanceMeta("http", host, port, context);
+    }
+
+    /**
+     * 组装 url [context自带斜杠噢]
      * @return [schema://host:port/context]
      */
     public String toUrl() {
-        return String.format("%s://%s:%d/%s", schema, host, port, context);
+        return String.format("%s://%s:%d%s", schema, host, port, context);
     }
 
 }

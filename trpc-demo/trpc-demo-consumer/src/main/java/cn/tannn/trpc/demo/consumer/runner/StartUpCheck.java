@@ -40,12 +40,12 @@ public class StartUpCheck implements ApplicationRunner {
         System.out.println("RPC result orderService.findById(1) = " + orders1);
 
         // 参数为Long,Float类型，返回User对象
-        System.out.println("Case 1. >>===[参数为Long,Float类型，返回Order对象]===");
-        cn.tannn.trpc.demo.api.entity.Order order2 = orderService.findById(2L,15f);
-        System.out.println("RPC result orderService.findById(2,15) = " + order2);
+//        System.out.println("Case 2. >>===[参数为Long,Float类型，返回Order对象]===");
+//        cn.tannn.trpc.demo.api.entity.Order order2 = orderService.findById(2L,15f);
+//        System.out.println("RPC result orderService.findById(2,15) = " + order2);
 
         // 无参数，返回Long类型
-        System.out.println("Case 1. >>===[无参数，返回Long类型]===");
+        System.out.println("Case 3. >>===[无参数，返回Long类型]===");
         Long order3 = orderService.findId();
         System.out.println("RPC result orderService.findId() = " + order3);
 

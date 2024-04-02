@@ -23,7 +23,8 @@ public class ConsumerConfig {
      */
     @Bean
     ConsumerBootstrap createConsumerBootstrap() {
-        return new ConsumerBootstrap(new String[]{"cn.tannn.trpc"}, "127.0.0.1", 8081);
+        // todo 提到 starter 并完成参数配置化或者注册中心化
+        return new ConsumerBootstrap(new String[]{"cn.tannn.trpc"}, "127.0.0.1", 8081, "/trpc");
     }
 
     /**
