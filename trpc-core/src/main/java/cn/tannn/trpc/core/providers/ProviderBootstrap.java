@@ -16,12 +16,11 @@ import java.util.Arrays;
 import java.util.Map;
 
 /**
- * 服务端核心类 - 后面要把 ApplicationContextAware 挪到trpc-spring-starter
- * <p>
- *     服务处理器
- *     1. 完成服务提供者的扫描
- *     2. 完整服务的注册中心注册
- * </p>
+ * 服务端核心类 - 后面要把 ApplicationContextAware 挪到 trpc-spring-starter , 因为这是spring的能力
+ * <p> 服务处理器
+ * <p>   1. 完成服务提供者的扫描
+ * <p>   2. 完整服务的注册中心注册
+ *
  *
  * @author tnnn
  * @version V1.0
