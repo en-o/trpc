@@ -5,6 +5,7 @@ import cn.tannn.trpc.core.api.RpcResponse;
 import cn.tannn.trpc.core.providers.ProviderBootstrap;
 import cn.tannn.trpc.core.providers.ProvidersInvoker;
 import cn.tannn.trpc.fromwork.spring.properties.RpcProperties;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -24,6 +25,7 @@ import static org.springframework.web.servlet.function.RequestPredicates.*;
  * @date 2024/4/1 下午11:15
  */
 @AutoConfiguration
+@Slf4j
 public class ProvidersConfig {
 
     /**
@@ -65,8 +67,14 @@ public class ProvidersConfig {
             matchIfMissing = true)
     public RouterFunction<ServerResponse> invoke(@Autowired ProvidersInvoker providersInvoker
             , @Autowired RpcProperties rpcProperties) {
+        String context = rpcProperties.getApi().getContext();
+        String prefix = "/";
+        if("/".equals(context)){
+            prefix = "";
+        }
+        log.debug("rpc api name http://ip:port{}{}",prefix,context);
         return RouterFunctions
-                .route(POST(rpcProperties.getApi().getContext())
+                .route(POST(context)
                                 .and(accept(APPLICATION_JSON)
                                         .and(contentType(APPLICATION_JSON))),
                         request -> {
