@@ -1,6 +1,6 @@
-package cn.tannn.trpc.core.annotation;
+package cn.tannn.trpc.fromwork.spring.annotation;
 
-import cn.tannn.trpc.core.providers.ProvidersConfig;
+import cn.tannn.trpc.fromwork.spring.provider.ProvidersConfig;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;

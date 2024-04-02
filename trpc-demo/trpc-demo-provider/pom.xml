@@ -21,7 +21,7 @@
         </dependency>
         <dependency>
             <groupId>cn.tannn</groupId>
-            <artifactId>trpc-core</artifactId>
+            <artifactId>trpc-spring-starter</artifactId>
             <version>${trpc.version}</version>
         </dependency>
         <dependency>

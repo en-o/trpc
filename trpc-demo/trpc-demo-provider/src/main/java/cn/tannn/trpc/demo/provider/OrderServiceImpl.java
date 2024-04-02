@@ -21,9 +21,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order findById2(Long id) {
-        return new Order(id, 15f);
+    public Order findById(Long id, Float amount) {
+        return new Order(id, amount);
     }
+
 
     @Override
     public Long findId() {

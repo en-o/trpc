@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 /**
- * 服务端核心类
+ * 服务端核心类 - 后面要把 ApplicationContextAware 挪到trpc-spring-starter
  * <p>
  *     服务处理器
  *     1. 完成服务提供者的扫描

@@ -9,11 +9,14 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <packaging>pom</packaging>
-    <modules>
-        <module>trpc-spring-starter</module>
-    </modules>
     <artifactId>trpc-fromwork</artifactId>
     <description>各种starter</description>
+
+
+    <modules>
+        <!--spring boot -->
+        <module>trpc-spring-starter</module>
+    </modules>
 
 
 </project>

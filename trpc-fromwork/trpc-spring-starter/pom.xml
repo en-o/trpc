@@ -8,7 +8,7 @@
         <artifactId>trpc-fromwork</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <groupId>cn.tannn.trpc</groupId>
+    <packaging>jar</packaging>
     <artifactId>trpc-spring-starter</artifactId>
     <description> spring boot starter </description>
 
@@ -17,5 +17,25 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+            <version>${spring.boot.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>cn.tannn</groupId>
+            <artifactId>trpc-core</artifactId>
+            <version>${trpc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
 </project>

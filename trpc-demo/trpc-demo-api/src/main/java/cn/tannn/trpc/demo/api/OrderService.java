@@ -10,25 +10,11 @@ import cn.tannn.trpc.demo.api.entity.Order;
  */
 public interface OrderService {
 
-    /**
-     * 查询订单
-     * @param id id
-     * @return User
-     */
     Order findById(Integer id);
 
-    /**
-     * 测试入参 Long
-     * @param id id
-     * @return Order
-     */
-    Order findById2(Long id);
 
+    Order findById(Long id, Float amount);
 
-    /**
-     * 测试出参Long
-     * @return Long
-     */
     Long findId();
 
 
