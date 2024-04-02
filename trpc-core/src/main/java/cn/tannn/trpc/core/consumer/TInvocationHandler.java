@@ -86,12 +86,11 @@ public class TInvocationHandler implements InvocationHandler {
             // 参数类型转换  - 因为序列化过程中数据类型丢失了
             return TypeUtils.castMethodResult(method, data);
         } else {
-            Exception ex = rpcResponse.getEx();
-            if (ex instanceof TrpcException trpcException) {
-                throw trpcException;
+            TrpcException ex = rpcResponse.getEx();
+            if (null != ex) {
+                throw ex;
             }
-            // 处理回传的调用期间发生的异常
-            throw new TrpcException(rpcResponse.getEx(), ExceptionCode.UNKNOWN_EX);
+            return null;
         }
     }
 }

@@ -1,5 +1,6 @@
 package cn.tannn.trpc.core.api;
 
+import cn.tannn.trpc.core.exception.TrpcException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,6 @@ public class RpcResponse<T> {
     /**
      * rpc请求执行失败记录的错误
      */
-    Exception ex;
+    TrpcException ex;
 
 }
