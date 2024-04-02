@@ -2,6 +2,7 @@ package cn.tannn.trpc.core.consumer;
 
 import cn.tannn.trpc.core.exception.TrpcException;
 import cn.tannn.trpc.core.meta.InstanceMeta;
+import cn.tannn.trpc.core.properties.RpcProperties;
 import cn.tannn.trpc.core.util.ProxyUtils;
 import cn.tannn.trpc.core.util.ScanPackagesUtils;
 import lombok.Getter;
@@ -32,26 +33,10 @@ public class ConsumerBootstrap implements ApplicationContextAware {
 
     private ApplicationContext context;
 
-    /**
-     * 客户端扫描包路径
-     * <p> - cn.tannn.trpc.demo.consumer.controller
-     * <p> - cn.tannn.trpc.demo.consumer.runner
-     *
-     */
-    private final String[] scanPackages;
-    private final String providerHost;
-    private final Integer providerPort;
-    private final String providerContext;
+    private final RpcProperties rpcProperties;
 
-    public ConsumerBootstrap(String[] scanPackages
-            , String providerHost
-            , Integer providerPort
-            , String providerContext
-    ) {
-        this.scanPackages = scanPackages;
-        this.providerHost = providerHost;
-        this.providerPort = providerPort;
-        this.providerContext = providerContext;
+    public ConsumerBootstrap(RpcProperties rpcProperties) {
+        this.rpcProperties = rpcProperties;
     }
 
     @Override
@@ -62,7 +47,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
     /**
      * init  init : 拿到 所有标记了TConsumer注解的类（所有的提供者接口元数据），并设置代理
      * <p>
-     *     为了包装所有实例都已经加载完成，在 使用 runner 主动调用，确保实例都加载完成
+     * 为了包装所有实例都已经加载完成，在 使用 runner 主动调用，确保实例都加载完成
      * </p>
      */
     public void start() {
@@ -77,11 +62,18 @@ public class ConsumerBootstrap implements ApplicationContextAware {
      */
     private void scanConsumerAndProxy() {
         // 扫描指定路径的类
-        if(scanPackages== null || scanPackages.length==0){
+        String[] scanPackages = rpcProperties.getScanPackages();
+        if (scanPackages == null || scanPackages.length == 0) {
             throw new TrpcException(SCAN_PACKAGE_EX);
         }
+        String[] providersArray = rpcProperties.getConsumer().getProviders();
         List<InstanceMeta> providers = new ArrayList<>();
-        providers.add(InstanceMeta.http(providerHost,providerPort,providerContext));
+        if(providersArray != null || providersArray.length != 0){
+            for (String ipPortContext : providersArray) {
+                String[] split = ipPortContext.split("_");
+                providers.add(InstanceMeta.http(split[0], Integer.valueOf(split[1]), split[2]));
+            }
+        }
 
         Set<BeanDefinition> beanDefinitions = ScanPackagesUtils.scanPackages(scanPackages);
         for (BeanDefinition beanDefinition : beanDefinitions) {

@@ -1,7 +1,7 @@
 package cn.tannn.trpc.demo.provider;
 
 import cn.tannn.trpc.core.api.RpcRequest;
-import cn.tannn.trpc.fromwork.spring.properties.RpcProperties;
+import cn.tannn.trpc.core.properties.RpcProperties;
 import com.alibaba.fastjson2.JSON;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package cn.tannn.trpc.fromwork.spring.properties;
+package cn.tannn.trpc.core.properties;
 
 import lombok.Getter;
 import lombok.Setter;

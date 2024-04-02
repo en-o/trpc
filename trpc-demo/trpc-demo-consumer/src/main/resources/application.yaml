@@ -5,3 +5,9 @@ logging:
   level:
     root: error
     cn.tannn.trpc: debug
+trpc:
+  scan-packages: cn.tannn.trpc
+  consumer:
+    providers:
+#      - 127.0.0.1_8081_/trpc
+      - 127.0.0.1_8082_/

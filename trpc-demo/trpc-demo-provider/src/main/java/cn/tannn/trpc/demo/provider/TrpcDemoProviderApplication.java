@@ -2,7 +2,7 @@ package cn.tannn.trpc.demo.provider;
 
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
-import cn.tannn.trpc.core.providers.ProvidersInvoker;
+import cn.tannn.trpc.core.providers.ProviderInvoker;
 import cn.tannn.trpc.core.util.MethodUtils;
 import cn.tannn.trpc.demo.api.OrderService;
 import cn.tannn.trpc.fromwork.spring.annotation.EnableProvider;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TrpcDemoProviderApplication {
 
     @Autowired
-    private ProvidersInvoker providersInvoker;
+    private ProviderInvoker providerInvoker;
 
     public static void main(String[] args) {
         SpringApplication.run(TrpcDemoProviderApplication.class, args);
@@ -40,7 +40,7 @@ public class TrpcDemoProviderApplication {
             rpcRequest.setService(OrderService.class.getCanonicalName());
             rpcRequest.setMethodSign(MethodUtils.methodSign(OrderService.class.getMethod("findById",Integer.class)));
             rpcRequest.setArgs(new Object[]{100});
-            RpcResponse<Object> rpcResponse = providersInvoker.invoke(rpcRequest);
+            RpcResponse<Object> rpcResponse = providerInvoker.invoke(rpcRequest);
             // Order(id=100, amount=15.0)
             System.out.println("return: " + rpcResponse.getData());
         };

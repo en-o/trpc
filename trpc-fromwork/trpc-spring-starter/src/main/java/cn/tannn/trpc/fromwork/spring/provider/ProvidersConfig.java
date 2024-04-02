@@ -3,8 +3,8 @@ package cn.tannn.trpc.fromwork.spring.provider;
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
 import cn.tannn.trpc.core.providers.ProviderBootstrap;
-import cn.tannn.trpc.core.providers.ProvidersInvoker;
-import cn.tannn.trpc.fromwork.spring.properties.RpcProperties;
+import cn.tannn.trpc.core.providers.ProviderInvoker;
+import cn.tannn.trpc.core.properties.RpcProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -40,8 +40,8 @@ public class ProvidersConfig {
      * 注册 : RPC服务调用的核心方法
      */
     @Bean
-    ProvidersInvoker providersInvoker(ProviderBootstrap providersBootstrap){
-        return new ProvidersInvoker(providersBootstrap);
+    ProviderInvoker providersInvoker(ProviderBootstrap providersBootstrap){
+        return new ProviderInvoker(providersBootstrap);
     }
 
 
@@ -65,7 +65,7 @@ public class ProvidersConfig {
             value = "trpc.api.enabled",
             havingValue = "true",
             matchIfMissing = true)
-    public RouterFunction<ServerResponse> invoke(@Autowired ProvidersInvoker providersInvoker
+    public RouterFunction<ServerResponse> invoke(@Autowired ProviderInvoker providerInvoker
             , @Autowired RpcProperties rpcProperties) {
         String context = rpcProperties.getApi().getContext();
         log.debug("rpc api name http://ip:port{}",context);
@@ -77,7 +77,7 @@ public class ProvidersConfig {
                             // 来提取body 中的JSON 对象
                             RpcRequest rpcRequest = request.body(RpcRequest.class);
                             // 处理请求体，这里仅作为示例直接返回请求体
-                            RpcResponse<Object> invoke = providersInvoker.invoke(rpcRequest);
+                            RpcResponse<Object> invoke = providerInvoker.invoke(rpcRequest);
                             // 构建响应体
                             return ServerResponse.ok().body(invoke);
                         });

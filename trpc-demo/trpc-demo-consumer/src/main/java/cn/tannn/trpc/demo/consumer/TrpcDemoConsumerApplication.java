@@ -1,7 +1,7 @@
 
 package cn.tannn.trpc.demo.consumer;
 
-import cn.tannn.trpc.core.annotation.EnableConsumer;
+import cn.tannn.trpc.fromwork.spring.annotation.EnableConsumer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

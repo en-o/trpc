@@ -23,14 +23,14 @@ import static cn.tannn.trpc.core.exception.ExceptionCode.NO_SUCH_METHOD_EX;
  * @date 2024/4/1 下午11:06
  */
 @Slf4j
-public class ProvidersInvoker {
+public class ProviderInvoker {
 
     /**
      * 本地缓存 - ProviderBootstrap透传过来的提供者[类全限定名,Provider的映射关系],用着反射调用元数据
      */
     private MultiValueMap<String, ProviderMeta> skeleton = new LinkedMultiValueMap<>();
 
-    public ProvidersInvoker(ProviderBootstrap providersBootstrap) {
+    public ProviderInvoker(ProviderBootstrap providersBootstrap) {
         this.skeleton = providersBootstrap.getSkeleton();
     }
 

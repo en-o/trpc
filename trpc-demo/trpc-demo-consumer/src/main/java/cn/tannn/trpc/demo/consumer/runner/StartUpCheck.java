@@ -2,7 +2,6 @@ package cn.tannn.trpc.demo.consumer.runner;
 
 import cn.tannn.trpc.core.annotation.TConsumer;
 import cn.tannn.trpc.demo.api.OrderService;
-import cn.tannn.trpc.demo.api.entity.User;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;

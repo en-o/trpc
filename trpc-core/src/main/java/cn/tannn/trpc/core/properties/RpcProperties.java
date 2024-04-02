@@ -1,4 +1,4 @@
-package cn.tannn.trpc.fromwork.spring.properties;
+package cn.tannn.trpc.core.properties;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,10 +21,26 @@ import org.springframework.stereotype.Component;
 public class RpcProperties {
 
     /**
+     * 设置 trpc扫描包路径，获取 RPC注解 标记的服务
+     * <pr>
+     *     - cn.tannn.trpc.demo.consumer.controller
+     *     - cn.tannn.trpc.demo.consumer.runner
+     * </pr>
+     */
+    private String[] scanPackages;
+
+    /**
      * rpc暴露接口 的相关配置
      */
     @NestedConfigurationProperty
     private ApiProperties api;
+
+
+    /**
+     * 客户端信息
+     */
+    @NestedConfigurationProperty
+    private ConsumerProperties consumer = new ConsumerProperties();
 
 
     public ApiProperties getApi() {

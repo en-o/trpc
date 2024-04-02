@@ -63,6 +63,7 @@ public class TInvocationHandler implements InvocationHandler {
         }
         // 随机获取请求地址
         InstanceMeta instance = providers.get(random.nextInt(providers.size()));
+        log.debug("instance.choose(urls) ==> {}", instance);
         // 发送请求
         RpcResponse<Object> rpcResponse = httpInvoker.post(rpcRequest, instance.toUrl());
         return castReturnResult(method, rpcResponse);

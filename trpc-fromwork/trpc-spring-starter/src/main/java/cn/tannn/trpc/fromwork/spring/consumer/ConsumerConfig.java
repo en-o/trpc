@@ -1,7 +1,10 @@
-package cn.tannn.trpc.core.consumer;
+package cn.tannn.trpc.fromwork.spring.consumer;
 
 
+import cn.tannn.trpc.core.consumer.ConsumerBootstrap;
+import cn.tannn.trpc.core.properties.RpcProperties;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -22,9 +25,8 @@ public class ConsumerConfig {
      * applicationContext
      */
     @Bean
-    ConsumerBootstrap createConsumerBootstrap() {
-        // todo 提到 starter 并完成参数配置化或者注册中心化
-        return new ConsumerBootstrap(new String[]{"cn.tannn.trpc"}, "127.0.0.1", 8081, "/trpc");
+    ConsumerBootstrap createConsumerBootstrap(@Autowired RpcProperties rpcProperties) {
+        return new ConsumerBootstrap(rpcProperties);
     }
 
     /**
