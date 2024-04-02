@@ -2,9 +2,9 @@ package cn.tannn.trpc.fromwork.spring.provider;
 
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
+import cn.tannn.trpc.core.properties.RpcProperties;
 import cn.tannn.trpc.core.providers.ProviderBootstrap;
 import cn.tannn.trpc.core.providers.ProviderInvoker;
-import cn.tannn.trpc.core.properties.RpcProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
