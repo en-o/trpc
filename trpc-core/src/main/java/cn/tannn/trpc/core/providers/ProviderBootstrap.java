@@ -43,14 +43,23 @@ public class ProviderBootstrap implements ApplicationContextAware {
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        log.info("ProviderBootstrap init...");
         this.context = applicationContext;
+        // 开始解析和扫描provider服务接口
+        init();
+    }
+
+    /**
+     * 加载 providers
+     */
+    public void init(){
+        log.info("ProviderBootstrap init...");
         // 所有标记了 @TProvider 注解的类
         Map<String, Object> providers = context.getBeansWithAnnotation(TProvider.class);
         providers.forEach((x,y) -> log.debug(x));
         providers.values().forEach(this::storageSkeleton);
         log.info("ProviderBootstrap initialized.");
     }
+
 
 
     /**
