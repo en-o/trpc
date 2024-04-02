@@ -1,7 +1,11 @@
 package cn.tannn.trpc.core.util;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * 类方法工具
@@ -56,5 +60,26 @@ public class MethodUtils {
      */
     public static boolean checkLocalMethod(final Method method) {
         return method.getDeclaringClass().equals(Object.class);
+    }
+
+
+    /**
+     * 获取自定注解的属性字段
+     *
+     * @param aClass Class
+     * @return Field
+     */
+    public static List<Field> findAnnotatedField(Class<?> aClass, Class<? extends Annotation> annotation) {
+        ArrayList<Field> result = new ArrayList<>();
+        while (aClass != null) {
+            Field[] fields = aClass.getDeclaredFields();
+            for (Field field : fields) {
+                if (field.isAnnotationPresent(annotation)) {
+                    result.add(field);
+                }
+            }
+            aClass = aClass.getSuperclass();
+        }
+        return result;
     }
 }

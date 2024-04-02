@@ -30,8 +30,8 @@ public class ScanPackagesUtils {
     /**
      * 扫描指定路径下的类 （必须要是 spring bean里的容器
      *
-     * @param scanPackages
-     * @return
+     * @param scanPackages 指定路径
+     * @return BeanDefinition
      */
     public static Set<BeanDefinition> scanPackages(String[] scanPackages) {
 
