@@ -8,4 +8,4 @@ logging:
 trpc:
   api:
 #    enabled: false
-    context: trpc
+    context: /trpc

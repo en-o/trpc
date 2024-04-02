@@ -1,2 +1,11 @@
 server:
   port: 8081
+
+logging:
+  level:
+    root: error
+    cn.tannn.trpc: debug
+trpc:
+  api:
+    #    enabled: false
+    context: /trpc

@@ -15,7 +15,7 @@ import lombok.ToString;
 @ToString
 public class ApiProperties {
     /**
-     * rpc暴露的接口请求前缀【默认/, ps 不加前缀 / , e.g trpc】
+     * rpc暴露的接口请求前缀【默认/ , e.g /trpc】
      */
     private String context;
 
