@@ -7,4 +7,5 @@ logging:
     cn.tannn.trpc: debug
 trpc:
   api:
+#    enabled: false
     context: trpc
