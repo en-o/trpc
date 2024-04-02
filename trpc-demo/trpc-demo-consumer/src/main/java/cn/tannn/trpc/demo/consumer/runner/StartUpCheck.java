@@ -34,7 +34,6 @@ public class StartUpCheck implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         casesOrder();
         cases();
-
     }
 
 

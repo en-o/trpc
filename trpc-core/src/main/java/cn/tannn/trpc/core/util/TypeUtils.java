@@ -1,5 +1,6 @@
 package cn.tannn.trpc.core.util;
 
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import lombok.extern.slf4j.Slf4j;
@@ -103,8 +104,9 @@ public class TypeUtils {
     public static Object castGeneric(Object data, Class<?> type, Type genericReturnType) {
         log.debug("method.getReturnType() = " + type);
         log.debug("method.getGenericReturnType() = " + genericReturnType);
-        if (data instanceof JSONObject jsonResult) {
+        if (data instanceof Map map) {
             if (Map.class.isAssignableFrom(type)) {
+                log.debug(" ======> map -> map");
                 Map resultMap = new HashMap();
                 log.debug(genericReturnType.toString());
                 if (genericReturnType instanceof ParameterizedType parameterizedType) {
@@ -112,17 +114,28 @@ public class TypeUtils {
                     Class<?> valueType = (Class<?>)parameterizedType.getActualTypeArguments()[1];
                     log.debug("keyType  : " + keyType);
                     log.debug("valueType: " + valueType);
-                    jsonResult.entrySet().stream().forEach(
-                            e -> {
-                                Object key = cast(e.getKey(), keyType);
-                                Object value = cast(e.getValue(), valueType);
+                    map.forEach(
+                            (k,v) -> {
+                                Object key = cast(k, keyType);
+                                Object value = cast(v, valueType);
                                 resultMap.put(key, value);
                             }
                     );
                 }
                 return resultMap;
             }
-            return jsonResult.toJavaObject(type);
+            if(data instanceof JSONObject jsonObject) {
+                // 此时是Pojo，且数据是JSONObject
+                log.debug(" ======> JSONObject -> Pojo");
+                return jsonObject.toJavaObject(type);
+            }else if(!Map.class.isAssignableFrom(type)){
+                // 此时是Pojo类型，数据是Map
+                log.debug(" ======> map -> Pojo");
+                return JSONObject.from(map).toJavaObject(type);
+            }else {
+                log.debug(" ======> map -> ?");
+                return data;
+            }
         } else if (data instanceof List list) {
             Object[] array = list.toArray();
             if (type.isArray()) {
