@@ -8,6 +8,7 @@ import cn.tannn.trpc.core.exception.TrpcException;
 import cn.tannn.trpc.core.meta.InstanceMeta;
 import cn.tannn.trpc.core.properties.HttpProperties;
 import cn.tannn.trpc.core.util.MethodUtils;
+import cn.tannn.trpc.core.util.TypeUtils;
 import com.alibaba.fastjson2.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
@@ -82,8 +83,8 @@ public class TInvocationHandler implements InvocationHandler {
     private static @Nullable Object castReturnResult(Method method, RpcResponse<Object> rpcResponse) {
         if (rpcResponse.isStatus()) {
             Object data = rpcResponse.getData();
-            // TODO 需要对类型进行处理 - 1
-            return JSON.to(method.getReturnType(),data);
+            // 参数类型转换  - 因为序列化过程中数据类型丢失了
+            return TypeUtils.castMethodResult(method, data);
         } else {
             Exception ex = rpcResponse.getEx();
             if (ex instanceof TrpcException trpcException) {

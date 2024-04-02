@@ -14,51 +14,37 @@ import java.util.Map;
  */
 public interface UserService {
 
-    User findById(Integer id);
+    User findById(int id);
+
     User findById(int id, String name);
 
-    float findId(float id);
-    float findId(long id);
-    float findId(User id);
+    long getId(long id);
 
     long getId(User user);
 
     long getId(float id);
-
-    double findId(double id);
-
-    double findId(int id);
 
     String getName();
 
     String getName(int id);
 
     int[] getIds();
-
-
     long[] getLongIds();
     int[] getIds(int[] ids);
 
     User[] findUsers(User[] users);
 
-    User findUser(User user);
-
     List<User> getList(List<User> userList);
-
-    List<Boolean> getListBoolean(List<Boolean> userListBoolean);
 
     Map<String, User> getMap(Map<String, User> userMap);
 
-    boolean getFlag(boolean id);
-    boolean[] getFlag(boolean[] id);
+    Boolean getFlag(boolean flag);
 
     User findById(long id);
+
     User ex(boolean flag);
 
-
-    /**
-     * 8081端口模拟超时
-     * @param timeout 超时/毫秒
-     */
     User find(int timeout);
+
+    void setTimeoutPorts(String timeoutPorts);
 }

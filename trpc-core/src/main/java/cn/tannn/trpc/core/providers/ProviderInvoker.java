@@ -4,12 +4,14 @@ import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
 import cn.tannn.trpc.core.exception.TrpcException;
 import cn.tannn.trpc.core.meta.ProviderMeta;
+import cn.tannn.trpc.core.util.TypeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,8 +56,9 @@ public class ProviderInvoker {
                 throw new TrpcException(NO_SUCH_METHOD_EX);
             }
             Method method = meta.getMethod();
-            // 这里要处理 重载 和 参数类型转换 , // TODO 需要对类型进行处理 - 2
-            Object result = method.invoke(meta.getServiceImpl(), request.getArgs());
+            // 参数类型转换  - 因为序列化过程中数据类型丢失了
+            Object[] args = processArgs(request.getArgs(), method.getParameterTypes(), method.getGenericParameterTypes());
+            Object result = method.invoke(meta.getServiceImpl(), args);
             rpcResponse.setStatus(true);
             rpcResponse.setData(result);
         } catch (InvocationTargetException e) {
@@ -82,5 +85,26 @@ public class ProviderInvoker {
                 .filter(m -> m.getMethodSign().equals(methodSign))
                 .findFirst();
         return first.orElse(null);
+    }
+
+
+    /**
+     * 处理参数的实际类型
+     *
+     * @param args           参数
+     * @param parameterTypes 参数类型
+     * @param genericParameterTypes 泛型类型
+     * @return Object
+     */
+    private Object[] processArgs(Object[] args, Class<?>[] parameterTypes, Type[] genericParameterTypes) {
+        if (args == null || args.length == 0) {
+            return args;
+        }
+        Object[] actuals = new Object[args.length];
+        for (int i = 0; i < parameterTypes.length; i++) {
+            // actuals[i] = JSON.to(parameterTypes[i],  args[i]);
+            actuals[i] = TypeUtils.castGeneric(args[i], parameterTypes[i], genericParameterTypes[i]);
+        }
+        return actuals;
     }
 }
