@@ -8,7 +8,6 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <artifactId>trpc-demo-api</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
     <name>trpc-demo-api</name>
     <description>trpc-demo-api</description>
     <properties>
