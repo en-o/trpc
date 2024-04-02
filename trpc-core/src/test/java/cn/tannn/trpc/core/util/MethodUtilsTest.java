@@ -17,6 +17,13 @@ class MethodUtilsTest {
     }
 
     @Test
+    void checkLocalMethodSign() throws NoSuchMethodException {
+        assertTrue(MethodUtils.checkLocalMethodSign("toString@0"));
+        assertTrue(MethodUtils.checkLocalMethodSign("hashCode@0"));
+        assertFalse(MethodUtils.checkLocalMethodSign("hi@0"));
+    }
+
+    @Test
     void testCheckLocalMethod() {
         assertTrue(MethodUtils.checkLocalMethod("toString"));
         assertTrue(MethodUtils.checkLocalMethod("hashCode"));
@@ -30,4 +37,6 @@ class MethodUtilsTest {
         assertEquals("lo@2_java.lang.String_java.lang.Integer",MethodUtils.methodSign(UserImpl.class.getMethod("lo",String.class,Integer.class)));
         assertEquals("lo@1_java.lang.String",MethodUtils.methodSign(UserImpl.class.getMethod("lo",String.class)));
     }
+
+
 }

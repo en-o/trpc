@@ -52,6 +52,15 @@ public class MethodUtils {
                 "notify".equals(methodName);
     }
 
+    /**
+     * 检查 method 是不是 Object 的内置方法
+     * @param methodSign 方法签名
+     * @return boolean [true表示存在]
+     */
+    public static boolean checkLocalMethodSign(final String methodSign) {
+        return checkLocalMethod(methodSign.substring(0,methodSign.indexOf("@")));
+    }
+
 
     /**
      * 检查 method 是不是 Object 的内置方法 - 被重写过后会拦截不到
