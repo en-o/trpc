@@ -39,9 +39,13 @@ public class ConsumerBootstrap implements ApplicationContextAware {
      *
      */
     private final String[] scanPackages;
+    private final String providerHost;
+    private final Integer providerPort;
 
-    public ConsumerBootstrap(String[] scanPackages) {
+    public ConsumerBootstrap(String[] scanPackages, String providerHost, Integer providerPort) {
         this.scanPackages = scanPackages;
+        this.providerHost = providerHost;
+        this.providerPort = providerPort;
     }
 
     @Override
@@ -71,7 +75,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
             throw new TrpcException(SCAN_PACKAGE_EX);
         }
         List<InstanceMeta> providers = new ArrayList<>();
-        providers.add(InstanceMeta.http("127.0.0.1",8083));
+        providers.add(InstanceMeta.http(providerHost,providerPort));
 
         Set<BeanDefinition> beanDefinitions = ScanPackagesUtils.scanPackages(scanPackages);
         for (BeanDefinition beanDefinition : beanDefinitions) {
