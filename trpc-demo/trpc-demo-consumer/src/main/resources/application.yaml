@@ -8,6 +8,8 @@ logging:
 trpc:
   scan-packages: cn.tannn.trpc
   consumer:
+    http:
+      timeout: 2000
     providers:
-#      - 127.0.0.1_8081_/trpc
-      - 127.0.0.1_8082_/
+      - 127.0.0.1_8081_/trpc
+#      - 127.0.0.1_8082_/

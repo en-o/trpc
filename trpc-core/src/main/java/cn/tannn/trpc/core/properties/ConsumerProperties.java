@@ -3,6 +3,7 @@ package cn.tannn.trpc.core.properties;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 /**
  * 消费端配置
@@ -23,4 +24,11 @@ public class ConsumerProperties {
      *   <p>   - 127.0.0.1_8082_/trpc
      */
     private String[] providers;
+
+
+    /**
+     * rpc请求http配置
+     */
+    @NestedConfigurationProperty
+    private HttpProperties http = new HttpProperties();
 }

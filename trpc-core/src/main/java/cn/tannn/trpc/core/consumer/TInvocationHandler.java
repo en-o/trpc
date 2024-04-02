@@ -46,11 +46,12 @@ public class TInvocationHandler implements InvocationHandler {
     /**
      * @param service     需要添加代理的对象
      * @param providers   服务提供者连接信息
+     * @param httpProperties http连接配置
      */
-    public TInvocationHandler(Class<?> service, List<InstanceMeta> providers) {
+    public TInvocationHandler(Class<?> service, List<InstanceMeta> providers, HttpProperties httpProperties) {
         this.providers = providers;
         this.service = service;
-        this.httpInvoker = new OkHttpInvoker(new HttpProperties(1000));
+        this.httpInvoker = new OkHttpInvoker(httpProperties);
     }
 
     @Override

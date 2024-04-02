@@ -34,6 +34,7 @@ public class OkHttpInvoker implements HttpInvoker {
      * @param httpProperties r,w,c 超时时间
      */
     public OkHttpInvoker(HttpProperties httpProperties) {
+        log.debug("http config ===> {}", httpProperties);
         this.httpClient = new OkHttpClient().newBuilder()
                 // 连接池
                 .connectionPool(new ConnectionPool(16, 60, TimeUnit.SECONDS))

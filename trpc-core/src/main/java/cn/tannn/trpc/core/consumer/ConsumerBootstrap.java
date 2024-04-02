@@ -68,7 +68,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         }
         String[] providersArray = rpcProperties.getConsumer().getProviders();
         List<InstanceMeta> providers = new ArrayList<>();
-        if(providersArray != null || providersArray.length != 0){
+        if(providersArray != null){
             for (String ipPortContext : providersArray) {
                 String[] split = ipPortContext.split("_");
                 providers.add(InstanceMeta.http(split[0], Integer.valueOf(split[1]), split[2]));
@@ -78,7 +78,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         Set<BeanDefinition> beanDefinitions = ScanPackagesUtils.scanPackages(scanPackages);
         for (BeanDefinition beanDefinition : beanDefinitions) {
             Object bean = ScanPackagesUtils.getBean(context, beanDefinition);
-            ProxyUtils.rpcApiProxy(bean, providers);
+            ProxyUtils.rpcApiProxy(bean, providers, rpcProperties.getConsumer().getHttp());
         }
     }
 
