@@ -102,8 +102,7 @@ public class TypeUtils {
      * @return data Type
      */
     public static Object castGeneric(Object data, Class<?> type, Type genericReturnType) {
-        log.debug("method.getReturnType() = " + type);
-        log.debug("method.getGenericReturnType() = " + genericReturnType);
+        log.debug("method.getReturnType() = {}, method.getGenericReturnType() = {}", type, genericReturnType);
         if (data instanceof Map map) {
             if (Map.class.isAssignableFrom(type)) {
                 log.debug(" ======> map -> map");
@@ -112,8 +111,7 @@ public class TypeUtils {
                 if (genericReturnType instanceof ParameterizedType parameterizedType) {
                     Class<?> keyType = (Class<?>)parameterizedType.getActualTypeArguments()[0];
                     Class<?> valueType = (Class<?>)parameterizedType.getActualTypeArguments()[1];
-                    log.debug("keyType  : " + keyType);
-                    log.debug("valueType: " + valueType);
+                    log.debug("keyType  : {}, valueType: {} ", keyType, valueType);
                     map.forEach(
                             (k,v) -> {
                                 Object key = cast(k, keyType);
