@@ -38,6 +38,8 @@
     <modules>
         <!-- 框架 -->
         <module>trpc-core</module>
+        <!-- starter -->
+        <module>trpc-fromwork</module>
         <!-- demo -->
         <module>trpc-demo</module>
     </modules>
