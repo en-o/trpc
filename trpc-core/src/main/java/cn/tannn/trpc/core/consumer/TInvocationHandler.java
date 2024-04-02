@@ -9,7 +9,6 @@ import cn.tannn.trpc.core.meta.InstanceMeta;
 import cn.tannn.trpc.core.properties.HttpProperties;
 import cn.tannn.trpc.core.util.MethodUtils;
 import cn.tannn.trpc.core.util.TypeUtils;
-import com.alibaba.fastjson2.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 
