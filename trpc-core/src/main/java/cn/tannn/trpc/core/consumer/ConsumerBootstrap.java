@@ -1,5 +1,7 @@
 package cn.tannn.trpc.core.consumer;
 
+import cn.tannn.trpc.core.api.LoadBalancer;
+import cn.tannn.trpc.core.api.RpcContext;
 import cn.tannn.trpc.core.exception.TrpcException;
 import cn.tannn.trpc.core.meta.InstanceMeta;
 import cn.tannn.trpc.core.properties.RpcProperties;
@@ -76,9 +78,17 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         }
 
         Set<BeanDefinition> beanDefinitions = ScanPackagesUtils.scanPackages(scanPackages);
+
+        // 拿到负载均衡
+        LoadBalancer loadBalancer = context.getBean(LoadBalancer.class);
+        // 透传 context 数据
+        RpcContext rpcContext = new RpcContext();
+        rpcContext.setLoadBalancer(loadBalancer);
+        rpcContext.setRpcProperties(rpcProperties);
+
         for (BeanDefinition beanDefinition : beanDefinitions) {
             Object bean = ScanPackagesUtils.getBean(context, beanDefinition);
-            ProxyUtils.rpcApiProxy(bean, providers, rpcProperties.getConsumer().getHttp());
+            ProxyUtils.rpcApiProxy(bean, providers, rpcContext);
         }
     }
 

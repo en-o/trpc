@@ -1,5 +1,6 @@
 package cn.tannn.trpc.core.consumer;
 
+import cn.tannn.trpc.core.api.RpcContext;
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
 import cn.tannn.trpc.core.consumer.http.OkHttpInvoker;
@@ -37,6 +38,11 @@ public class TInvocationHandler implements InvocationHandler {
     final HttpInvoker httpInvoker;
 
     /**
+     * 上下文
+     */
+    final RpcContext rpcContext;
+
+    /**
      * 需要添加代理的对象
      */
     final Class<?> service;
@@ -46,12 +52,13 @@ public class TInvocationHandler implements InvocationHandler {
     /**
      * @param service     需要添加代理的对象
      * @param providers   服务提供者连接信息
-     * @param httpProperties http连接配置
+     * @param rpcContext  上下文
      */
-    public TInvocationHandler(Class<?> service, List<InstanceMeta> providers, HttpProperties httpProperties) {
+    public TInvocationHandler(Class<?> service, List<InstanceMeta> providers, RpcContext rpcContext) {
         this.providers = providers;
         this.service = service;
-        this.httpInvoker = new OkHttpInvoker(httpProperties);
+        this.rpcContext = rpcContext;
+        this.httpInvoker = new OkHttpInvoker(rpcContext.getRpcProperties().getConsumer().getHttp());
     }
 
     @Override
@@ -63,8 +70,9 @@ public class TInvocationHandler implements InvocationHandler {
             throw new TrpcException(ExceptionCode.ILLEGALITY_METHOD_EX);
         }
         // 随机获取请求地址
-        InstanceMeta instance = providers.get(random.nextInt(providers.size()));
-        log.debug("instance.choose(urls) ==> {}", instance);
+        InstanceMeta instance = rpcContext.getLoadBalancer().choose(providers);
+        log.debug("loadBalancer.choose(urls) ==> {}", instance);
+
         // 发送请求
         RpcResponse<Object> rpcResponse = httpInvoker.post(rpcRequest, instance.toUrl());
         return castReturnResult(method, rpcResponse);

@@ -1,5 +1,6 @@
 package cn.tannn.trpc.core.properties;
 
+import cn.tannn.trpc.core.enums.LoadBalancerEnum;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -27,8 +28,28 @@ public class ConsumerProperties {
 
 
     /**
+     * 负载均衡算法选择  [默认随机]
+     */
+    private LoadBalancerEnum loadBalancer;
+
+
+    /**
      * rpc请求http配置
      */
     @NestedConfigurationProperty
     private HttpProperties http = new HttpProperties();
+
+
+    /**
+     * 负载均衡配置设置默认值
+     */
+    public LoadBalancerEnum getLoadBalancer() {
+        if(loadBalancer == null){
+            return LoadBalancerEnum.RANDOM;
+        }
+        return loadBalancer;
+    }
+
+
+
 }

@@ -1,6 +1,7 @@
 package cn.tannn.trpc.core.util;
 
 import cn.tannn.trpc.core.annotation.TConsumer;
+import cn.tannn.trpc.core.api.RpcContext;
 import cn.tannn.trpc.core.consumer.TInvocationHandler;
 import cn.tannn.trpc.core.exception.TrpcException;
 import cn.tannn.trpc.core.meta.InstanceMeta;
@@ -33,13 +34,13 @@ public class ProxyUtils {
     /**
      * 动态代理
      *
-     * @param bean           需要代理的可能对象,是对其内容属性字段检测是否需要代理
-     * @param providers      服务提供者元信息
-     * @param httpProperties http连接配置
+     * @param bean       需要代理的可能对象,是对其内容属性字段检测是否需要代理
+     * @param providers  服务提供者元信息
+     * @param rpcContext 上下文
      */
     public static void rpcApiProxy(Object bean
             , List<InstanceMeta> providers
-            , HttpProperties httpProperties) {
+            , RpcContext rpcContext) {
         if (bean == null) {
             return;
         }
@@ -56,7 +57,7 @@ public class ProxyUtils {
                 Object consumer = stub.get(serviceName);
                 if (consumer == null) {
                     // 为属性字段查询他的实现对象 - getXXImplBean
-                    consumer = createConsumer(service, providers, httpProperties);
+                    consumer = createConsumer(service, providers, rpcContext);
                     stub.put(serviceName, consumer);
                 }
                 // 将实现对象加载到当前属性字段里去 （filed = new XXImpl()）
@@ -74,15 +75,15 @@ public class ProxyUtils {
      *
      * @param service        需要代理的服务
      * @param providers      服务提供者的连接信息
-     * @param httpProperties http连接配置
+     * @param rpcContext     上下文
      * @return 代理类
      */
     private static Object createConsumer(Class<?> service
             , List<InstanceMeta> providers
-            , HttpProperties httpProperties) {
+            , RpcContext rpcContext) {
         // 对 service进行操作时才会被触发
         return Proxy.newProxyInstance(service.getClassLoader(),
-                new Class[]{service}, new TInvocationHandler(service, providers, httpProperties));
+                new Class[]{service}, new TInvocationHandler(service, providers, rpcContext));
     }
 
 }

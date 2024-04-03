@@ -1,7 +1,11 @@
 package cn.tannn.trpc.fromwork.spring.consumer;
 
 
+import cn.tannn.trpc.core.api.LoadBalancer;
+import cn.tannn.trpc.core.cluster.RandomLoadBalancer;
+import cn.tannn.trpc.core.cluster.RoundRibbonLoadBalancer;
 import cn.tannn.trpc.core.consumer.ConsumerBootstrap;
+import cn.tannn.trpc.core.enums.LoadBalancerEnum;
 import cn.tannn.trpc.core.properties.RpcProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +45,17 @@ public class ConsumerConfig {
         return x -> consumerBootstrap.start();
     }
 
-
-
+    /**
+     * 加载负载均衡器
+     */
+    @Bean
+    LoadBalancer loadBalancer(RpcProperties rpcProperties) {
+        if (rpcProperties.getConsumer().getLoadBalancer().equals(LoadBalancerEnum.ROUND_RIBBON)) {
+            return new RoundRibbonLoadBalancer();
+        } else {
+            return new RandomLoadBalancer();
+        }
+    }
 
 
 }
