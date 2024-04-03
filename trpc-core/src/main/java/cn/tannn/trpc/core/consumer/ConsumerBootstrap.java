@@ -79,7 +79,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
 
         Set<BeanDefinition> beanDefinitions = ScanPackagesUtils.scanPackages(scanPackages);
 
-        // 拿到负载均衡
+        // 拿到负载均衡 - 非 spring boot项目需要把这个提成参数传入
         LoadBalancer loadBalancer = context.getBean(LoadBalancer.class);
         // 透传 context 数据
         RpcContext rpcContext = new RpcContext();
