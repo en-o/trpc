@@ -67,6 +67,9 @@ public class ProviderInvoker {
         }  catch (IllegalAccessException | IllegalArgumentException e) {
             // 把异常传递回去
             rpcResponse.setEx(new TrpcException(e.getMessage()));
+        }catch (TrpcException e) {
+            // 把异常传递回去
+            rpcResponse.setEx(e);
         }
         log.debug(" ===> ProviderInvoker.invoke() = {}", rpcResponse);
         return rpcResponse;
