@@ -1,8 +1,10 @@
 package cn.tannn.trpc.core.consumer;
 
+import cn.tannn.trpc.core.api.Filter;
 import cn.tannn.trpc.core.api.LoadBalancer;
 import cn.tannn.trpc.core.api.RpcContext;
 import cn.tannn.trpc.core.exception.TrpcException;
+import cn.tannn.trpc.core.filter.FilterChain;
 import cn.tannn.trpc.core.meta.InstanceMeta;
 import cn.tannn.trpc.core.properties.RpcProperties;
 import cn.tannn.trpc.core.util.ProxyUtils;
@@ -79,12 +81,15 @@ public class ConsumerBootstrap implements ApplicationContextAware {
 
         Set<BeanDefinition> beanDefinitions = ScanPackagesUtils.scanPackages(scanPackages);
 
+        // 拿到过滤器集 - 非 spring boot项目需要把这个提成参数传入
+        FilterChain filterChain = context.getBean(FilterChain.class);
         // 拿到负载均衡 - 非 spring boot项目需要把这个提成参数传入
         LoadBalancer loadBalancer = context.getBean(LoadBalancer.class);
-        // 透传 context 数据
+        // 透传 context 数据 - 这样做的是,新加参数用在中环境修改了,只改两头
         RpcContext rpcContext = new RpcContext();
         rpcContext.setLoadBalancer(loadBalancer);
         rpcContext.setRpcProperties(rpcProperties);
+        rpcContext.setFilters(filterChain);
 
         for (BeanDefinition beanDefinition : beanDefinitions) {
             Object bean = ScanPackagesUtils.getBean(context, beanDefinition);

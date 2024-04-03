@@ -1,11 +1,14 @@
 package cn.tannn.trpc.fromwork.spring.consumer;
 
 
+import cn.tannn.trpc.core.api.Filter;
 import cn.tannn.trpc.core.api.LoadBalancer;
 import cn.tannn.trpc.core.cluster.RandomLoadBalancer;
 import cn.tannn.trpc.core.cluster.RoundRibbonLoadBalancer;
 import cn.tannn.trpc.core.consumer.ConsumerBootstrap;
+import cn.tannn.trpc.core.enums.FilterEnum;
 import cn.tannn.trpc.core.enums.LoadBalancerEnum;
+import cn.tannn.trpc.core.filter.FilterChain;
 import cn.tannn.trpc.core.properties.RpcProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,8 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
+
+import java.util.List;
 
 /**
  * 将自己的类加载进 spring 容器
@@ -57,5 +62,13 @@ public class ConsumerConfig {
         }
     }
 
+    /**
+     * 加载过滤器
+     */
+    @Bean
+    FilterChain filterChain(RpcProperties rpcProperties) {
+        List<Filter> filters = FilterEnum.findFilter(rpcProperties.getConsumer().getFilter());
+        return new FilterChain(filters);
+    }
 
 }

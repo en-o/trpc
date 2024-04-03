@@ -1,5 +1,6 @@
 package cn.tannn.trpc.core.properties;
 
+import cn.tannn.trpc.core.enums.FilterEnum;
 import cn.tannn.trpc.core.enums.LoadBalancerEnum;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +18,6 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 @ToString
 public class ConsumerProperties {
 
-
     /**
      * 客户端配置服务端连接信息 - 配置文件方式
      * <p> 服务端访问地址,多个逗号隔开[静态注册 ip_port_context]
@@ -31,6 +31,11 @@ public class ConsumerProperties {
      * 负载均衡算法选择  [默认随机]
      */
     private LoadBalancerEnum loadBalancer;
+
+    /**
+     * 过滤器设置
+     */
+    private FilterEnum[] filter;
 
 
     /**
@@ -50,6 +55,17 @@ public class ConsumerProperties {
         return loadBalancer;
     }
 
+
+    /**
+     *过滤器设置默认
+     * @return FilterEnum
+     */
+    public FilterEnum[] getFilter() {
+        if(filter == null || filter.length == 0){
+            return new FilterEnum[]{FilterEnum.DEFAULT};
+        }
+        return filter;
+    }
 
 
 }

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 负载均衡算法
+ * 负载均衡算法枚举
  *
  * @author tnnn
  * @version V1.0

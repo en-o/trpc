@@ -62,20 +62,33 @@ public class TInvocationHandler implements InvocationHandler {
     }
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public Object invoke(Object proxy, Method method, Object[] args){
         // 组装调用参数 ： 类全限定名称，方法，参数
         RpcRequest rpcRequest = new RpcRequest(service.getCanonicalName(), MethodUtils.methodSign(method), args);
-        // 屏蔽 toString / equals 等 Object 的一些基本方法
-        if (MethodUtils.checkLocalMethodSign(MethodUtils.methodSign(method))) {
-            throw new TrpcException(ExceptionCode.ILLEGALITY_METHOD_EX);
+
+        // 对请求进行前置处理
+        Object prefilter = rpcContext.getFilters().executePref(rpcRequest);
+        if (prefilter != null) {
+            log.debug("============================前置过滤处理到了噢！============================");
+            return prefilter;
         }
-        // 随机获取请求地址
+
+        // 通过负载均衡器选择路由
         InstanceMeta instance = rpcContext.getLoadBalancer().choose(providers);
         log.debug("loadBalancer.choose(urls) ==> {}", instance);
 
         // 发送请求
         RpcResponse<Object> rpcResponse = httpInvoker.post(rpcRequest, instance.toUrl());
-        return castReturnResult(method, rpcResponse);
+        // 对结果集进行处理
+        Object result = castReturnResult(method, rpcResponse);
+        // 对结果集进行过滤器后置处理,比如利用cache缓存结果集,下次请求就在前置拦截里发现了直接返回减少IO
+        Object filterResult = rpcContext.getFilters().executePost(rpcRequest, result);
+        // 后置处理对结果集处理之后就直接返回,为空就是没处理那就直接返回原生的
+        if (filterResult != null) {
+            return filterResult;
+        }
+        return result;
+
     }
 
 

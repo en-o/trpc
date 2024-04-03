@@ -15,4 +15,6 @@ trpc:
       - 127.0.0.1_8082_/trpc
       - 127.0.0.1_8083_/trpc
     load-balancer: round_ribbon
-
+    filter:
+#      - cache
+      - local_method

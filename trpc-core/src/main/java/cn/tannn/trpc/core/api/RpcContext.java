@@ -1,5 +1,6 @@
 package cn.tannn.trpc.core.api;
 
+import cn.tannn.trpc.core.filter.FilterChain;
 import cn.tannn.trpc.core.properties.RpcProperties;
 import lombok.Data;
 
@@ -13,6 +14,11 @@ import lombok.Data;
 @Data
 public class RpcContext {
 
+
+    /**
+     * 过滤器
+     */
+    FilterChain filters;
 
 
     /**
