@@ -66,10 +66,9 @@ public class TInvocationHandler implements InvocationHandler {
         // 组装调用参数 ： 类全限定名称，方法，参数
         RpcRequest rpcRequest = new RpcRequest(service.getCanonicalName(), MethodUtils.methodSign(method), args);
 
-        // 对请求进行前置处理
+        // 对请求进行前置处理 todo 这里并发好像有点问题
         Object prefilter = rpcContext.getFilters().executePref(rpcRequest);
         if (prefilter != null) {
-            log.debug("============================前置过滤处理到了噢！============================");
             return prefilter;
         }
 

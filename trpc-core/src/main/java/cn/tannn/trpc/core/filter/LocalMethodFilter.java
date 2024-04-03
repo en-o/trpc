@@ -5,6 +5,7 @@ import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.exception.ExceptionCode;
 import cn.tannn.trpc.core.exception.TrpcException;
 import cn.tannn.trpc.core.util.MethodUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 
 /**
@@ -15,10 +16,12 @@ import org.springframework.core.annotation.Order;
  * @date 2024/4/3 下午10:43
  */
 @Order(1)
+@Slf4j
 public class LocalMethodFilter  implements Filter {
 
     @Override
     public Object prefilter(RpcRequest request) {
+        log.debug("===== LocalMethodFilter pre");
         // 屏蔽 toString / equals 等 Object 的一些基本方法
         if (MethodUtils.checkLocalMethod(request.getMethodSign().substring(0,request.getMethodSign().indexOf("@")))) {
             throw new TrpcException(ExceptionCode.ILLEGALITY_METHOD_EX);
@@ -28,6 +31,7 @@ public class LocalMethodFilter  implements Filter {
 
     @Override
     public Object postFilter(RpcRequest request, Object result) {
+        log.debug("===== LocalMethodFilter post");
         return null;
     }
 
