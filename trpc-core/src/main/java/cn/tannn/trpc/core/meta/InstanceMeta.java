@@ -84,7 +84,7 @@ public class InstanceMeta {
      * @return [schema://host:port/context]
      */
     public String toUrl() {
-        return String.format("%s://%s:%d%s", schema, host, port, context);
+        return String.format("%s://%s:%d/%s", schema, host, port, context);
     }
 
 }

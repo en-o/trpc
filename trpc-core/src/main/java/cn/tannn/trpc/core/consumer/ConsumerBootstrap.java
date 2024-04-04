@@ -77,6 +77,9 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         LoadBalancer loadBalancer = context.getBean(LoadBalancer.class);
         // 拿到注册中心
         RegistryCenter registryCenter = context.getBean(RegistryCenter.class);
+        // 启动 rc  ，stop在 ConsumerPreDestroy
+        registryCenter.start();
+
 
         // 透传 context 数据 - 这样做的是,新加参数用在中环境修改了,只改两头
         RpcContext rpcContext = new RpcContext();

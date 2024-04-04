@@ -88,11 +88,11 @@ public class ProxyUtils {
         // 由于此处只会在启动时处理一次，所以需要下面的订阅，订阅服务后，当数据发生了变动会重新执行
         List<InstanceMeta> providers = rpcContext.getRegistryCenter().fetchAll(meta);
         log.info("===> map to provider: ");
-        // 订阅服务，感知服务变更
-//        rpcContext.getRegistryCenter().subscribe(meta, event -> {
-//            providers.clear();
-//            providers.addAll(event.getData());
-//        });
+//         订阅服务，感知服务变更
+        rpcContext.getRegistryCenter().subscribe(meta, event -> {
+            providers.clear();
+            providers.addAll(event.getData());
+        });
         return createConsumer(service, providers, rpcContext);
     }
 

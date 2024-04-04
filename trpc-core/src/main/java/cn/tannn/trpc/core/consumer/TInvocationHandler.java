@@ -1,6 +1,5 @@
 package cn.tannn.trpc.core.consumer;
 
-import cn.tannn.trpc.core.api.RegistryCenter;
 import cn.tannn.trpc.core.api.RpcContext;
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
@@ -76,7 +75,6 @@ public class TInvocationHandler implements InvocationHandler {
                 if (prefilter != null) {
                     return prefilter;
                 }
-                RegistryCenter registryCenter = rpcContext.getRegistryCenter();
                 // 通过负载均衡器选择路由
                 InstanceMeta instance = rpcContext.getLoadBalancer().choose(this.providers);
                 log.debug("loadBalancer.choose(urls) ==> {}", instance);
