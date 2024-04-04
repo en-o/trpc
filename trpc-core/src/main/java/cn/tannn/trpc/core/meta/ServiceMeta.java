@@ -27,7 +27,6 @@ public class ServiceMeta {
      */
     String name;
 
-
     /**
      * 空间隔离
      */

@@ -35,6 +35,12 @@ public class ConsumerProperties {
     @NestedConfigurationProperty
     private HttpProperties http = new HttpProperties();
 
+    /**
+     * 订阅的服务信息
+     */
+    @NestedConfigurationProperty
+    private SubscribeProperties  subscribe = new SubscribeProperties();
+
 
     /**
      * 负载均衡配置设置默认值

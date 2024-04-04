@@ -29,7 +29,10 @@ import java.util.List;
 @Slf4j
 public class TInvocationHandler implements InvocationHandler {
 
-
+    /**
+     *  服务连接信息实例
+     */
+    final List<InstanceMeta> providers;
 
     /**
      *  http 网络协议
@@ -46,14 +49,16 @@ public class TInvocationHandler implements InvocationHandler {
      */
     final Class<?> service;
 
-    SecureRandom random = new SecureRandom();
-
     /**
      * @param service     需要添加代理的对象
+     * @param providers   服务提供者连接信息
      * @param rpcContext  上下文
      */
-    public TInvocationHandler(Class<?> service, RpcContext rpcContext) {
+    public TInvocationHandler(Class<?> service
+            , List<InstanceMeta> providers
+            , RpcContext rpcContext) {
         this.service = service;
+        this.providers = providers;
         this.rpcContext = rpcContext;
         this.httpInvoker = new OkHttpInvoker(rpcContext.getRpcProperties().getConsumer().getHttp());
     }
@@ -76,7 +81,7 @@ public class TInvocationHandler implements InvocationHandler {
                 }
                 RegistryCenter registryCenter = rpcContext.getRegistryCenter();
                 // 通过负载均衡器选择路由
-                InstanceMeta instance = rpcContext.getLoadBalancer().choose(registryCenter.fetchAll(null));
+                InstanceMeta instance = rpcContext.getLoadBalancer().choose(this.providers);
                 log.debug("loadBalancer.choose(urls) ==> {}", instance);
 
                 // 发送请求

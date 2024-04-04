@@ -5,7 +5,9 @@ import cn.tannn.trpc.core.api.RpcContext;
 import cn.tannn.trpc.core.consumer.TInvocationHandler;
 import cn.tannn.trpc.core.exception.TrpcException;
 import cn.tannn.trpc.core.meta.InstanceMeta;
+import cn.tannn.trpc.core.meta.ServiceMeta;
 import cn.tannn.trpc.core.properties.HttpProperties;
+import cn.tannn.trpc.core.properties.SubscribeProperties;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
@@ -55,7 +57,7 @@ public class ProxyUtils {
                 Object consumer = stub.get(serviceName);
                 if (consumer == null) {
                     // 为属性字段查询他的实现对象 - getXXImplBean
-                    consumer = createConsumer(service, rpcContext);
+                    consumer = createFromRegistry(service, rpcContext);
                     stub.put(serviceName, consumer);
                 }
                 // 将实现对象加载到当前属性字段里去 （filed = new XXImpl()）
@@ -67,19 +69,49 @@ public class ProxyUtils {
         });
     }
 
+    /**
+     * 订阅注册中心 - 感知服务的上下线
+     *
+     * @param service        service
+     * @param rpcContext     上下文
+     * @return 代理类
+     */
+    private static Object createFromRegistry(Class<?> service,
+                                             RpcContext rpcContext) {
+        String serviceName = service.getCanonicalName();
+        SubscribeProperties subscribe = rpcContext.getRpcProperties().getConsumer().getSubscribe();
+        ServiceMeta meta = new ServiceMeta();
+        meta.setAppid(subscribe.getAppid());
+        meta.setName(serviceName);
+        meta.setNamespace(subscribe.getNamespace());
+        meta.setEnv(subscribe.getEnv());
+        meta.setVersion(subscribe.getVersion());
+        // 由于此处只会在启动时处理一次，所以需要下面的订阅，订阅服务后，当数据发生了变动会重新执行
+        List<InstanceMeta> providers = rpcContext.getRegistryCenter().fetchAll(meta);
+        log.info("===> map to provider: ");
+        // 订阅服务，感知服务变更
+//        rpcContext.getRegistryCenter().subscribe(meta, event -> {
+//            providers.clear();
+//            providers.addAll(event.getData());
+//        });
+        return createConsumer(service, providers, rpcContext);
+    }
+
 
     /**
      * 创建代理
      *
      * @param service        需要代理的服务
+     * @param providers   服务提供者连接信息
      * @param rpcContext     上下文
      * @return 代理类
      */
     private static Object createConsumer(Class<?> service
+            , List<InstanceMeta> providers
             , RpcContext rpcContext) {
         // 对 service进行操作时才会被触发
         return Proxy.newProxyInstance(service.getClassLoader(),
-                new Class[]{service}, new TInvocationHandler(service, rpcContext));
+                new Class[]{service}, new TInvocationHandler(service, providers, rpcContext));
     }
 
 }
