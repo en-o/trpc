@@ -1,5 +1,6 @@
 package cn.tannn.trpc.core.consumer;
 
+import cn.tannn.trpc.core.api.RegistryCenter;
 import cn.tannn.trpc.core.api.RpcContext;
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
@@ -28,10 +29,7 @@ import java.util.List;
 @Slf4j
 public class TInvocationHandler implements InvocationHandler {
 
-    /**
-     * 服务提供者连接信息
-     */
-    final List<InstanceMeta> providers;
+
 
     /**
      *  http 网络协议
@@ -52,11 +50,9 @@ public class TInvocationHandler implements InvocationHandler {
 
     /**
      * @param service     需要添加代理的对象
-     * @param providers   服务提供者连接信息
      * @param rpcContext  上下文
      */
-    public TInvocationHandler(Class<?> service, List<InstanceMeta> providers, RpcContext rpcContext) {
-        this.providers = providers;
+    public TInvocationHandler(Class<?> service, RpcContext rpcContext) {
         this.service = service;
         this.rpcContext = rpcContext;
         this.httpInvoker = new OkHttpInvoker(rpcContext.getRpcProperties().getConsumer().getHttp());
@@ -78,9 +74,9 @@ public class TInvocationHandler implements InvocationHandler {
                 if (prefilter != null) {
                     return prefilter;
                 }
-
+                RegistryCenter registryCenter = rpcContext.getRegistryCenter();
                 // 通过负载均衡器选择路由
-                InstanceMeta instance = rpcContext.getLoadBalancer().choose(providers);
+                InstanceMeta instance = rpcContext.getLoadBalancer().choose(registryCenter.fetchAll(null));
                 log.debug("loadBalancer.choose(urls) ==> {}", instance);
 
                 // 发送请求

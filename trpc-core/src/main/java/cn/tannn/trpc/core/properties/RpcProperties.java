@@ -30,6 +30,13 @@ public class RpcProperties {
     private String[] scanPackages;
 
     /**
+     * 注册中心
+     */
+    @NestedConfigurationProperty
+    private RegistryCenterProperties rc = new RegistryCenterProperties();
+
+
+    /**
      * rpc暴露接口 的相关配置
      */
     @NestedConfigurationProperty

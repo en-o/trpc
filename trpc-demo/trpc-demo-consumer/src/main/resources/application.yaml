@@ -7,14 +7,16 @@ logging:
     cn.tannn.trpc: debug
 trpc:
   scan-packages: cn.tannn.trpc
-  consumer:
-    http:
-      timeout: 2000
-      retries: 2
+  rc:
+    name: def
     providers:
       - 127.0.0.1_8081_/trpc
       - 127.0.0.1_8082_/trpc
       - 127.0.0.1_8083_/trpc
+  consumer:
+    http:
+      timeout: 2000
+      retries: 2
     load-balancer: round_ribbon
     filter:
 #      - cache

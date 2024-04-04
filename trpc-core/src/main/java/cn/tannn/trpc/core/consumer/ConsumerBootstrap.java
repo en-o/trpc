@@ -2,11 +2,13 @@ package cn.tannn.trpc.core.consumer;
 
 import cn.tannn.trpc.core.api.Filter;
 import cn.tannn.trpc.core.api.LoadBalancer;
+import cn.tannn.trpc.core.api.RegistryCenter;
 import cn.tannn.trpc.core.api.RpcContext;
 import cn.tannn.trpc.core.exception.TrpcException;
 import cn.tannn.trpc.core.filter.FilterChain;
 import cn.tannn.trpc.core.meta.InstanceMeta;
 import cn.tannn.trpc.core.properties.RpcProperties;
+import cn.tannn.trpc.core.registry.RegistryCenterConfig;
 import cn.tannn.trpc.core.util.ProxyUtils;
 import cn.tannn.trpc.core.util.ScanPackagesUtils;
 import lombok.Getter;
@@ -70,30 +72,27 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         if (scanPackages == null || scanPackages.length == 0) {
             throw new TrpcException(SCAN_PACKAGE_EX);
         }
-        String[] providersArray = rpcProperties.getConsumer().getProviders();
-        List<InstanceMeta> providers = new ArrayList<>();
-        if(providersArray != null){
-            for (String ipPortContext : providersArray) {
-                String[] split = ipPortContext.split("_");
-                providers.add(InstanceMeta.http(split[0], Integer.valueOf(split[1]), split[2]));
-            }
-        }
 
         Set<BeanDefinition> beanDefinitions = ScanPackagesUtils.scanPackages(scanPackages);
 
-        // 拿到过滤器集 - 非 spring boot项目需要把这个提成参数传入
+        // - 非 spring boot项目需要把这个提成参数传入
+        // 拿到过滤器集
         FilterChain filterChain = context.getBean(FilterChain.class);
-        // 拿到负载均衡 - 非 spring boot项目需要把这个提成参数传入
+        // 拿到负载均衡
         LoadBalancer loadBalancer = context.getBean(LoadBalancer.class);
+        // 拿到注册中心
+        RegistryCenter registryCenter = context.getBean(RegistryCenter.class);
+
         // 透传 context 数据 - 这样做的是,新加参数用在中环境修改了,只改两头
         RpcContext rpcContext = new RpcContext();
         rpcContext.setLoadBalancer(loadBalancer);
         rpcContext.setRpcProperties(rpcProperties);
+        rpcContext.setRegistryCenter(registryCenter);
         rpcContext.setFilters(filterChain);
 
         for (BeanDefinition beanDefinition : beanDefinitions) {
             Object bean = ScanPackagesUtils.getBean(context, beanDefinition);
-            ProxyUtils.rpcApiProxy(bean, providers, rpcContext);
+            ProxyUtils.rpcApiProxy(bean, rpcContext);
         }
     }
 
