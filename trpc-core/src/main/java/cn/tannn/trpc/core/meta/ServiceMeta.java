@@ -46,6 +46,6 @@ public class ServiceMeta {
      * @return zk[app_namespace_env_name_version]
      */
     public String toPath() {
-        return String.format("%s_%s_%s_%s_%s", appid, name, env, name, version);
+        return String.format("%s_%s_%s_%s_%s", appid, name, env, namespace, version);
     }
 }
