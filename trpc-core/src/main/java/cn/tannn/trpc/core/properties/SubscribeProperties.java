@@ -14,22 +14,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubscribeProperties {
+public class SubscribeProperties extends AppProperties {
 
-    /**
-     * 订阅的服务名称
-     */
-    String appid="provider";
-    /**
-     * 订阅的空间
-     */
-    String namespace = "public";
-    /**
-     * 订阅的环境
-     */
-    String env = "dev";
-    /**
-     * 订阅的版本
-     */
-    String version = "0.0.1";
 }

@@ -43,6 +43,11 @@ public class RpcProperties {
     @NestedConfigurationProperty
     private ApiProperties api;
 
+    /**
+     * 服务提供者注册中心注册信息
+     */
+    @NestedConfigurationProperty
+    private AppProperties app;
 
     /**
      * 客户端信息

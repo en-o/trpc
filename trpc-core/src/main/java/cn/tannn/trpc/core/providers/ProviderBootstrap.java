@@ -1,9 +1,16 @@
 package cn.tannn.trpc.core.providers;
 
 import cn.tannn.trpc.core.annotation.TProvider;
+import cn.tannn.trpc.core.api.RegistryCenter;
+import cn.tannn.trpc.core.meta.InstanceMeta;
 import cn.tannn.trpc.core.meta.ProviderMeta;
+import cn.tannn.trpc.core.meta.ServiceMeta;
+import cn.tannn.trpc.core.properties.AppProperties;
+import cn.tannn.trpc.core.properties.RpcProperties;
 import cn.tannn.trpc.core.util.MethodUtils;
+import jakarta.annotation.PreDestroy;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -12,6 +19,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.lang.reflect.Method;
+import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -20,7 +28,6 @@ import java.util.Map;
  * <p> 服务处理器
  * <p>   1. 完成服务提供者的扫描
  * <p>   2. 完整服务的注册中心注册
- *
  *
  * @author tnnn
  * @version V1.0
@@ -40,6 +47,35 @@ public class ProviderBootstrap implements ApplicationContextAware {
      */
     private ApplicationContext context;
 
+    /**
+     * 注册中心
+     */
+    private final RegistryCenter registryCenter;
+
+    /**
+     * 注册配置
+     */
+    private final AppProperties appProperties;
+
+    /**
+     * 当前服务的RPC接口前缀
+     */
+    private final String rpcApiContextPath;
+
+
+    /**
+     * ip+port：start()的时候组装。unregisterService/registerService 的时候使用
+     */
+    private InstanceMeta instance;
+
+
+    public ProviderBootstrap(RegistryCenter registryCenter
+            , RpcProperties rpcProperties) {
+        this.registryCenter = registryCenter;
+        this.appProperties = rpcProperties.getApp();
+        this.rpcApiContextPath = rpcProperties.getApi().getContext();
+    }
+
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.context = applicationContext;
@@ -50,15 +86,76 @@ public class ProviderBootstrap implements ApplicationContextAware {
     /**
      * 加载 providers
      */
-    public void init(){
+    public void init() {
         log.info("ProviderBootstrap init...");
         // 所有标记了 @TProvider 注解的类
         Map<String, Object> providers = context.getBeansWithAnnotation(TProvider.class);
-        providers.forEach((x,y) -> log.debug(x));
+        providers.forEach((x, y) -> log.debug(x));
         providers.values().forEach(this::storageSkeleton);
         log.info("ProviderBootstrap initialized.");
     }
 
+
+    /**
+     * 开始注册
+     * <pr>为了包装所有实例都已经加载完成，在 runner后主动调用，跟上面的 skeleton 分开操作做到单一职责，遇到错误好处理</pr>
+     * @param port 注册当前项目的启动端口
+     */
+    @SneakyThrows
+    public void start(Integer port) {
+        log.info("ProviderBootstrap start...");
+        // 注册中心开始工作
+        registryCenter.start();
+        String ip = InetAddress.getLocalHost().getHostAddress();
+        // 服务信息
+        instance = InstanceMeta.http(ip, port, rpcApiContextPath);
+        skeleton.keySet().forEach(this::registerService);
+        log.info("ProviderBootstrap started.");
+    }
+
+    /**
+     * 注册服务 - 注册中心
+     *
+     * @param serviceName serviceName
+     */
+    private void registerService(String serviceName) {
+        ServiceMeta meta = new ServiceMeta();
+        meta.setAppid(appProperties.getAppid());
+        meta.setName(serviceName);
+        meta.setNamespace(appProperties.getNamespace());
+        meta.setEnv(appProperties.getEnv());
+        meta.setVersion(appProperties.getVersion());
+        registryCenter.register(meta, instance);
+    }
+
+
+    /**
+     * spring boot 生命完结时自动销毁
+     */
+    @PreDestroy
+    public void stop(){
+        log.info("ProviderBootstrap stop...");
+        skeleton.keySet().forEach(this::unregisterService);
+        // 注册中心工作结束下班
+        registryCenter.stop();
+        log.info("ProviderBootstrap stopped.");
+    }
+
+
+    /**
+     *  注销服务  - 注册中心
+     *
+     * @param serviceName serviceName
+     */
+    private void unregisterService(String serviceName) {
+        ServiceMeta meta = new ServiceMeta();
+        meta.setAppid(appProperties.getAppid());
+        meta.setName(serviceName);
+        meta.setNamespace(appProperties.getNamespace());
+        meta.setEnv(appProperties.getEnv());
+        meta.setVersion(appProperties.getVersion());
+        registryCenter.unregister(meta, instance);
+    }
 
 
     /**
@@ -79,9 +176,10 @@ public class ProviderBootstrap implements ApplicationContextAware {
 
     /**
      * 存储提供者 - 创建 ProviderMeta
+     *
      * @param anInterface 接口类
-     * @param impl 接口实现类
-     * @param method 接口方法
+     * @param impl        接口实现类
+     * @param method      接口方法
      */
     private void createProvider(Class<?> anInterface, Object impl, Method method) {
         ProviderMeta providerMeta = new ProviderMeta();
