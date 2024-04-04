@@ -1,5 +1,6 @@
 package cn.tannn.trpc.core.properties;
 
+import cn.tannn.trpc.core.properties.rc.RegistryCenterProperties;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

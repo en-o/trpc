@@ -4,6 +4,7 @@ import cn.tannn.trpc.core.api.RegistryCenter;
 import cn.tannn.trpc.core.enums.RegistryCenterEnum;
 import cn.tannn.trpc.core.meta.InstanceMeta;
 import cn.tannn.trpc.core.properties.RpcProperties;
+import cn.tannn.trpc.core.registry.zk.ZkRegistryCenter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -23,33 +24,33 @@ import java.util.List;
 public class RegistryCenterConfig {
 
 
-
-
     /**
      * 加载注册中心
      * <pr>
-     *  启动自动执行 RegistryCenter#start (在providerBootstrap.start()中执行)
-     *  销毁自动执行 RegistryCenter#stop (在providerBootstrap.stop()中执行)
+     * 启动自动执行 RegistryCenter#start (在providerBootstrap.start()中执行)
+     * 销毁自动执行 RegistryCenter#stop (在providerBootstrap.stop()中执行)
      * </pr>
      */
     @Bean
-    RegistryCenter registryCenter(RpcProperties rpcProperties){
+    RegistryCenter registryCenter(RpcProperties rpcProperties) {
         RegistryCenter registryCenter;
-        String[] providers = rpcProperties.getRc().getProviders();
-        if(null == providers || providers.length == 0 ){
-            registryCenter =  new RegistryCenter.StaticRegistryCenter(null);
-        }else {
-            List<InstanceMeta> instanceMetas = new ArrayList<>();
-            for (String ipPortContext : providers) {
-                String[] split = ipPortContext.split("_");
-                instanceMetas.add(InstanceMeta.http(split[0], Integer.valueOf(split[1]), split[2]));
+        if (rpcProperties.getRc().getName().equals(RegistryCenterEnum.ZK)) {
+            registryCenter = new ZkRegistryCenter(rpcProperties.getRc());
+        } else {
+            String[] providers = rpcProperties.getRc().getProviders();
+            if (null == providers || providers.length == 0) {
+                registryCenter = new RegistryCenter.StaticRegistryCenter(null);
+            } else {
+                List<InstanceMeta> instanceMetas = new ArrayList<>();
+                for (String ipPortContext : providers) {
+                    String[] split = ipPortContext.split("_");
+                    instanceMetas.add(InstanceMeta.http(split[0], Integer.valueOf(split[1]), split[2]));
+                }
+                registryCenter = new RegistryCenter.StaticRegistryCenter(instanceMetas);
             }
-            registryCenter =  new RegistryCenter.StaticRegistryCenter(instanceMetas);
         }
         return registryCenter;
     }
-
-
 
 
 }

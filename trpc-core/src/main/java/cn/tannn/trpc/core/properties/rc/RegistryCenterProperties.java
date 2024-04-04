@@ -1,9 +1,10 @@
-package cn.tannn.trpc.core.properties;
+package cn.tannn.trpc.core.properties.rc;
 
 import cn.tannn.trpc.core.enums.RegistryCenterEnum;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 /**
  * 注册中心配置
@@ -32,6 +33,20 @@ public class RegistryCenterProperties {
     private String[] providers;
 
 
+    /**
+     * 连接信息
+     * <pr>
+     *    正常注册中心这里是填写注册中心的地址，
+     * </pr>
+     */
+    @NestedConfigurationProperty
+    private Connect[] connect = new Connect[]{};
+
+    /**
+     * rc namespace
+     */
+    String namespace;
+
 
     public RegistryCenterEnum getName() {
         if(name == null){
@@ -40,4 +55,17 @@ public class RegistryCenterProperties {
         return name;
     }
 
+    public Connect[] getConnect() {
+        if(connect.length == 0){
+            return new Connect[]{new Connect("127.0.0.1","2818")};
+        }
+        return connect;
+    }
+
+    public String getNamespace() {
+        if(null == namespace || namespace.isEmpty()){
+            return "trpc";
+        }
+        return namespace;
+    }
 }
