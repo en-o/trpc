@@ -11,3 +11,8 @@ trpc:
   api:
 #    enabled: false
     context: trpc
+  app:
+    appid: provider
+    version: 0.0.1
+    env: dev
+    namespace: public

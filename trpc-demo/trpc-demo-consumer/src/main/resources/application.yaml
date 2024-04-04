@@ -21,3 +21,9 @@ trpc:
     filter:
 #      - cache
       - local_method
+    subscribe:
+      appid: provider
+      version: 0.0.1
+      env: dev
+      namespace: public
+
