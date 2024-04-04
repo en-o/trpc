@@ -1,8 +1,6 @@
 package cn.tannn.trpc.core.properties;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * 服务注册信息
@@ -12,8 +10,6 @@ import lombok.NoArgsConstructor;
  * @date 2024/4/4 下午5:13
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class AppProperties {
 
     /**

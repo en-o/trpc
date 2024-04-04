@@ -41,13 +41,13 @@ public class RpcProperties {
      * rpc暴露接口 的相关配置
      */
     @NestedConfigurationProperty
-    private ApiProperties api;
+    private ApiProperties api = new ApiProperties();
 
     /**
      * 服务提供者注册中心注册信息
      */
     @NestedConfigurationProperty
-    private AppProperties app;
+    private AppProperties app = new AppProperties();
 
     /**
      * 客户端信息
@@ -55,12 +55,5 @@ public class RpcProperties {
     @NestedConfigurationProperty
     private ConsumerProperties consumer = new ConsumerProperties();
 
-
-    public ApiProperties getApi() {
-        if(null == api ){
-            return new ApiProperties();
-        }
-        return api;
-    }
 
 }

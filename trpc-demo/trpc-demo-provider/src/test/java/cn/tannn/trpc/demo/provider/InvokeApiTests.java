@@ -56,7 +56,7 @@ public class InvokeApiTests {
         String rpcRequestJson = JSON.toJSONString(rpcRequest);
 
         // 构建
-        RequestBuilder request = MockMvcRequestBuilders.post(rpcProperties.getApi().getContext())
+        RequestBuilder request = MockMvcRequestBuilders.post("/"+rpcProperties.getApi().getContext())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .content(rpcRequestJson);

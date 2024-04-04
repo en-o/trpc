@@ -1,14 +1,11 @@
 package cn.tannn.trpc.core.consumer;
 
-import cn.tannn.trpc.core.api.Filter;
 import cn.tannn.trpc.core.api.LoadBalancer;
 import cn.tannn.trpc.core.api.RegistryCenter;
 import cn.tannn.trpc.core.api.RpcContext;
 import cn.tannn.trpc.core.exception.TrpcException;
 import cn.tannn.trpc.core.filter.FilterChain;
-import cn.tannn.trpc.core.meta.InstanceMeta;
 import cn.tannn.trpc.core.properties.RpcProperties;
-import cn.tannn.trpc.core.registry.RegistryCenterConfig;
 import cn.tannn.trpc.core.util.ProxyUtils;
 import cn.tannn.trpc.core.util.ScanPackagesUtils;
 import lombok.Getter;
@@ -18,8 +15,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import static cn.tannn.trpc.core.exception.ExceptionCode.SCAN_PACKAGE_EX;

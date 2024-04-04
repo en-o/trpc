@@ -56,7 +56,7 @@ public class InstanceMeta {
      * @return zk[host_port]
      */
     public String toPath() {
-        return String.format("%s_%d", host, port);
+        return String.format("%s_%d_%s", host, port, context);
     }
 
     /**

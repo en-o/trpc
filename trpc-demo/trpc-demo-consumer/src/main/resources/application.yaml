@@ -10,9 +10,9 @@ trpc:
   rc:
     name: def
     providers:
-      - 127.0.0.1_8081_/trpc
-      - 127.0.0.1_8082_/trpc
-      - 127.0.0.1_8083_/trpc
+      - 127.0.0.1_8081_trpc
+      - 127.0.0.1_8082_trpc
+      - 127.0.0.1_8083_trpc
   consumer:
     http:
       timeout: 2000

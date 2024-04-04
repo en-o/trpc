@@ -6,7 +6,6 @@ import cn.tannn.trpc.core.consumer.TInvocationHandler;
 import cn.tannn.trpc.core.exception.TrpcException;
 import cn.tannn.trpc.core.meta.InstanceMeta;
 import cn.tannn.trpc.core.meta.ServiceMeta;
-import cn.tannn.trpc.core.properties.HttpProperties;
 import cn.tannn.trpc.core.properties.SubscribeProperties;
 import lombok.extern.slf4j.Slf4j;
 

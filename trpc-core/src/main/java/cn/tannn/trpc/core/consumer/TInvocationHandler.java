@@ -5,10 +5,8 @@ import cn.tannn.trpc.core.api.RpcContext;
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
 import cn.tannn.trpc.core.consumer.http.OkHttpInvoker;
-import cn.tannn.trpc.core.exception.ExceptionCode;
 import cn.tannn.trpc.core.exception.TrpcException;
 import cn.tannn.trpc.core.meta.InstanceMeta;
-import cn.tannn.trpc.core.properties.HttpProperties;
 import cn.tannn.trpc.core.util.MethodUtils;
 import cn.tannn.trpc.core.util.TypeUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.net.SocketTimeoutException;
-import java.security.SecureRandom;
 import java.util.List;
 
 /**

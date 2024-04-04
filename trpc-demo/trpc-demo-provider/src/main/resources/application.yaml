@@ -6,6 +6,8 @@ logging:
     root: error
     cn.tannn.trpc: debug
 trpc:
+  rc:
+    name: zk
   api:
 #    enabled: false
-    context: /trpc
+    context: trpc

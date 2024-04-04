@@ -1,8 +1,7 @@
 package cn.tannn.trpc.core.properties;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
 
 /**
  * 注册中心订阅信息
@@ -11,9 +10,8 @@ import lombok.NoArgsConstructor;
  * @version V1.0
  * @date 2024/4/4 下午5:13
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class SubscribeProperties extends AppProperties {
 
 }

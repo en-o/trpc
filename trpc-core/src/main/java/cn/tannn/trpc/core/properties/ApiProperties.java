@@ -15,13 +15,13 @@ import lombok.ToString;
 @ToString
 public class ApiProperties {
     /**
-     * rpc暴露的接口请求前缀【默认/ , e.g /trpc】
+     * rpc暴露的接口请求前缀【默认 , e.g trpc】
      */
     private String context;
 
     public String getContext() {
         if(null == context || context.isEmpty()){
-            return "/";
+            return "";
         }
         return context;
     }

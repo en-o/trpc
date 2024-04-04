@@ -87,7 +87,7 @@ public class ProvidersConfig {
     public RouterFunction<ServerResponse> invoke(@Autowired ProviderInvoker providerInvoker
             , @Autowired RpcProperties rpcProperties) {
         String context = rpcProperties.getApi().getContext();
-        log.debug("rpc api name http://ip:port{}", context);
+        log.debug("rpc api name http://ip:port/{}", context);
         return RouterFunctions
                 .route(POST(context)
                                 .and(accept(APPLICATION_JSON)
