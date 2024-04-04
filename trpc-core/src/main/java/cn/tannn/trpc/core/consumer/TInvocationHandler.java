@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.net.SocketTimeoutException;
 import java.security.SecureRandom;
 import java.util.List;
 
@@ -66,27 +67,44 @@ public class TInvocationHandler implements InvocationHandler {
         // 组装调用参数 ： 类全限定名称，方法，参数
         RpcRequest rpcRequest = new RpcRequest(service.getCanonicalName(), MethodUtils.methodSign(method), args);
 
-        // 对请求进行前置处理 todo 这里并发好像有点问题
-        Object prefilter = rpcContext.getFilters().executePref(rpcRequest);
-        if (prefilter != null) {
-            return prefilter;
-        }
+        // 超时重试
+        Integer retries = rpcContext.getRpcProperties().getConsumer().getHttp().getRetries();
+        while (retries -- > 0 ){
+            log.debug("====> retries = {}", retries);
+            // 重试整个请求链
+            try {
+                // 对请求进行前置处理 todo 这里并发好像有点问题
+                Object prefilter = rpcContext.getFilters().executePref(rpcRequest);
+                if (prefilter != null) {
+                    return prefilter;
+                }
 
-        // 通过负载均衡器选择路由
-        InstanceMeta instance = rpcContext.getLoadBalancer().choose(providers);
-        log.debug("loadBalancer.choose(urls) ==> {}", instance);
+                // 通过负载均衡器选择路由
+                InstanceMeta instance = rpcContext.getLoadBalancer().choose(providers);
+                log.debug("loadBalancer.choose(urls) ==> {}", instance);
 
-        // 发送请求
-        RpcResponse<Object> rpcResponse = httpInvoker.post(rpcRequest, instance.toUrl());
-        // 对结果集进行处理
-        Object result = castReturnResult(method, rpcResponse);
-        // 对结果集进行过滤器后置处理,比如利用cache缓存结果集,下次请求就在前置拦截里发现了直接返回减少IO
-        Object filterResult = rpcContext.getFilters().executePost(rpcRequest, result);
-        // 后置处理对结果集处理之后就直接返回,为空就是没处理那就直接返回原生的
-        if (filterResult != null) {
-            return filterResult;
+                // 发送请求
+                RpcResponse<Object> rpcResponse = httpInvoker.post(rpcRequest, instance.toUrl());
+                // 对结果集进行处理
+                Object result = castReturnResult(method, rpcResponse);
+                // 对结果集进行过滤器后置处理,比如利用cache缓存结果集,下次请求就在前置拦截里发现了直接返回减少IO
+                Object filterResult = rpcContext.getFilters().executePost(rpcRequest, result);
+                // 后置处理对结果集处理之后就直接返回,为空就是没处理那就直接返回原生的
+                if (filterResult != null) {
+                    return filterResult;
+                }
+                return result;
+            }catch (RuntimeException e){
+                // 不是超时的异常就中断循环
+                if (!(e.getCause() instanceof SocketTimeoutException)) {
+                    throw e;
+                }else {
+                    log.error("{}出现了超时，进行超时重试",rpcRequest);
+                }
+            }
+
         }
-        return result;
+       return null;
 
     }
 
