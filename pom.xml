@@ -7,6 +7,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>trpc</name>
+    <url>https://github.com/en-o/trpc</url>
     <description>
         trpc
         课程代码： https://gitee.com/ArchCamp/kkrpc
