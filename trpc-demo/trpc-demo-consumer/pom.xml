@@ -44,7 +44,7 @@
         <dependency>
             <groupId>cn.tannn.cat</groupId>
             <artifactId>trpc-demo-provider</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${trpc.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
