@@ -12,23 +12,29 @@ import lombok.Data;
 @Data
 public class IsolateProperties {
 
+
     /**
      * 故障允许错误的次数， 默认10，[错误次数超过设置值就会别隔离]
      */
     private Integer faultLimit = 10;
 
     /**
-     * 探活线程个数 默认1
+     *  探活线程 - 是否启用
+     */
+    private boolean halfOpenEnable = true;
+
+    /**
+     * 探活线程 - 个数 默认1
      */
     private Integer corePoolSize = 1;
 
     /**
-     * 第一次执行的延迟时间 / 秒
+     * 探活线程 - 第一次执行的延迟时间 / 秒
      */
     private Long initialDelay = 10L;
 
     /**
-     * 除开第一次之后的延迟时间 / 秒
+     * 探活线程 - 除开第一次之后的延迟时间 / 秒
      */
     private Long delay = 30L;
 

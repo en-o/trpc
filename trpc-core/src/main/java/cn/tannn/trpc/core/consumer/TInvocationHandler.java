@@ -81,10 +81,13 @@ public class TInvocationHandler implements InvocationHandler {
         this.rpcContext = rpcContext;
         this.isolate = rpcContext.getRpcProperties().getConsumer().getIsolate();
         this.httpInvoker = new OkHttpInvoker(rpcContext.getRpcProperties().getConsumer().getHttp());
-        // 探活线程
-        this.executor = Executors.newScheduledThreadPool(isolate.getCorePoolSize());
-        // 60s - 探活线程 执行配置
-        this.executor.scheduleWithFixedDelay(this::halfOpen, isolate.getInitialDelay(), isolate.getDelay() , TimeUnit.SECONDS);
+        if(isolate.isHalfOpenEnable()){
+            // 探活线程
+            this.executor = Executors.newScheduledThreadPool(isolate.getCorePoolSize());
+            // 60s - 探活线程 执行配置
+            this.executor.scheduleWithFixedDelay(this::halfOpen, isolate.getInitialDelay(), isolate.getDelay() , TimeUnit.SECONDS);
+
+        }
     }
 
 

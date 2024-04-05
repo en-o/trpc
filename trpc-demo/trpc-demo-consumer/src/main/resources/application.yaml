@@ -30,3 +30,4 @@ trpc:
     gray-ratio: 0
     isolate:
       fault-limit: 5
+      half-open-enable: true
