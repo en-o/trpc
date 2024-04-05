@@ -7,6 +7,7 @@ import cn.tannn.trpc.core.consumer.http.OkHttpInvoker;
 import cn.tannn.trpc.core.exception.TrpcException;
 import cn.tannn.trpc.core.governance.SlidingTimeWindow;
 import cn.tannn.trpc.core.meta.InstanceMeta;
+import cn.tannn.trpc.core.properties.IsolateProperties;
 import cn.tannn.trpc.core.util.MethodUtils;
 import cn.tannn.trpc.core.util.TypeUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +45,7 @@ public class TInvocationHandler implements InvocationHandler {
      * 上下文
      */
     final RpcContext rpcContext;
+    final IsolateProperties isolate;
     /**
      *  http 网络协议
      */
@@ -56,8 +58,14 @@ public class TInvocationHandler implements InvocationHandler {
      * 故障隔离 - 故障信息记录
      */
     final Map<String, SlidingTimeWindow> windows = new HashMap<>();
-
-
+    /**
+     * 故障隔离恢复哨兵
+     */
+    ScheduledExecutorService executor;
+    /**
+     * 探活实例队列
+     */
+    final List<InstanceMeta> halfProviders = new ArrayList<>();
 
 
     /**
@@ -71,10 +79,23 @@ public class TInvocationHandler implements InvocationHandler {
         this.service = service;
         this.providers = providers;
         this.rpcContext = rpcContext;
+        this.isolate = rpcContext.getRpcProperties().getConsumer().getIsolate();
         this.httpInvoker = new OkHttpInvoker(rpcContext.getRpcProperties().getConsumer().getHttp());
-
+        // 探活线程
+        this.executor = Executors.newScheduledThreadPool(isolate.getCorePoolSize());
+        // 60s - 探活线程 执行配置
+        this.executor.scheduleWithFixedDelay(this::halfOpen, isolate.getInitialDelay(), isolate.getDelay() , TimeUnit.SECONDS);
     }
 
+
+    /**
+     * 探活线程执行方法
+     */
+    private void halfOpen(){
+        log.debug(" ===> half open isolateProviders {}", isolateProviders);
+        halfProviders.clear();
+        halfProviders.addAll(isolateProviders);
+    }
 
 
     @Override
@@ -115,7 +136,7 @@ public class TInvocationHandler implements InvocationHandler {
                         window.record(System.currentTimeMillis());
                         log.debug("instance {} in window with {}", callUri, window.getSum());
                         // 发生10次，就要做故障隔离
-                        if(window.getSum()>=rpcContext.getRpcProperties().getConsumer().getIsolate()){
+                        if(window.getSum()>=isolate.getError()){
                             // 从路由里摘掉[隔离]
                             isolate(instance);
                         }

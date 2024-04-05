@@ -33,10 +33,6 @@ public class ConsumerProperties {
      */
     private Integer grayRatio = 0;
 
-    /**
-     * 故障允许错误的次数， 默认10，[错误次数超过设置值就会别隔离]
-     */
-    private Integer isolate = 10;
 
 
 
@@ -51,6 +47,12 @@ public class ConsumerProperties {
      */
     @NestedConfigurationProperty
     private SubscribeProperties  subscribe = new SubscribeProperties();
+
+    /**
+     * 故障隔离
+     */
+    @NestedConfigurationProperty
+    private IsolateProperties isolate = new IsolateProperties();
 
 
     /**
@@ -88,14 +90,4 @@ public class ConsumerProperties {
         return grayRatio;
     }
 
-    /**
-     * 设置故障隔离阈值默认值
-     * @return Integer
-     */
-    public Integer getIsolate() {
-        if(isolate == null || isolate <=0){
-            return 10;
-        }
-        return isolate;
-    }
 }
