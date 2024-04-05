@@ -15,7 +15,7 @@ public class IsolateProperties {
     /**
      * 故障允许错误的次数， 默认10，[错误次数超过设置值就会别隔离]
      */
-    private Integer error = 10;
+    private Integer faultLimit = 10;
 
     /**
      * 探活线程个数 默认1
@@ -36,10 +36,10 @@ public class IsolateProperties {
      * 设置故障隔离阈值默认值
      * @return Integer
      */
-    public Integer getError() {
-        if(error == null || error <=0){
+    public Integer getFaultLimit() {
+        if(faultLimit == null || faultLimit <=0){
             return 10;
         }
-        return error;
+        return faultLimit;
     }
 }

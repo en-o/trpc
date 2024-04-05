@@ -28,4 +28,4 @@ trpc:
       namespace: public
     gray-ratio: 0
     isolate:
-      error: 5
+      fault-limit: 5
