@@ -2,6 +2,7 @@ package cn.tannn.trpc.core.consumer;
 
 import cn.tannn.trpc.core.api.LoadBalancer;
 import cn.tannn.trpc.core.api.RegistryCenter;
+import cn.tannn.trpc.core.api.Router;
 import cn.tannn.trpc.core.api.RpcContext;
 import cn.tannn.trpc.core.exception.TrpcException;
 import cn.tannn.trpc.core.filter.FilterChain;
@@ -77,6 +78,8 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         LoadBalancer loadBalancer = context.getBean(LoadBalancer.class);
         // 拿到注册中心
         RegistryCenter registryCenter = context.getBean(RegistryCenter.class);
+        // 拿到路由器
+        Router router = context.getBean(Router.class);
         // 启动 rc  ，stop在 ConsumerPreDestroy
         registryCenter.start();
 
@@ -86,6 +89,7 @@ public class ConsumerBootstrap implements ApplicationContextAware {
         rpcContext.setLoadBalancer(loadBalancer);
         rpcContext.setRpcProperties(rpcProperties);
         rpcContext.setRegistryCenter(registryCenter);
+        rpcContext.setRouter(router);
         rpcContext.setFilters(filterChain);
 
         for (BeanDefinition beanDefinition : beanDefinitions) {

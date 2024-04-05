@@ -3,6 +3,8 @@ package cn.tannn.trpc.fromwork.spring.consumer;
 
 import cn.tannn.trpc.core.api.Filter;
 import cn.tannn.trpc.core.api.LoadBalancer;
+import cn.tannn.trpc.core.api.Router;
+import cn.tannn.trpc.core.cluster.GrayRouter;
 import cn.tannn.trpc.core.cluster.RandomLoadBalancer;
 import cn.tannn.trpc.core.cluster.RoundRibbonLoadBalancer;
 import cn.tannn.trpc.core.consumer.ConsumerBootstrap;
@@ -69,6 +71,14 @@ public class ConsumerConfig {
     FilterChain filterChain(RpcProperties rpcProperties) {
         List<Filter> filters = FilterEnum.findFilter(rpcProperties.getConsumer().getFilter());
         return new FilterChain(filters);
+    }
+
+    /**
+     * 加载路由处理器
+     */
+    @Bean
+    Router router(RpcProperties rpcProperties) {
+        return new GrayRouter(rpcProperties.getConsumer());
     }
 
 }

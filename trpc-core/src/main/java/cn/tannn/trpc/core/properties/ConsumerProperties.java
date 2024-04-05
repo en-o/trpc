@@ -28,6 +28,12 @@ public class ConsumerProperties {
      */
     private FilterEnum[] filter;
 
+    /**
+     * 灰度调拨百分比 0-100
+     */
+    private Integer grayRatio = 0;
+
+
 
     /**
      * rpc请求http配置

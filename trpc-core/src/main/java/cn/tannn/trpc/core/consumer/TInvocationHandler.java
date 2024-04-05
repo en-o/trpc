@@ -5,6 +5,7 @@ import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
 import cn.tannn.trpc.core.consumer.http.OkHttpInvoker;
 import cn.tannn.trpc.core.exception.TrpcException;
+import cn.tannn.trpc.core.governance.SlidingTimeWindow;
 import cn.tannn.trpc.core.meta.InstanceMeta;
 import cn.tannn.trpc.core.util.MethodUtils;
 import cn.tannn.trpc.core.util.TypeUtils;
@@ -14,7 +15,13 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 消费端：动态代理 实现
@@ -26,24 +33,32 @@ import java.util.List;
 public class TInvocationHandler implements InvocationHandler {
 
     /**
+     * 需要添加代理的对象
+     */
+    final Class<?> service;
+    /**
      *  服务连接信息实例
      */
     final List<InstanceMeta> providers;
-
-    /**
-     *  http 网络协议
-     */
-    final HttpInvoker httpInvoker;
-
     /**
      * 上下文
      */
     final RpcContext rpcContext;
-
     /**
-     * 需要添加代理的对象
+     *  http 网络协议
      */
-    final Class<?> service;
+    final HttpInvoker httpInvoker;
+    /**
+     * 隔离服务实例
+     */
+    List<InstanceMeta> isolateProviders = new ArrayList<>();
+    /**
+     * 故障隔离 - 故障信息记录
+     */
+    final Map<String, SlidingTimeWindow> windows = new HashMap<>();
+
+
+
 
     /**
      * @param service     需要添加代理的对象
@@ -57,7 +72,10 @@ public class TInvocationHandler implements InvocationHandler {
         this.providers = providers;
         this.rpcContext = rpcContext;
         this.httpInvoker = new OkHttpInvoker(rpcContext.getRpcProperties().getConsumer().getHttp());
+
     }
+
+
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args){
@@ -75,14 +93,36 @@ public class TInvocationHandler implements InvocationHandler {
                 if (prefilter != null) {
                     return prefilter;
                 }
+                // 先通过路由筛选在进行负载均衡
+                List<InstanceMeta> instances = rpcContext.getRouter().route(this.providers);
                 // 通过负载均衡器选择路由
-                InstanceMeta instance = rpcContext.getLoadBalancer().choose(this.providers);
+                InstanceMeta instance = rpcContext.getLoadBalancer().choose(instances);
                 log.debug("loadBalancer.choose(urls) ==> {}", instance);
 
-                // 发送请求
-                RpcResponse<Object> rpcResponse = httpInvoker.post(rpcRequest, instance.toUrl());
-                // 对结果集进行处理
-                Object result = castReturnResult(method, rpcResponse);
+                Object result;
+                String callUri = instance.toUrl();
+                try {
+                    // 发送请求
+                    RpcResponse<Object> rpcResponse = httpInvoker.post(rpcRequest, callUri);
+                    // 对结果集进行处理
+                    result = castReturnResult(method, rpcResponse);
+                }catch (Exception e){
+                    // 故障规则统计和隔离
+                    // 加上 synchronized 控制并发
+                    // 每一次异常，记录一次。统计30s的异常数
+                    synchronized (windows) {
+                        SlidingTimeWindow window = windows.computeIfAbsent(callUri, k -> new SlidingTimeWindow());
+                        window.record(System.currentTimeMillis());
+                        log.debug("instance {} in window with {}", callUri, window.getSum());
+                        // 发生10次，就要做故障隔离
+                        if(window.getSum()>=10){
+                            // 从路由里摘掉[隔离]
+                            isolate(instance);
+                        }
+                    }
+                    throw e;
+                }
+
                 // 对结果集进行过滤器后置处理,比如利用cache缓存结果集,下次请求就在前置拦截里发现了直接返回减少IO
                 Object filterResult = rpcContext.getFilters().executePost(rpcRequest, result);
                 // 后置处理对结果集处理之后就直接返回,为空就是没处理那就直接返回原生的
@@ -125,5 +165,17 @@ public class TInvocationHandler implements InvocationHandler {
             }
             return null;
         }
+    }
+
+    /**
+     * 把故障节点隔离掉
+     * @param instance 故障节点
+     */
+    private void isolate(InstanceMeta instance) {
+        log.debug(" ===> isolate instanc {}", instance);
+        providers.remove(instance);
+        log.debug(" ===> providers  = {} ", providers);
+        isolateProviders.add(instance);
+        log.debug(" ===> isolateProviders  = {} ", isolateProviders);
     }
 }
