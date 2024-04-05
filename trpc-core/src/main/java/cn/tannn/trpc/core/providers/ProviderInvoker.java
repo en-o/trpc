@@ -1,5 +1,6 @@
 package cn.tannn.trpc.core.providers;
 
+import cn.tannn.trpc.core.api.RpcContext;
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
 import cn.tannn.trpc.core.exception.TrpcException;
@@ -46,6 +47,11 @@ public class ProviderInvoker {
      */
     public RpcResponse<Object> invoke(RpcRequest request) {
         log.debug(" ===> ProviderInvoker.invoke(request:{})", request);
+        if(!request.getParams().isEmpty()){
+            // rpc调用传过来的额外信息放到 全局 context 中
+            request.getParams().forEach(RpcContext::setContextParameter);
+        }
+
         RpcResponse<Object> rpcResponse = new RpcResponse<>();
         List<ProviderMeta> providerMetas = skeleton.get(request.getService());
         try {
@@ -70,6 +76,9 @@ public class ProviderInvoker {
         }catch (TrpcException e) {
             // 把异常传递回去
             rpcResponse.setEx(e);
+        } finally {
+            // 当前进程使用完之后清空
+            RpcContext.ContextParameters.get().clear(); // 防止内存泄露和上下文污染
         }
         log.debug(" ===> ProviderInvoker.invoke() = {}", rpcResponse);
         return rpcResponse;

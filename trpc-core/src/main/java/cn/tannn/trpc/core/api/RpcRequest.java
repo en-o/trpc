@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * rpc 接口的统一请求对象
  *
@@ -28,4 +31,9 @@ public class RpcRequest {
      * 参数
      */
     private Object[] args;
+
+
+    // 跨调用方需要传递的参数
+    private Map<String,String> params = new HashMap<>();
+
 }

@@ -101,7 +101,10 @@ public class TInvocationHandler implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args){
         // 组装调用参数 ： 类全限定名称，方法，参数
-        RpcRequest rpcRequest = new RpcRequest(service.getCanonicalName(), MethodUtils.methodSign(method), args);
+        RpcRequest rpcRequest = new RpcRequest();
+        rpcRequest.setService(service.getCanonicalName());
+        rpcRequest.setMethodSign( MethodUtils.methodSign(method));
+        rpcRequest.setArgs(args);
 
         // 超时重试
         Integer retries = rpcContext.getRpcProperties().getConsumer().getHttp().getRetries();
@@ -149,7 +152,7 @@ public class TInvocationHandler implements InvocationHandler {
                         window.record(System.currentTimeMillis());
                         log.debug("instance {} in window with {}", callUri, window.getSum());
                         // 发生10次，就要做故障隔离
-                        if(window.getSum()>=isolate.getError()){
+                        if(window.getSum()>=isolate.getFaultLimit()){
                             // 从路由里摘掉[隔离]
                             isolate(instance);
                         }
@@ -184,7 +187,6 @@ public class TInvocationHandler implements InvocationHandler {
                     log.error("{}出现了超时，进行超时重试",rpcRequest);
                 }
             }
-
         }
        return null;
 

@@ -4,6 +4,9 @@ import cn.tannn.trpc.core.filter.FilterChain;
 import cn.tannn.trpc.core.properties.RpcProperties;
 import lombok.Data;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * rpc上下文 - 参数传递
  *
@@ -41,4 +44,22 @@ public class RpcContext {
      * 注册中心
      */
     RegistryCenter registryCenter;
+
+
+    /**
+     * 线程绑定参数
+     */
+    public static ThreadLocal<Map<String,String>> ContextParameters = ThreadLocal.withInitial(HashMap::new);
+
+    public static void setContextParameter(String key, String value) {
+        ContextParameters.get().put(key, value);
+    }
+
+    public static String getContextParameter(String key) {
+        return ContextParameters.get().get(key);
+    }
+
+    public static void removeContextParameter(String key) {
+        ContextParameters.get().remove(key);
+    }
 }
