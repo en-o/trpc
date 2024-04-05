@@ -9,7 +9,11 @@ trpc:
   scan-packages: cn.tannn.trpc
   rc:
     name: zk
-    providers:
+    namespace: trpc
+    connect:
+      - ip: 127.0.0.1
+        port: 20242
+    providers: # rc.name=def用
       - 127.0.0.1_8081_trpc
       - 127.0.0.1_8082_trpc
       - 127.0.0.1_8083_trpc
