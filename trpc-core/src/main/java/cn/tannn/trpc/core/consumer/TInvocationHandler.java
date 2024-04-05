@@ -115,7 +115,7 @@ public class TInvocationHandler implements InvocationHandler {
                         window.record(System.currentTimeMillis());
                         log.debug("instance {} in window with {}", callUri, window.getSum());
                         // 发生10次，就要做故障隔离
-                        if(window.getSum()>=10){
+                        if(window.getSum()>=rpcContext.getRpcProperties().getConsumer().getIsolate()){
                             // 从路由里摘掉[隔离]
                             isolate(instance);
                         }

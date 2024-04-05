@@ -33,6 +33,11 @@ public class ConsumerProperties {
      */
     private Integer grayRatio = 0;
 
+    /**
+     * 故障允许错误的次数， 默认10，[错误次数超过设置值就会别隔离]
+     */
+    private Integer isolate = 10;
+
 
 
     /**
@@ -60,7 +65,7 @@ public class ConsumerProperties {
 
 
     /**
-     *过滤器设置默认
+     * 过滤器设置默认
      * @return FilterEnum
      */
     public FilterEnum[] getFilter() {
@@ -70,5 +75,27 @@ public class ConsumerProperties {
         return filter;
     }
 
+    /**
+     * 设置 灰度上下限
+     * @return Integer
+     */
+    public Integer getGrayRatio() {
+        if(grayRatio == null || grayRatio < 0){
+            return 0;
+        }else if(grayRatio>100){
+            return 100;
+        }
+        return grayRatio;
+    }
 
+    /**
+     * 设置故障隔离阈值默认值
+     * @return Integer
+     */
+    public Integer getIsolate() {
+        if(isolate == null || isolate <=0){
+            return 10;
+        }
+        return isolate;
+    }
 }
