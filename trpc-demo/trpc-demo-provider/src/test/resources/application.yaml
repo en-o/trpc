@@ -11,7 +11,7 @@ trpc:
     namespace: trpc
     connect:
       - ip: 127.0.0.1
-        port: 2128
+        port: 2182
   api:
     #    enabled: false
     context: trpc

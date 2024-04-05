@@ -15,7 +15,7 @@ public class TestZKServer {
     TestingCluster cluster;
     @SneakyThrows
     public void start() {
-        InstanceSpec instanceSpec = new InstanceSpec(null, 2128,
+        InstanceSpec instanceSpec = new InstanceSpec(null, 2182,
                 -1, -1, true,
                 -1, -1, -1);
         cluster = new TestingCluster(instanceSpec);
