@@ -114,11 +114,24 @@ public class TInvocationHandler implements InvocationHandler {
                 if (prefilter != null) {
                     return prefilter;
                 }
-                // 先通过路由筛选在进行负载均衡
-                List<InstanceMeta> instances = rpcContext.getRouter().route(this.providers);
-                // 通过负载均衡器选择路由
-                InstanceMeta instance = rpcContext.getLoadBalancer().choose(instances);
-                log.debug("loadBalancer.choose(urls) ==> {}", instance);
+
+                // 路由探活- 检查是否存在需要探活的示例，有的话就放一笔流量进行探活
+                InstanceMeta instance;
+                synchronized (halfProviders){
+                    if(halfProviders.isEmpty()){
+                        // 先通过路由筛选在进行负载均衡
+                        List<InstanceMeta> instances = rpcContext.getRouter().route(this.providers);
+                        // 通过负载均衡器选择路由
+                        instance = rpcContext.getLoadBalancer().choose(instances);
+                        log.debug("loadBalancer.choose(urls) ==> {}", instance);
+                    }else {
+                        // 使用当前流量探活
+                        // 获取一个进行探活处理 - 获取并删除是为了保证当前流量不被污染 - 必须结合错误重试机制哦
+                        instance = halfProviders.remove(0);
+                        log.debug("check alive instance ==> {}", instance);
+                    }
+                }
+
 
                 Object result;
                 String callUri = instance.toUrl();
@@ -142,6 +155,18 @@ public class TInvocationHandler implements InvocationHandler {
                         }
                     }
                     throw e;
+                }
+
+                // 故障恢复
+
+                synchronized (providers){
+                    // 当前实例不是正常实例，就表明他是探活实例，且探活成功就将节点恢复正常
+                    if(!providers.contains(instance)){
+                        isolateProviders.remove(instance);
+                        providers.add(instance);
+                        log.debug("instance {} is recovered, isolateProviders = {}, provides = {}",
+                                instance, isolateProviders, providers);
+                    }
                 }
 
                 // 对结果集进行过滤器后置处理,比如利用cache缓存结果集,下次请求就在前置拦截里发现了直接返回减少IO

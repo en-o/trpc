@@ -27,4 +27,5 @@ trpc:
       env: dev
       namespace: public
     gray-ratio: 0
-    isolate: 5
+    isolate:
+      error: 5
