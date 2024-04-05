@@ -26,4 +26,4 @@ trpc:
       version: 0.0.1
       env: dev
       namespace: public
-
+    gray-ratio: 0

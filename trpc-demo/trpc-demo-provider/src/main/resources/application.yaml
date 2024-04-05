@@ -16,3 +16,7 @@ trpc:
     version: 0.0.1
     env: dev
     namespace: public
+    gray:
+      dc: cqs
+      gray: false
+      unit: A001
