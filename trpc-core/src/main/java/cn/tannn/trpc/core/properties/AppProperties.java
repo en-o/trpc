@@ -1,6 +1,8 @@
 package cn.tannn.trpc.core.properties;
 
+import cn.tannn.trpc.core.properties.meta.GrayMetas;
 import lombok.Data;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 /**
  * 服务注册信息
@@ -28,4 +30,10 @@ public class AppProperties {
      * 订阅的版本
      */
     String version = "0.0.1";
+
+    /**
+     * 灰度
+     */
+    @NestedConfigurationProperty
+    GrayMetas gray = new GrayMetas();
 }

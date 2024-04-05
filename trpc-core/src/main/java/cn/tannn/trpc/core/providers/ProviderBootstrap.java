@@ -7,6 +7,7 @@ import cn.tannn.trpc.core.meta.ProviderMeta;
 import cn.tannn.trpc.core.meta.ServiceMeta;
 import cn.tannn.trpc.core.properties.AppProperties;
 import cn.tannn.trpc.core.properties.RpcProperties;
+import cn.tannn.trpc.core.properties.meta.GrayMetas;
 import cn.tannn.trpc.core.util.MethodUtils;
 import jakarta.annotation.PreDestroy;
 import lombok.Getter;
@@ -58,6 +59,11 @@ public class ProviderBootstrap implements ApplicationContextAware {
     private final AppProperties appProperties;
 
     /**
+     * 灰度
+     */
+    private final GrayMetas grayMetas;
+
+    /**
      * 当前服务的RPC接口前缀
      */
     private final String rpcApiContextPath;
@@ -73,6 +79,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
             , RpcProperties rpcProperties) {
         this.registryCenter = registryCenter;
         this.appProperties = rpcProperties.getApp();
+        this.grayMetas = rpcProperties.getApp().getGray();
         this.rpcApiContextPath = rpcProperties.getApi().getContext();
     }
 
@@ -109,6 +116,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
         String ip = InetAddress.getLocalHost().getHostAddress();
         // 服务信息
         instance = InstanceMeta.http(ip, port, rpcApiContextPath);
+        instance.setGray(grayMetas);
         skeleton.keySet().forEach(this::registerService);
         log.info("ProviderBootstrap started.");
     }

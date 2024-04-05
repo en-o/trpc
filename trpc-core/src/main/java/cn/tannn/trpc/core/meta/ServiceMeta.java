@@ -1,9 +1,12 @@
 package cn.tannn.trpc.core.meta;
 
+import com.alibaba.fastjson2.JSON;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import java.util.Map;
 
 /**
  * 描述服务元数据  （rc注册的元信息描述
@@ -41,11 +44,25 @@ public class ServiceMeta {
      */
     String version = "0.0.1";
 
+
+    /**
+     * 其他参数
+     */
+    private Map<String, String> parameters;
+
     /**
      * 组装 注册中心 path
      * @return zk[app_namespace_env_name_version]
      */
     public String toPath() {
         return String.format("%s_%s_%s_%s_%s", appid, name, env, namespace, version);
+    }
+
+
+    /**
+     * parameter json string
+     */
+    public String toMetas() {
+        return JSON.toJSONString(this.getParameters());
     }
 }

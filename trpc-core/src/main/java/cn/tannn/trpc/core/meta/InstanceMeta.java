@@ -1,5 +1,7 @@
 package cn.tannn.trpc.core.meta;
 
+import cn.tannn.trpc.core.properties.meta.GrayMetas;
+import com.alibaba.fastjson2.JSON;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -35,7 +37,10 @@ public class InstanceMeta {
      */
     private String context;
 
-
+    /**
+     * 实例的灰度信息
+     */
+    private GrayMetas gray;
 
     /**
      *  基础构造 [schema://host:port/context]
@@ -87,4 +92,12 @@ public class InstanceMeta {
         return String.format("%s://%s:%d/%s", schema, host, port, context);
     }
 
+
+
+    /**
+     * 灰度信息转 json string 方便注册中心存储
+     */
+    public String toGary() {
+        return JSON.toJSONString(this.gray);
+    }
 }

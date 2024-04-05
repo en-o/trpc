@@ -4,10 +4,12 @@ import cn.tannn.trpc.core.api.RegistryCenter;
 import cn.tannn.trpc.core.exception.TrpcException;
 import cn.tannn.trpc.core.meta.InstanceMeta;
 import cn.tannn.trpc.core.meta.ServiceMeta;
+import cn.tannn.trpc.core.properties.meta.GrayMetas;
 import cn.tannn.trpc.core.properties.rc.Connect;
 import cn.tannn.trpc.core.properties.rc.RegistryCenterProperties;
 import cn.tannn.trpc.core.registry.ChangedListener;
 import cn.tannn.trpc.core.registry.Event;
+import com.alibaba.fastjson2.JSON;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.RetryPolicy;
@@ -89,12 +91,13 @@ public class ZkRegistryCenter implements RegistryCenter {
             // 检查service是否存在
             if (client.checkExists().forPath(servicePath) == null) {
                 // 创建 [PERSISTENT:持久化]
-                client.create().withMode(CreateMode.PERSISTENT).forPath(servicePath, "service.toMetas()".getBytes());
+                client.create().withMode(CreateMode.PERSISTENT).forPath(servicePath, service.toMetas().getBytes());
             }
             // 创建实例的临时节点
             String instancePath = servicePath + "/" + instance.toPath();
             log.info(" ===> register to zk: {}", instancePath);
-            client.create().withMode(CreateMode.EPHEMERAL).forPath(instancePath, "instance.toMetas()".getBytes());
+            // 节点存储数据信息
+            client.create().withMode(CreateMode.EPHEMERAL).forPath(instancePath, instance.toGary().getBytes());
         } catch (Exception e) {
             throw new TrpcException(e, ZK_REGISTER_FAIL);
         }
@@ -126,7 +129,7 @@ public class ZkRegistryCenter implements RegistryCenter {
             // 获取所有子节点
             List<String> nodes = client.getChildren().forPath(servicePath);
             log.info(" ===> fetchAll from zk: {}", servicePath);
-            return mapInstances(nodes);
+            return mapInstances(nodes, servicePath);
         } catch (Exception e) {
             throw new TrpcException(e, ZK_FETCH_INSTANCE_FAIL);
         }
@@ -155,14 +158,27 @@ public class ZkRegistryCenter implements RegistryCenter {
 
     /**
      * 节点
-     * @param nodes 节点
+     * @param nodes 实例节点[节点信息
+     * @param servicePath 服务的zk路径[查询节点之下存储的数据信息
      * @return 节点实例 {zk str ->  InstanceMeta}
      */
-    private List<InstanceMeta> mapInstances(List<String> nodes) {
+    private List<InstanceMeta> mapInstances(List<String> nodes, String servicePath) {
         return nodes.stream().map(x -> {
             String[] split = x.split("_");
             InstanceMeta instance = InstanceMeta.http(split[0], Integer.valueOf(split[1]), split[2]);
             log.debug(" fetchAll instance: {}" , instance.toUrl());
+            // 服务节点+实例节点 = 全路径
+            String nodePath = servicePath + "/" + x;
+            // 读取数据
+            byte[] bytes;
+            try {
+                bytes = client.getData().forPath(nodePath);
+            } catch (Exception e) {
+                throw new TrpcException("实例节点数据读取失败",e);
+            }
+            GrayMetas grayMetas = JSON.parseObject(new String(bytes), GrayMetas.class);
+            log.debug("zk GrayMetas : {}",grayMetas);
+            instance.setGray(grayMetas);
             return instance;
         }).collect(Collectors.toList());
     }
