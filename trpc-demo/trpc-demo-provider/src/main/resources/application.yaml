@@ -8,6 +8,10 @@ logging:
 trpc:
   rc:
     name: zk
+    namespace: trpc
+    connect:
+      - ip: 127.0.0.1
+        port: 20242
   api:
 #    enabled: false
     context: trpc
