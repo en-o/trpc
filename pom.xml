@@ -13,6 +13,41 @@
         参考代码： https://github.com/evasnowind/rpcfx
     </description>
 
+    <organization>
+        <name>tan</name>
+        <url>https://tannn.cn/</url>
+    </organization>
+
+    <!-- 开源许可证 -->
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+    <!-- 开源地址 -->
+    <scm>
+        <!-- 发布分支 -->
+        <tag>master</tag>
+        <url>https://github.com/en-o/trpc</url>
+        <connection>https://github.com/en-o/trpc</connection>
+        <developerConnection>https://github.com/en-o/trpc</developerConnection>
+    </scm>
+
+    <!-- 开发者信息 -->
+    <developers>
+        <developer>
+            <id>tanning</id>
+            <name>tanning</name>
+            <email>1445763190@qq.com</email>
+            <organization>cn.tannn.cat</organization>
+            <url>https://tannn.cn/</url>
+            <roles>
+                <role>author</role>
+            </roles>
+        </developer>
+    </developers>
+
     <properties>
         <!-- JDK -->
         <java.version>17</java.version>
@@ -44,6 +79,127 @@
         <module>trpc-demo</module>
     </modules>
 
-
+    <build>
+        <plugins>
+            <!-- 编译的时候指定JDK和编码 ,-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>${java.version}</source> <!-- 源代码使用的JDK版本 -->
+                    <target>${java.version}</target> <!-- 需要生成的目标class文件的编译版本 -->
+                    <encoding>${project.build.sourceEncoding}</encoding> <!-- 字符集编码 -->
+                    <showWarnings>true</showWarnings><!--设置为true以显示编译警告-->
+                </configuration>
+            </plugin>
+            <!-- 中央仓库 -->
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.4.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                    <tokenAuth>true</tokenAuth>
+                    <centralBaseUrl>https://central.sonatype.com</centralBaseUrl>
+                    <deploymentName>${project.artifactId}</deploymentName>
+                </configuration>
+            </plugin>
+            <!-- gpg -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- 将源码一并打包 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.4</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <!--意思是在什么阶段打包源文件-->
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Javadoc -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <doclint>none</doclint>
+                    <show>protected</show>
+                    <failOnError>false</failOnError>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <charset>${project.build.sourceEncoding}</charset>
+                    <docencoding>${project.build.sourceEncoding}</docencoding>
+                    <tags>
+                        <tag>
+                            <name>description</name>
+                            <placement>a</placement>
+                            <head>描述</head>
+                        </tag>
+                        <tag>
+                            <name>return</name>
+                            <placement>a</placement>
+                            <head>return</head>
+                        </tag>
+                        <tag>
+                            <name>ClassName</name>
+                            <placement>a</placement>
+                            <head>类名</head>
+                        </tag>
+                        <tag>
+                            <name>link</name>
+                            <placement>a</placement>
+                            <head>外链</head>
+                        </tag>
+                        <tag>
+                            <head>参数</head>
+                            <name>param</name>
+                            <placement>a</placement>
+                        </tag>
+                        <tag>
+                            <name>date</name>
+                            <placement>a</placement>
+                            <head>时间</head>
+                        </tag>
+                        <tag>
+                            <name>author</name>
+                            <placement>a</placement>
+                            <head>作者</head>
+                        </tag>
+                    </tags>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <additionalJOption>-Xdoclint:none</additionalJOption>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
