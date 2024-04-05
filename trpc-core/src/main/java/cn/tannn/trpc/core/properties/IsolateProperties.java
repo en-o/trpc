@@ -2,8 +2,6 @@ package cn.tannn.trpc.core.properties;
 
 import lombok.Data;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * 故障隔离
  *
