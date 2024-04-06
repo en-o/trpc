@@ -104,40 +104,6 @@
                     <showWarnings>true</showWarnings><!--设置为true以显示编译警告-->
                 </configuration>
             </plugin>
-            <!-- 中央仓库 -->
-            <plugin>
-                <groupId>org.sonatype.central</groupId>
-                <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.4.0</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <publishingServerId>central</publishingServerId>
-                    <tokenAuth>true</tokenAuth>
-                    <autoPublish>true</autoPublish>
-                    <deploymentName>trpc</deploymentName>
-                    <excludeArtifacts>
-                        <excludeArtifact>trpc-demo</excludeArtifact>
-                        <excludeArtifact>trpc-demo-api</excludeArtifact>
-                        <excludeArtifact>trpc-demo-consumer</excludeArtifact>
-                        <excludeArtifact>trpc-demo-provider</excludeArtifact>
-                    </excludeArtifacts>
-                </configuration>
-            </plugin>
-            <!-- gpg -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.6</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <!-- 将源码一并打包 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -219,4 +185,47 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+              <plugins>
+                  <!-- 中央仓库 https://central.sonatype.org/publish/publish-portal-maven/ -->
+                  <plugin>
+                      <groupId>org.sonatype.central</groupId>
+                      <artifactId>central-publishing-maven-plugin</artifactId>
+                      <version>0.4.0</version>
+                      <extensions>true</extensions>
+                      <configuration>
+                          <publishingServerId>central</publishingServerId>
+                          <tokenAuth>true</tokenAuth>
+                          <autoPublish>true</autoPublish>
+                          <deploymentName>trpc</deploymentName>
+                          <excludeArtifacts>
+                              <excludeArtifact>trpc-demo</excludeArtifact>
+                              <excludeArtifact>trpc-demo-api</excludeArtifact>
+                              <excludeArtifact>trpc-demo-consumer</excludeArtifact>
+                              <excludeArtifact>trpc-demo-provider</excludeArtifact>
+                          </excludeArtifacts>
+                      </configuration>
+                  </plugin>
+                  <!-- gpg -->
+                  <plugin>
+                      <groupId>org.apache.maven.plugins</groupId>
+                      <artifactId>maven-gpg-plugin</artifactId>
+                      <version>1.6</version>
+                      <executions>
+                          <execution>
+                              <id>sign-artifacts</id>
+                              <phase>verify</phase>
+                              <goals>
+                                  <goal>sign</goal>
+                              </goals>
+                          </execution>
+                      </executions>
+                  </plugin>
+              </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
