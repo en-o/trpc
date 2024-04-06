@@ -199,6 +199,7 @@
                       <configuration>
                           <publishingServerId>central</publishingServerId>
                           <tokenAuth>true</tokenAuth>
+                          <!-- 自动提交 ，不写就自己去web手动点击-->
                           <autoPublish>true</autoPublish>
                           <deploymentName>trpc</deploymentName>
                           <excludeArtifacts>
