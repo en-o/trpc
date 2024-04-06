@@ -108,30 +108,36 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>2.4</version>
+                <version>3.1.0</version>
+                <inherited>true</inherited>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
-                        <!--意思是在什么阶段打包源文件-->
-                        <phase>package</phase>
                         <goals>
-                            <goal>jar-no-fork</goal>
+                            <goal>jar</goal>
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <excludeResources>true</excludeResources>
+                    <useDefaultExcludes>true</useDefaultExcludes>
+                </configuration>
             </plugin>
             <!-- Javadoc -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.2.0</version>
+                <inherited>true</inherited>
                 <configuration>
-                    <doclint>none</doclint>
-                    <show>protected</show>
-                    <failOnError>false</failOnError>
+                    <maxmemory>1024</maxmemory>
                     <encoding>${project.build.sourceEncoding}</encoding>
                     <charset>${project.build.sourceEncoding}</charset>
                     <docencoding>${project.build.sourceEncoding}</docencoding>
+                    <show>protected</show>
+                    <notree>true</notree>
+                    <failOnError>false</failOnError>
+                    <doclint>none</doclint>
                     <tags>
                         <tag>
                             <name>description</name>
@@ -172,13 +178,11 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <id>bundle-sources</id>
                         <phase>package</phase>
                         <goals>
                             <goal>jar</goal>
                         </goals>
-                        <configuration>
-                            <additionalJOption>-Xdoclint:none</additionalJOption>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
