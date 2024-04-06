@@ -113,8 +113,14 @@
                 <configuration>
                     <publishingServerId>central</publishingServerId>
                     <tokenAuth>true</tokenAuth>
-                    <centralBaseUrl>https://central.sonatype.com</centralBaseUrl>
+                    <autoPublish>true</autoPublish>
                     <deploymentName>trpc</deploymentName>
+                    <excludeArtifacts>
+                        <excludeArtifact>trpc-demo</excludeArtifact>
+                        <excludeArtifact>trpc-demo-api</excludeArtifact>
+                        <excludeArtifact>trpc-demo-consumer</excludeArtifact>
+                        <excludeArtifact>trpc-demo-provider</excludeArtifact>
+                    </excludeArtifacts>
                 </configuration>
             </plugin>
             <!-- gpg -->

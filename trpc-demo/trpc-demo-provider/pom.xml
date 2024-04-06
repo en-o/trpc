@@ -12,6 +12,7 @@
     <description>trpc-demo-provider</description>
     <properties>
         <java.version>17</java.version>
+        <skip_maven_deploy>true</skip_maven_deploy>
     </properties>
     <dependencies>
         <dependency>

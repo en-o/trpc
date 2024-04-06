@@ -10,7 +10,9 @@
     </parent>
     <packaging>pom</packaging>
     <artifactId>trpc-demo</artifactId>
-
+    <properties>
+        <skip_maven_deploy>true</skip_maven_deploy>
+    </properties>
     <dependencyManagement>
         <dependencies>
             <dependency>
