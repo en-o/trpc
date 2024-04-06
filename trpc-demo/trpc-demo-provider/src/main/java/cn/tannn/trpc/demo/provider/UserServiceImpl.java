@@ -26,6 +26,9 @@ import java.util.Map;
 @Slf4j
 public class UserServiceImpl implements UserService {
 
+    /**
+     *  environment
+     */
     @Autowired
     Environment environment;
 
