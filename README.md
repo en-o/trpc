@@ -3,11 +3,23 @@
 
 ![RPC.jpg](/doc/导图/RPC.jpg)
 
+## 打包部署
+> jdk 17
+> maven 3.6+
+```shell
+# 打包
+mvn clean package
+# 发布
+mvn clean deploy -P release
+```
+
 ## rpc的调用跟http区别
 1. RPC可以使用多种底层协议,如TCP、UDP等,而HTTP则只能通过TCP协
 2. RPC可以使用自定义的二进制协议,而HTTP使用文本协议
 3. RPC直接调用服务端提供的方法,类似于本地方法调用
 4. HTTP通过URI确定资源位置,RPC通过存根确定资源位置
+
+
 
 # RPC 传输流程
 ![img.png](doc/image/rpc_原理.png)
