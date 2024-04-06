@@ -8,6 +8,7 @@ import cn.tannn.trpc.core.meta.ServiceMeta;
 import cn.tannn.trpc.core.properties.AppProperties;
 import cn.tannn.trpc.core.properties.RpcProperties;
 import cn.tannn.trpc.core.properties.meta.GrayMetas;
+import cn.tannn.trpc.core.util.IpUtils;
 import cn.tannn.trpc.core.util.MethodUtils;
 import jakarta.annotation.PreDestroy;
 import lombok.Getter;
@@ -113,7 +114,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
         log.info("ProviderBootstrap start...");
         // 注册中心开始工作
         registryCenter.start();
-        String ip = InetAddress.getLocalHost().getHostAddress();
+        String ip = IpUtils.getRealIp();
         // 服务信息
         instance = InstanceMeta.http(ip, port, rpcApiContextPath);
         instance.setGray(grayMetas);
