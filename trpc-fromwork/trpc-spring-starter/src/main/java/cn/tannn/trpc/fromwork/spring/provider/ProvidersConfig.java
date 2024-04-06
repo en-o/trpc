@@ -45,23 +45,23 @@ public class ProvidersConfig {
      * 注册 : RPC服务调用的核心方法
      */
     @Bean
-    ProviderInvoker providersInvoker(ProviderBootstrap providersBootstrap) {
-        return new ProviderInvoker(providersBootstrap);
+    ProviderInvoker providersInvoker(@Autowired ProviderBootstrap providersBootstrap
+            , @Autowired RpcProperties rpcProperties) {
+        return new ProviderInvoker(providersBootstrap, rpcProperties);
     }
 
     /**
      * 在 applicationRunner后主动调用，确保实例全部加载完成，防止初始化的过程中被注册使用导致ClassNotFoundException
+     *
      * @param providerBootstrap ProviderBootstrap
      * @return ApplicationRunner
      */
     @Bean
-    @Order(Integer.MIN_VALUE+1)
-    public ApplicationRunner providerBootstrapRunner(@Autowired  ProviderBootstrap providerBootstrap
-    ,@Autowired Environment environment ) {
-        return x -> providerBootstrap.start(environment.getProperty("server.port",Integer.class));
+    @Order(Integer.MIN_VALUE + 1)
+    public ApplicationRunner providerBootstrapRunner(@Autowired ProviderBootstrap providerBootstrap
+            , @Autowired Environment environment) {
+        return x -> providerBootstrap.start(environment.getProperty("server.port", Integer.class));
     }
-
-
 
 
     /**

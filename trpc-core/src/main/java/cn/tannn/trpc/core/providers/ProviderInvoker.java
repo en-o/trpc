@@ -4,7 +4,9 @@ import cn.tannn.trpc.core.api.RpcContext;
 import cn.tannn.trpc.core.api.RpcRequest;
 import cn.tannn.trpc.core.api.RpcResponse;
 import cn.tannn.trpc.core.exception.TrpcException;
+import cn.tannn.trpc.core.governance.SlidingTimeWindow;
 import cn.tannn.trpc.core.meta.ProviderMeta;
+import cn.tannn.trpc.core.properties.RpcProperties;
 import cn.tannn.trpc.core.util.TypeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.LinkedMultiValueMap;
@@ -13,9 +15,12 @@ import org.springframework.util.MultiValueMap;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import static cn.tannn.trpc.core.exception.ExceptionCode.EXCEED_LIMIT_EX;
 import static cn.tannn.trpc.core.exception.ExceptionCode.NO_SUCH_METHOD_EX;
 
 /**
@@ -33,10 +38,20 @@ public class ProviderInvoker {
      */
     private MultiValueMap<String, ProviderMeta> skeleton = new LinkedMultiValueMap<>();
 
-    public ProviderInvoker(ProviderBootstrap providersBootstrap) {
-        this.skeleton = providersBootstrap.getSkeleton();
-    }
 
+    // todo 流控 - 1201 : 改成map，针对不同的服务[方法级别控制（methodSign）]用不同的流控值
+    // todo 流控 - 1202 : 对多个节点是共享一个数值，，，把这个map放到redis
+    final Map<String, SlidingTimeWindow> windows = new HashMap<>();
+
+    /**
+     * 流控参数设置
+     */
+    final Integer trafficControl;
+
+    public ProviderInvoker(ProviderBootstrap providersBootstrap, RpcProperties rpcProperties) {
+        this.skeleton = providersBootstrap.getSkeleton();
+        this.trafficControl = rpcProperties.getApp().getTrafficControl();
+    }
 
 
     /**
@@ -47,13 +62,26 @@ public class ProviderInvoker {
      */
     public RpcResponse<Object> invoke(RpcRequest request) {
         log.debug(" ===> ProviderInvoker.invoke(request:{})", request);
-        if(!request.getParams().isEmpty()){
+        if (!request.getParams().isEmpty()) {
             // rpc调用传过来的额外信息放到 全局 context 中
             request.getParams().forEach(RpcContext::setContextParameter);
         }
+        String service = request.getService();
+        // 流控  -- 0不控制
+        if (trafficControl > 0) {
+            synchronized (windows) {
+                SlidingTimeWindow window = windows.computeIfAbsent(service, k -> new SlidingTimeWindow());
+                if (window.calcSum() >= trafficControl) {
+                    throw new TrpcException("service " + service + " invoked in 30s/[" +
+                            window.getSum() + "] larger than tpsLimit = " + trafficControl, EXCEED_LIMIT_EX);
+                }
+                window.record(System.currentTimeMillis());
+                log.debug("service {} in window with {}", service, window.getSum());
+            }
+        }
 
         RpcResponse<Object> rpcResponse = new RpcResponse<>();
-        List<ProviderMeta> providerMetas = skeleton.get(request.getService());
+        List<ProviderMeta> providerMetas = skeleton.get(service);
         try {
             // 通过请求参数去 skeleton 里查询存储的提供者基础信息,用户下面的调用请求
             ProviderMeta meta = findProviderMeta(providerMetas, request.getMethodSign());
@@ -70,10 +98,10 @@ public class ProviderInvoker {
         } catch (InvocationTargetException e) {
             // 把异常传递回去
             rpcResponse.setEx(new TrpcException(e.getTargetException().getMessage()));
-        }  catch (IllegalAccessException | IllegalArgumentException e) {
+        } catch (IllegalAccessException | IllegalArgumentException e) {
             // 把异常传递回去
             rpcResponse.setEx(new TrpcException(e.getMessage()));
-        }catch (TrpcException e) {
+        } catch (TrpcException e) {
             // 把异常传递回去
             rpcResponse.setEx(e);
         } finally {
@@ -103,8 +131,8 @@ public class ProviderInvoker {
     /**
      * 处理参数的实际类型
      *
-     * @param args           参数
-     * @param parameterTypes 参数类型
+     * @param args                  参数
+     * @param parameterTypes        参数类型
      * @param genericParameterTypes 泛型类型
      * @return Object
      */

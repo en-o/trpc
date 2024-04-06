@@ -47,6 +47,11 @@ public class TrpcException extends RuntimeException {
         this.exceptionCode = errcode;
     }
 
+    public TrpcException(String message, ExceptionCode errcode) {
+        super(message);
+        this.exceptionCode = errcode;
+    }
+
     @Override
     public String getMessage() {
         if (null == exceptionCode) {
@@ -55,5 +60,10 @@ public class TrpcException extends RuntimeException {
             return exceptionCode.getType() + exceptionCode.getCode()
                     + "-" + exceptionCode.getMessage() + "-" + super.getMessage();
         }
+    }
+
+    public String getExceptionCodeStr() {
+        return exceptionCode.getType() + exceptionCode.getCode()
+                + "-" + exceptionCode.getMessage() + "-" + super.getMessage();
     }
 }

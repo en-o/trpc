@@ -5,10 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * 滑动时间窗口
- *
+ * <p>
  * SlidingTimeWindow implement based on RingBuffer and TS(timestamp).
  * Use TS/1000->SecondNumber to mapping an index slot in a RingBuffer.
- *
+ * <p>
  * https://gitee.com/kimmking/research/blob/master/timewindow/src/main/java/cn/kimmking/research/timewindow/SlidingTimeWindow.java#
  *
  * @Author : kimmking(kimmking@apache.org)
@@ -24,13 +24,13 @@ public class SlidingTimeWindow {
     private final RingBuffer ringBuffer;
     private int sum = 0;
 
-//    private int _start_mark = -1;
+    //    private int _start_mark = -1;
 //    private int _prev_mark  = -1;
-    private int _curr_mark  = -1;
+    private int _curr_mark = -1;
 
     private long _start_ts = -1L;
- //   private long _prev_ts  = -1L;
-    private long _curr_ts  = -1L;
+    //   private long _prev_ts  = -1L;
+    private long _curr_ts = -1L;
 
     public SlidingTimeWindow() {
         this(DEFAULT_SIZE);
@@ -42,41 +42,41 @@ public class SlidingTimeWindow {
     }
 
     /**
-     * record current ts millis. (记录当前时间)
+     * record current ts millis.
      *
      * @param millis
      */
     public synchronized void record(long millis) {
-        log.info("window before: {}", this);
-        log.info("window.record({})", millis);
+        log.debug("window before: " + this.toString());
+        log.debug("window.record(" + millis + ")");
         long ts = millis / 1000;
         if (_start_ts == -1L) {
             initRing(ts);
         } else {   // TODO  Prev 是否需要考虑
-            if(ts == _curr_ts) {
-                log.info("window ts:{}, curr_ts:{}, size:{}", ts, _curr_ts, size);
+            if (ts == _curr_ts) {
+                log.debug("window ts:" + ts + ", curr_ts:" + _curr_ts + ", size:" + size);
                 this.ringBuffer.incr(_curr_mark, 1);
-            } else if(ts > _curr_ts && ts < _curr_ts + size) {
-                int offset = (int)(ts - _curr_ts);
-                log.info("window ts:" + ts + ", curr_ts:" + _curr_ts + ", size:" + size + ", offset:" + offset);
+            } else if (ts > _curr_ts && ts < _curr_ts + size) {
+                int offset = (int) (ts - _curr_ts);
+                log.debug("window ts:" + ts + ", curr_ts:" + _curr_ts + ", size:" + size + ", offset:" + offset);
                 this.ringBuffer.reset(_curr_mark + 1, offset);
                 this.ringBuffer.incr(_curr_mark + offset, 1);
                 _curr_ts = ts;
                 _curr_mark = (_curr_mark + offset) % size;
-            } else if(ts >= _curr_ts + size) {
-                log.info("window ts:{}, curr_ts:{}, size:{}", ts, _curr_ts, size);
+            } else if (ts >= _curr_ts + size) {
+                log.debug("window ts:" + ts + ", curr_ts:" + _curr_ts + ", size:" + size);
                 this.ringBuffer.reset();
                 initRing(ts);
             }
         }
         this.sum = this.ringBuffer.sum();
-        log.info("window after: {}", this);
+        log.debug("window after: " + this.toString());
     }
 
     private void initRing(long ts) {
-        log.info("window initRing ts:{}", ts);
-        this._start_ts  = ts;
-        this._curr_ts   = ts;
+        log.debug("window initRing ts:" + ts);
+        this._start_ts = ts;
+        this._curr_ts = ts;
         this._curr_mark = 0;
         this.ringBuffer.incr(0, 1);
     }
@@ -87,6 +87,23 @@ public class SlidingTimeWindow {
 
     public int getSum() {
         return sum;
+    }
+
+    public int calcSum() {
+        long ts = System.currentTimeMillis() / 1000;
+        if (ts > _curr_ts && ts < _curr_ts + size) {
+            int offset = (int) (ts - _curr_ts);
+            log.debug("calc sum for window ts:" + ts + ", curr_ts:" + _curr_ts + ", size:" + size + ", offset:" + offset);
+            this.ringBuffer.reset(_curr_mark + 1, offset);
+            _curr_ts = ts;
+            _curr_mark = (_curr_mark + offset) % size;
+        } else if (ts >= _curr_ts + size) {
+            log.debug("calc sum for window ts:" + ts + ", curr_ts:" + _curr_ts + ", size:" + size);
+            this.ringBuffer.reset();
+            initRing(ts);
+        }
+        log.debug("calc sum for window:" + this);
+        return ringBuffer.sum();
     }
 
     public RingBuffer getRingBuffer() {

@@ -15,6 +15,12 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 public class AppProperties {
 
     /**
+     * 流控参数，每秒请求的次数超过次阈值就会过载保护[0不启用]，
+     */
+    Integer trafficControl = 0;
+
+    // registry 信息  -- start
+    /**
      * 订阅的服务名称
      */
     String appid="provider";
@@ -30,6 +36,7 @@ public class AppProperties {
      * 订阅的版本
      */
     String version = "0.0.1";
+    // registry 信息  -- end
 
     /**
      * 灰度

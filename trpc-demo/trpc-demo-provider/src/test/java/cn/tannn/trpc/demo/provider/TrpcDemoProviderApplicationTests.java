@@ -1,9 +1,11 @@
 package cn.tannn.trpc.demo.provider;
 
 import cn.tannn.trpc.core.api.RpcRequest;
+import cn.tannn.trpc.core.exception.TrpcException;
 import cn.tannn.trpc.core.properties.RpcProperties;
 import cn.tannn.trpc.core.test.TestZKServer;
 import com.alibaba.fastjson2.JSON;
+import jakarta.servlet.ServletException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -74,6 +76,40 @@ class TrpcDemoProviderApplicationTests {
         MockHttpServletResponse response = mvcResult.getResponse();
         System.out.println();
         System.out.println("status_" +response.getStatus()+ orderServiceNameStr+"@findById@1_java.lang.Integer@return"+ response.getContentAsString());
+    }
+
+
+    /**
+     * 测试 流控
+     *  复杂测试：测试流量并发控制
+     */
+    @Test
+    void testTrafficControl() throws Exception {
+        // findById@1_java.lang.Integer
+        RpcRequest rpcRequest = new RpcRequest();
+        rpcRequest.setService(orderServiceNameStr);
+        rpcRequest.setMethodSign("findById@1_java.lang.Integer");
+        rpcRequest.setArgs(new Object[]{201});
+        String rpcRequestJson = JSON.toJSONString(rpcRequest);
+
+        // 构建
+        RequestBuilder request = MockMvcRequestBuilders.post("/"+rpcProperties.getApi().getContext())
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .content(rpcRequestJson);
+        // 执行
+       for (int i = 0; i <200; i++) {
+           try {
+               MvcResult mvcResult = mockMvc.perform(request).andReturn();
+               MockHttpServletResponse response = mvcResult.getResponse();
+               System.out.println();
+               System.out.println("status_" +response.getStatus()+ orderServiceNameStr+"@findById@1_java.lang.Integer@return"+ response.getContentAsString());
+           }catch (TrpcException | ServletException e){
+                System.out.println(i + " ***>>> " +e.getMessage());
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+       }
     }
 
 
