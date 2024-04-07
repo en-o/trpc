@@ -3,7 +3,7 @@ package cn.tannn.trpc.core.enums;
 import cn.tannn.trpc.core.api.Filter;
 import cn.tannn.trpc.core.filter.CacheFilter;
 import cn.tannn.trpc.core.filter.LocalMethodFilter;
-import cn.tannn.trpc.core.filter.ParameterFilter;
+import cn.tannn.trpc.core.filter.ContextParameterFilter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -39,7 +39,7 @@ public enum FilterEnum {
     /**
      * 嵌入上下文参数到请求体中
      */
-    PARAMETER;
+    CONTEXT_PARAMETER;
 
     /**
      * 枚举换过滤器实例
@@ -50,7 +50,7 @@ public enum FilterEnum {
         return switch (filterEnum) {
             case CACHE -> new CacheFilter();
             case LOCAL_METHOD -> new LocalMethodFilter();
-            case PARAMETER -> new ParameterFilter();
+            case CONTEXT_PARAMETER -> new ContextParameterFilter();
             default -> Filter.Default;
         };
     }

@@ -13,7 +13,7 @@ import java.util.Map;
  * @version V1.0
  * @date 2024/4/5 下午2:09
  */
-public class ParameterFilter implements Filter {
+public class ContextParameterFilter implements Filter {
 
     @Override
     public Object prefilter(RpcRequest request) {
