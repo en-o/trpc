@@ -16,10 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.net.SocketTimeoutException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -53,7 +50,7 @@ public class TInvocationHandler implements InvocationHandler {
     /**
      * 隔离服务实例
      */
-    List<InstanceMeta> isolateProviders = new ArrayList<>();
+    Set<InstanceMeta> isolateProviders = new HashSet<>();
     /**
      * 故障隔离 - 故障信息记录
      */
@@ -164,7 +161,6 @@ public class TInvocationHandler implements InvocationHandler {
                 }
 
                 // 故障恢复
-
                 synchronized (providers){
                     // 当前实例不是正常实例，就表明他是探活实例，且探活成功就将节点恢复正常
                     if(!providers.contains(instance)){
