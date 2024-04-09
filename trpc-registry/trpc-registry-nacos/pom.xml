@@ -13,7 +13,7 @@
     <artifactId>trpc-registry-nacos</artifactId>
     <description>
         nacos 注册中心适配
-        [Nacos 融合 Spring Boot，成为注册配置中心](https://nacos.io/docs/next/ecology/use-nacos-with-spring-boot/)
+        [JAVA SDK](https://nacos.io/docs/next/guide/user/sdk/)
     </description>
     <properties>
         <nacos.version>2.3.1</nacos.version>
