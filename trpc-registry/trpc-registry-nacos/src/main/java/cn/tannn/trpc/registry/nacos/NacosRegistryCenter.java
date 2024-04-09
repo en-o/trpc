@@ -6,9 +6,17 @@ import cn.tannn.trpc.common.listener.ChangedListener;
 import cn.tannn.trpc.common.meta.InstanceMeta;
 import cn.tannn.trpc.common.meta.ServiceMeta;
 import cn.tannn.trpc.common.properties.rc.RegistryCenterProperties;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.nacos.api.naming.NamingFactory;
+import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.api.naming.pojo.Instance;
+import com.alibaba.nacos.common.utils.MapUtil;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * nacos注册中心
@@ -36,14 +44,22 @@ public class NacosRegistryCenter implements RegistryCenter {
 
     }
 
+    @SneakyThrows
     @Override
     public void register(ServiceMeta service, InstanceMeta instance) {
-
+        NamingService namingService = NamingFactory.createNamingService(service.toPath());
+        Instance nacosInstance = new Instance();
+        nacosInstance.setIp(instance.getHost());
+        nacosInstance.setPort(instance.getPort());
+        nacosInstance.setMetadata(JSON.to(Map.class, instance.getGray()));
+        namingService.registerInstance(service.toMetas(), nacosInstance);
     }
 
+    @SneakyThrows
     @Override
     public void unregister(ServiceMeta service, InstanceMeta instance) {
-
+        NamingService namingService = NamingFactory.createNamingService(service.toPath());
+        namingService.deregisterInstance(service.toMetas(), instance.getHost(), instance.getPort());
     }
 
     @Override
