@@ -16,8 +16,7 @@
         [Nacos 融合 Spring Boot，成为注册配置中心](https://nacos.io/docs/next/ecology/use-nacos-with-spring-boot/)
     </description>
     <properties>
-        <nacos.spring.boot.version>0.3.0-RC</nacos.spring.boot.version>
-        <nacos.spring.version>2.1.0-RC</nacos.spring.version>
+        <nacos.version>2.3.1</nacos.version>
     </properties>
 
    <dependencies>
@@ -28,15 +27,23 @@
            <optional>true</optional>
        </dependency>
        <dependency>
-           <groupId>com.alibaba.boot</groupId>
-           <artifactId>nacos-discovery-spring-boot-starter</artifactId>
-           <version>${nacos.spring.boot.version}</version>
+           <groupId>com.alibaba.nacos</groupId>
+           <artifactId>nacos-client</artifactId>
+           <version>${nacos.version}</version>
+           <!-- 指定纯净版SDK -->
+           <classifier>pure</classifier>
        </dependency>
-<!--       <dependency>-->
-<!--           <groupId>com.alibaba.nacos</groupId>-->
-<!--           <artifactId>nacos-spring-context</artifactId>-->
-<!--           <version>${nacos.spring.version}</version>-->
-<!--       </dependency>-->
+       <!-- 使用纯净版时必须要引入同版本nacos-api和nacos-common，否则可能出现运行时找不到类的问题 -->
+       <dependency>
+           <groupId>com.alibaba.nacos</groupId>
+           <artifactId>nacos-common</artifactId>
+           <version>${nacos.version}</version>
+       </dependency>
+       <dependency>
+           <groupId>com.alibaba.nacos</groupId>
+           <artifactId>nacos-api</artifactId>
+           <version>${nacos.version}</version>
+       </dependency>
        <dependency>
            <groupId>org.projectlombok</groupId>
            <artifactId>lombok</artifactId>
