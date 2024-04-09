@@ -4,6 +4,7 @@ import cn.tannn.trpc.common.api.RegistryCenter;
 import cn.tannn.trpc.common.enums.RegistryCenterEnum;
 import cn.tannn.trpc.common.meta.InstanceMeta;
 import cn.tannn.trpc.common.properties.RpcProperties;
+import cn.tannn.trpc.registry.nacos.NacosRegistryCenter;
 import cn.tannn.trpc.registry.zk.ZkRegistryCenter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -36,6 +37,8 @@ public class RegistryCenterConfig {
         RegistryCenter registryCenter;
         if (rpcProperties.getRc().getName().equals(RegistryCenterEnum.ZK)) {
             registryCenter = new ZkRegistryCenter(rpcProperties.getRc());
+        } else if (rpcProperties.getRc().getName().equals(RegistryCenterEnum.NACOS)) {
+            registryCenter = new NacosRegistryCenter(rpcProperties.getRc());
         } else {
             String[] providers = rpcProperties.getRc().getProviders();
             if (null == providers || providers.length == 0) {

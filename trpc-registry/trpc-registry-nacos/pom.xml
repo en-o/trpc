@@ -11,13 +11,36 @@
 
     <packaging>jar</packaging>
     <artifactId>trpc-registry-nacos</artifactId>
-    <description>nacos 注册中心适配</description>
+    <description>
+        nacos 注册中心适配
+        [Nacos 融合 Spring Boot，成为注册配置中心](https://nacos.io/docs/next/ecology/use-nacos-with-spring-boot/)
+    </description>
+    <properties>
+        <nacos.spring.boot.version>0.3.0-RC</nacos.spring.boot.version>
+        <nacos.spring.version>2.1.0-RC</nacos.spring.version>
+    </properties>
 
    <dependencies>
        <dependency>
            <groupId>cn.tannn.cat</groupId>
            <artifactId>trpc-common</artifactId>
            <version>${trpc.version}</version>
+           <optional>true</optional>
+       </dependency>
+       <dependency>
+           <groupId>com.alibaba.boot</groupId>
+           <artifactId>nacos-discovery-spring-boot-starter</artifactId>
+           <version>${nacos.spring.boot.version}</version>
+       </dependency>
+<!--       <dependency>-->
+<!--           <groupId>com.alibaba.nacos</groupId>-->
+<!--           <artifactId>nacos-spring-context</artifactId>-->
+<!--           <version>${nacos.spring.version}</version>-->
+<!--       </dependency>-->
+       <dependency>
+           <groupId>org.projectlombok</groupId>
+           <artifactId>lombok</artifactId>
+           <version>${lombok.version}</version>
            <optional>true</optional>
        </dependency>
    </dependencies>

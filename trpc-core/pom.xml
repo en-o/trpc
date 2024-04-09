@@ -24,6 +24,11 @@
 			<version>${trpc.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>cn.tannn.cat</groupId>
+			<artifactId>trpc-registry-nacos</artifactId>
+			<version>${trpc.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>${lombok.version}</version>
