@@ -69,6 +69,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+        <maven.compiler.release>17</maven.compiler.release>
     </properties>
 
     <modules>
@@ -133,6 +134,8 @@
                 <version>3.6.3</version>
                 <inherited>true</inherited>
                 <configuration>
+                    <outputDirectory>${project.build.directory}/apidocs</outputDirectory>
+                    <reportOutputDirectory>${project.reporting.outputDirectory}/apidocs</reportOutputDirectory>
                     <maxmemory>1024</maxmemory>
                     <encoding>${project.build.sourceEncoding}</encoding>
                     <charset>${project.build.sourceEncoding}</charset>
@@ -145,37 +148,37 @@
                         <tag>
                             <name>description</name>
                             <placement>a</placement>
-                            <head>描述</head>
+                            <head>描述: </head>
                         </tag>
                         <tag>
                             <name>return</name>
                             <placement>a</placement>
-                            <head>return</head>
+                            <head>return: </head>
                         </tag>
                         <tag>
                             <name>ClassName</name>
                             <placement>a</placement>
-                            <head>类名</head>
+                            <head>类名: </head>
                         </tag>
                         <tag>
                             <name>link</name>
                             <placement>a</placement>
-                            <head>外链</head>
+                            <head>外链: </head>
                         </tag>
                         <tag>
                             <head>参数</head>
-                            <name>param</name>
+                            <name>param: </name>
                             <placement>a</placement>
                         </tag>
                         <tag>
                             <name>date</name>
                             <placement>a</placement>
-                            <head>时间</head>
+                            <head>时间: </head>
                         </tag>
                         <tag>
                             <name>author</name>
                             <placement>a</placement>
-                            <head>作者</head>
+                            <head>作者: </head>
                         </tag>
                     </tags>
                 </configuration>
