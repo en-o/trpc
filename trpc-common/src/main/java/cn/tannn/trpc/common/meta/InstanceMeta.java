@@ -3,6 +3,7 @@ package cn.tannn.trpc.common.meta;
 import cn.tannn.trpc.common.properties.meta.GrayMetas;
 import com.alibaba.fastjson2.JSON;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode(of = {"schema", "host", "port", "context"})
 public class InstanceMeta {
 
     /**

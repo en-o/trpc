@@ -35,3 +35,4 @@ trpc:
     isolate:
       fault-limit: 5
       half-open-enable: true
+      delay: 100
