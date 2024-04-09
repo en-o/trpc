@@ -14,6 +14,7 @@
     <description>注册中心适配</description>
     <modules>
         <module>trpc-registry-zookeeper</module>
+        <module>trpc-registry-nacos</module>
     </modules>
 
 </project>

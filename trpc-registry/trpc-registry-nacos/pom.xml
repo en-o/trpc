@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>cn.tannn.cat</groupId>
+        <artifactId>trpc-registry</artifactId>
+        <version>0.0.3-SNAPSHOT</version>
+    </parent>
+
+    <packaging>jar</packaging>
+    <artifactId>trpc-registry-nacos</artifactId>
+    <description>
+        nacos 注册中心适配
+        [JAVA SDK](https://nacos.io/docs/next/guide/user/sdk/)
+    </description>
+    <properties>
+        <nacos.version>2.3.1</nacos.version>
+    </properties>
+
+   <dependencies>
+       <dependency>
+           <groupId>cn.tannn.cat</groupId>
+           <artifactId>trpc-common</artifactId>
+           <version>${trpc.version}</version>
+           <optional>true</optional>
+       </dependency>
+       <dependency>
+           <groupId>com.alibaba.nacos</groupId>
+           <artifactId>nacos-client</artifactId>
+           <version>${nacos.version}</version>
+           <!-- 指定纯净版SDK -->
+           <classifier>pure</classifier>
+       </dependency>
+       <!-- 使用纯净版时必须要引入同版本nacos-api和nacos-common，否则可能出现运行时找不到类的问题 -->
+       <dependency>
+           <groupId>com.alibaba.nacos</groupId>
+           <artifactId>nacos-common</artifactId>
+           <version>${nacos.version}</version>
+       </dependency>
+       <dependency>
+           <groupId>com.alibaba.nacos</groupId>
+           <artifactId>nacos-api</artifactId>
+           <version>${nacos.version}</version>
+       </dependency>
+       <dependency>
+           <groupId>org.projectlombok</groupId>
+           <artifactId>lombok</artifactId>
+           <version>${lombok.version}</version>
+           <optional>true</optional>
+       </dependency>
+   </dependencies>
+</project>

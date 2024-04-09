@@ -11,13 +11,14 @@
 
     <packaging>jar</packaging>
     <artifactId>trpc-registry-zookeeper</artifactId>
-    <description>trpc-core</description>
+    <description>zk 注册中心适配</description>
 
     <dependencies>
         <dependency>
             <groupId>cn.tannn.cat</groupId>
             <artifactId>trpc-common</artifactId>
             <version>${trpc.version}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.curator</groupId>

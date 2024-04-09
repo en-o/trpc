@@ -13,6 +13,11 @@ public enum RegistryCenterEnum {
     ZK,
 
     /**
+     * nacos
+     */
+    NACOS,
+
+    /**
      * 配置文件
      */
     DEF
