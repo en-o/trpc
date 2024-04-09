@@ -12,6 +12,8 @@ import cn.tannn.trpc.common.properties.rc.Connect;
 import cn.tannn.trpc.common.properties.rc.RegistryCenterProperties;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.nacos.api.NacosFactory;
+import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.naming.NamingFactory;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.listener.NamingEvent;
@@ -59,10 +61,18 @@ public class NacosRegistryCenter implements RegistryCenter {
         } else {
             // todo 注册中心也可以设置多个, 目前只拿第一个
             String serverList = Arrays.stream(connect).map(Connect::connectString).collect(Collectors.joining(","));
-            properties.setProperty("serverAddr", serverList);
+            // 指定 Nacos 地址
+            properties.setProperty(PropertyKeyConst.SERVER_ADDR, serverList);
         }
+
+
+        // 默认命名空间是空，可以不填写
+        properties.put(PropertyKeyConst.NAMESPACE, rcp.getNamespace());
+        // 如果在云上开启鉴权可以传入应用身份
+//        properties.put("ramRoleName", "$ramRoleName");
+//        properties.put(PropertyKeyConst.ACCESS_KEY, "${accessKey}");
+//        properties.put(PropertyKeyConst.SECRET_KEY, "${secretKey}");
         log.info("nacosServer start ...");
-        properties.setProperty("serverName", rcp.getNamespace());
         client = NamingFactory.createNamingService(properties);
         log.info(" ===> nacos client starting.");
     }
@@ -77,20 +87,21 @@ public class NacosRegistryCenter implements RegistryCenter {
     @Override
     public void register(ServiceMeta service, InstanceMeta instance) {
         Instance nacosInstance = new Instance();
-        nacosInstance.setServiceName(service.toPath());
+        nacosInstance.setServiceName(service.getName());
+        nacosInstance.setInstanceId(service.getAppid());
         nacosInstance.setIp(instance.getHost());
         nacosInstance.setPort(instance.getPort());
         nacosInstance.setClusterName(instance.getContext());
         nacosInstance.setMetadata(JSON.to(Map.class, JSON.toJSON(instance.getGray())));
         nacosInstance.setHealthy(true);
-        client.registerInstance(service.toMetas(), nacosInstance);
+        client.registerInstance(service.getName(), nacosInstance);
         log.info(" ===> register to nacos: {}", instance);
     }
 
     @SneakyThrows
     @Override
     public void unregister(ServiceMeta service, InstanceMeta instance) {
-        client.deregisterInstance(service.toPath(),
+        client.deregisterInstance(service.getName(),
                 instance.getHost(),
                 instance.getPort(),
                 instance.getContext());
@@ -100,7 +111,7 @@ public class NacosRegistryCenter implements RegistryCenter {
     @SneakyThrows
     @Override
     public List<InstanceMeta> fetchAll(ServiceMeta service) {
-        List<Instance> nodes = client.selectInstances(service.toPath(), true);
+        List<Instance> nodes = client.selectInstances(service.getName(), true);
         return nodes.stream().map(instance -> {
             InstanceMeta meta = InstanceMeta.http(
                     instance.getIp(), instance.getPort(), instance.getClusterName());
@@ -115,7 +126,7 @@ public class NacosRegistryCenter implements RegistryCenter {
     @Override
     public void subscribe(ServiceMeta service, ChangedListener changedListener) {
 
-        client.subscribe(service.toPath(), event -> {
+        client.subscribe(service.getName(), event -> {
             // 节点变动，这里会感知到
             log.info("nacos subscribe event: {}", event);
             List<InstanceMeta> nodes = fetchAll(service);
