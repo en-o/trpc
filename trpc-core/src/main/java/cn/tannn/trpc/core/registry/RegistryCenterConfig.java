@@ -1,4 +1,4 @@
-package cn.tannn.trpc.registry.zk.config;
+package cn.tannn.trpc.core.registry;
 
 import cn.tannn.trpc.common.api.RegistryCenter;
 import cn.tannn.trpc.common.enums.RegistryCenterEnum;

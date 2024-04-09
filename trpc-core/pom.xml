@@ -15,6 +15,11 @@
 	<dependencies>
 		<dependency>
 			<groupId>cn.tannn.cat</groupId>
+			<artifactId>trpc-common</artifactId>
+			<version>${trpc.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>cn.tannn.cat</groupId>
 			<artifactId>trpc-registry-zookeeper</artifactId>
 			<version>${trpc.version}</version>
 		</dependency>
