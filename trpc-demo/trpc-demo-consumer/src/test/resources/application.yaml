@@ -25,7 +25,7 @@ trpc:
     filter:
       - cache
       - local_method
-      - parameter
+      - context_parameter
     subscribe:
       appid: provider
       version: 0.0.1

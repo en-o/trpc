@@ -1,7 +1,7 @@
 package cn.tannn.trpc.demo.consumer.runner;
 
+import cn.tannn.trpc.common.api.RpcContext;
 import cn.tannn.trpc.core.annotation.TConsumer;
-import cn.tannn.trpc.core.api.RpcContext;
 import cn.tannn.trpc.demo.api.OrderService;
 import cn.tannn.trpc.demo.api.UserService;
 import cn.tannn.trpc.demo.api.entity.User;

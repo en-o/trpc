@@ -1,18 +1,18 @@
 package cn.tannn.trpc.core.consumer.http;
 
-import cn.tannn.trpc.core.api.RpcRequest;
-import cn.tannn.trpc.core.api.RpcResponse;
+import cn.tannn.trpc.common.api.RpcRequest;
+import cn.tannn.trpc.common.api.RpcResponse;
+import cn.tannn.trpc.common.exception.TrpcException;
+import cn.tannn.trpc.common.properties.HttpProperties;
 import cn.tannn.trpc.core.consumer.HttpInvoker;
-import cn.tannn.trpc.core.exception.TrpcException;
-import cn.tannn.trpc.core.properties.HttpProperties;
 import com.alibaba.fastjson2.JSON;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 
 import java.util.concurrent.TimeUnit;
 
-import static cn.tannn.trpc.core.exception.ExceptionCode.HTTP_POST_EX;
-import static cn.tannn.trpc.core.exception.ExceptionCode.HTTP_URI_EX;
+import static cn.tannn.trpc.common.exception.ExceptionCode.HTTP_POST_EX;
+import static cn.tannn.trpc.common.exception.ExceptionCode.HTTP_URI_EX;
 
 /**
  * okhttp 请求

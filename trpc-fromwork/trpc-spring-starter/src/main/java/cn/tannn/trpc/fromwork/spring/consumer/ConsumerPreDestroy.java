@@ -1,6 +1,6 @@
 package cn.tannn.trpc.fromwork.spring.consumer;
 
-import cn.tannn.trpc.core.api.RegistryCenter;
+import cn.tannn.trpc.common.api.RegistryCenter;
 import cn.tannn.trpc.core.providers.ProviderBootstrap;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;

@@ -1,7 +1,7 @@
 package cn.tannn.trpc.core.cluster;
 
-import cn.tannn.trpc.core.api.LoadBalancer;
-import cn.tannn.trpc.core.meta.InstanceMeta;
+import cn.tannn.trpc.common.api.LoadBalancer;
+import cn.tannn.trpc.common.meta.InstanceMeta;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;

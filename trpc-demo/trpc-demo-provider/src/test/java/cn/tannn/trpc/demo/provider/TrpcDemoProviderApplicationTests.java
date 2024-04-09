@@ -1,9 +1,9 @@
 package cn.tannn.trpc.demo.provider;
 
-import cn.tannn.trpc.core.api.RpcRequest;
-import cn.tannn.trpc.core.exception.TrpcException;
-import cn.tannn.trpc.core.properties.RpcProperties;
-import cn.tannn.trpc.core.test.TestZKServer;
+import cn.tannn.trpc.common.api.RpcRequest;
+import cn.tannn.trpc.common.exception.TrpcException;
+import cn.tannn.trpc.common.properties.RpcProperties;
+import cn.tannn.trpc.registry.zk.test.TestZKServer;
 import com.alibaba.fastjson2.JSON;
 import jakarta.servlet.ServletException;
 import org.junit.jupiter.api.AfterAll;

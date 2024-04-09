@@ -1,7 +1,7 @@
 package cn.tannn.trpc.core.consumer;
 
-import cn.tannn.trpc.core.api.RpcRequest;
-import cn.tannn.trpc.core.api.RpcResponse;
+import cn.tannn.trpc.common.api.RpcRequest;
+import cn.tannn.trpc.common.api.RpcResponse;
 
 /**
  * http请求接口

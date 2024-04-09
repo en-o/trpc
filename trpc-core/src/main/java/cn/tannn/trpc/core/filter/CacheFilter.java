@@ -1,7 +1,7 @@
 package cn.tannn.trpc.core.filter;
 
-import cn.tannn.trpc.core.api.Filter;
-import cn.tannn.trpc.core.api.RpcRequest;
+import cn.tannn.trpc.common.api.Filter;
+import cn.tannn.trpc.common.api.RpcRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 

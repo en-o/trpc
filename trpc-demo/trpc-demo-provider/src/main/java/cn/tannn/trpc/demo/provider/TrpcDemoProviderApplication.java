@@ -1,7 +1,7 @@
 package cn.tannn.trpc.demo.provider;
 
-import cn.tannn.trpc.core.api.RpcRequest;
-import cn.tannn.trpc.core.api.RpcResponse;
+import cn.tannn.trpc.common.api.RpcRequest;
+import cn.tannn.trpc.common.api.RpcResponse;
 import cn.tannn.trpc.core.providers.ProviderInvoker;
 import cn.tannn.trpc.core.util.MethodUtils;
 import cn.tannn.trpc.demo.api.OrderService;
