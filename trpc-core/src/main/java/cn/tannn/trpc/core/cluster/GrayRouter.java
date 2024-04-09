@@ -1,8 +1,8 @@
 package cn.tannn.trpc.core.cluster;
 
-import cn.tannn.trpc.core.api.Router;
-import cn.tannn.trpc.core.meta.InstanceMeta;
-import cn.tannn.trpc.core.properties.ConsumerProperties;
+import cn.tannn.trpc.common.api.Router;
+import cn.tannn.trpc.common.meta.InstanceMeta;
+import cn.tannn.trpc.common.properties.ConsumerProperties;
 import lombok.extern.slf4j.Slf4j;
 
 import java.security.SecureRandom;

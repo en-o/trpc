@@ -1,17 +1,17 @@
 package cn.tannn.trpc.fromwork.spring.consumer;
 
 
-import cn.tannn.trpc.core.api.Filter;
-import cn.tannn.trpc.core.api.LoadBalancer;
-import cn.tannn.trpc.core.api.Router;
+import cn.tannn.trpc.common.api.Filter;
+import cn.tannn.trpc.common.api.LoadBalancer;
+import cn.tannn.trpc.common.api.Router;
+import cn.tannn.trpc.common.chain.FilterChain;
+import cn.tannn.trpc.common.enums.LoadBalancerEnum;
+import cn.tannn.trpc.common.properties.RpcProperties;
 import cn.tannn.trpc.core.cluster.GrayRouter;
 import cn.tannn.trpc.core.cluster.RandomLoadBalancer;
 import cn.tannn.trpc.core.cluster.RoundRibbonLoadBalancer;
 import cn.tannn.trpc.core.consumer.ConsumerBootstrap;
-import cn.tannn.trpc.core.enums.FilterEnum;
-import cn.tannn.trpc.core.enums.LoadBalancerEnum;
-import cn.tannn.trpc.core.filter.FilterChain;
-import cn.tannn.trpc.core.properties.RpcProperties;
+import cn.tannn.trpc.core.util.EnumUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
@@ -69,7 +69,7 @@ public class ConsumerConfig {
      */
     @Bean
     FilterChain filterChain(RpcProperties rpcProperties) {
-        List<Filter> filters = FilterEnum.findFilter(rpcProperties.getConsumer().getFilter());
+        List<Filter> filters = EnumUtils.findFilter(rpcProperties.getConsumer().getFilter());
         return new FilterChain(filters);
     }
 

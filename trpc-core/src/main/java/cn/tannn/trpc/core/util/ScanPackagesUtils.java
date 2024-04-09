@@ -1,6 +1,6 @@
 package cn.tannn.trpc.core.util;
 
-import cn.tannn.trpc.core.exception.TrpcException;
+import cn.tannn.trpc.common.exception.TrpcException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.Set;
 
-import static cn.tannn.trpc.core.exception.ExceptionCode.NO_SUCH_CLASS_EX;
+import static cn.tannn.trpc.common.exception.ExceptionCode.NO_SUCH_CLASS_EX;
 
 /**
  * 扫描

@@ -1,7 +1,7 @@
 package cn.tannn.trpc.demo.consumer;
 
-import cn.tannn.trpc.core.test.TestZKServer;
 import cn.tannn.trpc.demo.provider.TrpcDemoProviderApplication;
+import cn.tannn.trpc.registry.zk.test.TestZKServer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

@@ -78,6 +78,9 @@
         <module>trpc-fromwork</module>
         <!-- demo -->
         <module>trpc-demo</module>
+        <!-- 注册中心适配 -->
+        <module>trpc-registry</module>
+        <module>trpc-common</module>
     </modules>
 
     <build>
@@ -188,6 +191,17 @@
             </plugin>
         </plugins>
     </build>
+
+
+
+    <repositories>
+        <repository>
+            <id>central-repos1</id>
+            <name>Central Repository 2</name>
+            <url>http://repo1.maven.org/maven2/</url>
+        </repository>
+    </repositories>
+
 
     <profiles>
         <profile>

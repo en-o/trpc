@@ -1,9 +1,9 @@
 package cn.tannn.trpc.fromwork.spring.provider;
 
-import cn.tannn.trpc.core.api.RegistryCenter;
-import cn.tannn.trpc.core.api.RpcRequest;
-import cn.tannn.trpc.core.api.RpcResponse;
-import cn.tannn.trpc.core.properties.RpcProperties;
+import cn.tannn.trpc.common.api.RegistryCenter;
+import cn.tannn.trpc.common.api.RpcRequest;
+import cn.tannn.trpc.common.api.RpcResponse;
+import cn.tannn.trpc.common.properties.RpcProperties;
 import cn.tannn.trpc.core.providers.ProviderBootstrap;
 import cn.tannn.trpc.core.providers.ProviderInvoker;
 import lombok.extern.slf4j.Slf4j;
