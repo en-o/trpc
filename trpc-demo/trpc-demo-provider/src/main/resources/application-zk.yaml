@@ -1,0 +1,27 @@
+server:
+  port: 8081
+
+logging:
+  level:
+    root: error
+    cn.tannn.trpc: debug
+trpc:
+  rc:
+    name: zk
+    namespace: trpc
+    connect:
+      - ip: 127.0.0.1
+        port: 20242
+  api:
+    #    enabled: false
+    context: trpc
+  app:
+    appid: provider
+    version: 0.0.1
+    env: dev
+    namespace: public
+    traffic-control: 20
+    gray:
+      dc: cqs
+      gray: false
+      unit: A001

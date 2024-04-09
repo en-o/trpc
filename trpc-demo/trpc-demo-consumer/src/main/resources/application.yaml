@@ -8,7 +8,7 @@ logging:
 trpc:
   scan-packages: cn.tannn.trpc
   rc:
-    name: zk
+    name: nacos
     namespace: trpc
     connect:
       - ip: 127.0.0.1
