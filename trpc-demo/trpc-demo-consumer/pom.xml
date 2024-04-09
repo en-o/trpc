@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.tannn.cat</groupId>
         <artifactId>trpc-demo</artifactId>
-        <version>0.0.3-SNAPSHOT</version>
+        <version>0.0.3</version>
     </parent>
     <artifactId>trpc-demo-consumer</artifactId>
     <name>trpc-demo-consumer</name>
